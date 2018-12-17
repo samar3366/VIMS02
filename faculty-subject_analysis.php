@@ -191,19 +191,23 @@
                                         <div class="form-group">
                                             <label>Batch</label>
                                             <select class="form-control" name="batch">
-								                <option>Select any:</option>
-												<option value="15">15</option>
-												<option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-												<option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
+                                              <?php
+                                                                          $sql = "SELECT DISTINCT batch FROM student_details ORDER BY batch DESC;";
+
+                                                                          $result = $connect->query($sql);
+                                                                          $i = 0;
+                                                                          if($result->num_rows > 0){
+                                                                              while($row = $result->fetch_assoc()){
+                                                                                  $batch = $row["batch"];
+                                                                                  echo "<option value='$batch'>".$row["batch"]."</option>";
+                                                                                  $i++;
+                                                                                  if($i>=4){
+                                                                                      break;
+                                                                                  }
+                                                                              }
+                                                                          }
+
+                                                                      ?>
 								            </select>
                                         </div>
                                         <div class="form-group">
@@ -426,7 +430,7 @@
                                                 $row = $result->fetch_assoc();
                                                 $st_count = $row["count"];
 
-                                                $percentage = (($st_count-$count)/$st_count)*100;
+                                                $percentage = round(($st_count-$count)/($st_count)*100,2);
                                             ?>
                                             <tr>
                                                 <td><?php echo $row_htno["subj_name"];?></td>

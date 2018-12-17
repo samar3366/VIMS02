@@ -392,192 +392,7 @@ if($sql){
                         </div>
                     </div>
                     <!-- Column -->
-                <div class="col-lg-12">
-                        <div class="card">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs profile-tab" role="tablist">
-                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#courses" role="tab">Courses/Workshops</a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#certificates" role="tab">Certificates</a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#projects" role="tab">Projects</a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#skills" role="tab">Skills</a> </li>
-                            </ul>
-                            <!-- Tab panes -->
-                            <div class="tab-content">
-                                <div class="tab-pane  active" id="courses" role="tabpanel">
-                                    <div class="card-body">
-                                        <div class="col-lg-9">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S.NO</th>
-                                                                    <th>Title of the Course/Workshop</th>
-                                                                    <th>Online/Offline</th>
-                                                                    <th>Organized By</th>
-                                                                    <th>Instructors</th>
-                                                                    <th>Time Duration</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-
-
-                                                                    $sql = "SELECT * FROM student_courses WHERE htno='$htno';";
-
-                                                                    $result = $connect->query($sql);
-                                                                    $i=1;
-                                                                    if ($result->num_rows > 0) {
-
-                                                                        while($row = $result->fetch_assoc()) {
-
-                                                                ?>
-                                                                <tr>
-                                                                    <th><?php echo $i;$i++;?></th>
-                                                                    <td><?php echo $row["title"];?></td>
-                                                                    <td><?php echo $row["online_offline"];?></td>
-                                                                    <td><?php echo $row["organized_by"];?></td>
-                                                                    <td><?php echo $row["instructor"];?></td>
-                                                                    <td><?php echo $row["time_duration"];?></td>
-                                                                </tr>
-                                                                <?php }}?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--second tab-->
-                                <div class="tab-pane" id="certificates" role="tabpanel">
-                                    <div class="card-body">
-                                        <div class="col-lg-9">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S.NO</th>
-                                                                    <th>Title of Certificate</th>
-                                                                    <th>Given By</th>
-                                                                    <th>Type</th>
-                                                                    <th>Achievement</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-
-
-                                                                    $sql = "SELECT * FROM student_certificate WHERE htno='$htno';";
-
-                                                                    $result = $connect->query($sql);
-                                                                    $i=1;
-                                                                    if ($result->num_rows > 0) {
-
-                                                                        while($row = $result->fetch_assoc()) {
-
-                                                                ?>
-                                                                <tr>
-                                                                    <th><?php echo $i;$i++;?></th>
-                                                                    <td><?php echo $row["title"];?></td>
-                                                                    <td><?php echo $row["given_by"];?></td>
-                                                                    <td><span class="badge badge-primary"><?php echo $row["type"];?></span></td>
-                                                                    <td><?php echo $row["achievement"];?></td>
-                                                                </tr>
-                                                                <?php }}?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                    <!--third tab-->
-                                <div class="tab-pane" id="projects" role="tabpanel">
-                                    <div class="card-body">
-                                        <div class="col-lg-9">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S.NO</th>
-                                                                    <th>Name of Project</th>
-                                                                    <th>Team</th>
-                                                                    <th>Guide</th>
-                                                                    <th>Description</th>
-                                                                    <th>Status</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-
-
-                                                                    $sql = "SELECT * FROM student_projects WHERE htno='$htno';";
-
-                                                                    $result = $connect->query($sql);
-                                                                    $i=1;
-                                                                    if ($result->num_rows > 0) {
-
-                                                                        while($row = $result->fetch_assoc()) {
-
-                                                                ?>
-                                                                <tr>
-                                                                    <th><?php echo $i;$i++;?></th>
-                                                                    <td><?php echo $row["name"];?></td>
-                                                                    <td><?php echo $row["team"];?></td>
-                                                                    <td><?php echo $row["guide"];?></td>
-                                                                    <td><?php echo $row["description"];?></td>
-                                                                    <td><?php echo $row["domain"];?></td>
-                                                                </tr>
-                                                                <?php }}?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane" id="skills" role="tabpanel">
-                                    <div class="card-body">
-                                        <div class="col-lg-9">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S.NO</th>
-                                                                    <th>Skill</th>
-                                                                    <th>Skill Domain</th>
-                                                                    <th>Skill Level</th>
-                                                                    <th>Any Domain Specific Designation</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-
-
-                                                                    $sql = "SELECT * FROM student_skill WHERE htno='$htno';";
-
-                                                                    $result = $connect->query($sql);
-                                                                    $i=1;
-                                                                    if ($result->num_rows > 0) {
-
-                                                                        while($row = $result->fetch_assoc()) {
-
-                                                                ?>
-                                                                <tr>
-                                                                    <th><?php echo $i;$i++;?></th>
-                                                                    <td><?php echo $row["skill"];?></td>
-                                                                    <td><?php echo $row["skill_domain"];?></td>
-                                                                    <td><?php echo $row["skill_level"];?></td>
-                                                                    <td><?php echo $row["desig"];?></td>
-                                                                </tr>
-                                                                <?php }}?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+              
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-title">
@@ -602,6 +417,8 @@ if($sql){
                                             <?php
                                                 $year = array("I", "II", "III", "IV");
                                                 $sem = array("I", "II");
+                                                $final_marks=0;
+                                                $final_total=0;
                                                 for ($x = 0; $x < 4; $x++) {
                                                     for ($y = 0; $y < 2; $y++) {
                                             ?>
@@ -675,7 +492,11 @@ if($sql){
 
                                                     }
                                                 }
-
+                                                if($year_st == "I" && $sem_st == "I"){
+                                                  $total_marks = 1000;
+                                                }
+                                                $final_marks = $final_marks + $sum;
+                                                $final_total = $final_total + $total_marks;
                                                 if($total_marks!=0){
                                                     $percentage = round((($sum/$total_marks)*100),2);
 
@@ -691,128 +512,140 @@ if($sql){
                                             <?php
                                                 }
                                                 }}?>
+                                            <?php
+
+                                                if($final_total!=0){
+                                                    $per = round((($final_marks/$final_total)*100),2);
+                                            ?>
+                                            <tr>
+                                                <th>#</th>
+                                                <th colspan="3">TOTAL PERCENTAGE:</th>
+                                                <td><?php echo $per."%";?></td>
+                                                <td><?php echo $final_marks."/".$final_total;?></td>
+                                            </tr>
+                                            <?php }?>
                                         </tbody>
                                     </table>
                                     <?php }?>
                                     <?php if($batch >=16){?>
-                                      <table class="table">
-                                          <thead>
-                                              <tr>
-                                                  <th>YEAR</th>
-                                                  <th>SEM</th>
-                                                  <th>GRADE</th>
-                                                  <th>GPA</th>
-                                                  <th>NO OF BACKLOGS</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              <?php
-                                                  $year = array("I", "II", "III", "IV");
-                                                  $sem = array("I", "II");
-                                                  $agg_gradep = 0;
-                                                  $total_subj = 0;
-                                                  for ($x = 0; $x < 4; $x++) {
-                                                      for ($y = 0; $y < 2; $y++) {
-                                              ?>
-                                              <?php
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>YEAR</th>
+                                                <th>SEM</th>
+                                                <th>GRADE</th>
+                                                <th>GPA</th>
+                                                <th>NO OF BACKLOGS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $year = array("I", "II", "III", "IV");
+                                                $sem = array("I", "II");
+                                                $agg_gradep = 0;
+                                                $total_subj = 0;
+                                                for ($x = 0; $x < 4; $x++) {
+                                                    for ($y = 0; $y < 2; $y++) {
+                                            ?>
+                                            <?php
 
 
-                                                  $table_name = $batch."_results";
+                                                $table_name = $batch."_results";
 
-                                                  $year_st = $year[$x];
-                                                  $sem_st = $sem[$y];
+                                                $year_st = $year[$x];
+                                                $sem_st = $sem[$y];
 
 
-                                                  $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' and year = '$year_st' and sem = '$sem_st'";
+                                                $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' and year = '$year_st' and sem = '$sem_st'";
 
-                                                  $result_marks = $connect->query($sql_marks);
+                                                $result_marks = $connect->query($sql_marks);
 
-                                                  $sum = 0;
-                                                  $sum_credits = 0;
-                                                  $count = 0;
-                                                  $total_marks = 0;
-                                                  $grade_count = 0;
-                                                  $supply_count = 0;
+                                                $sum = 0;
+                                                $sum_credits = 0;
+                                                $count = 0;
+                                                $total_marks = 0;
+                                                $grade_count = 0;
+                                                $supply_count = 0;
 
-                                                  if ($result_marks->num_rows > 0) {
+                                                if ($result_marks->num_rows > 0) {
 
-                                                      while($row_marks = $result_marks->fetch_assoc()) {
-                                                          if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
-                                                              $subj = $row_marks["subj_code"];
-                                                              $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
+                                                    while($row_marks = $result_marks->fetch_assoc()) {
+                                                        if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
+                                                            $subj = $row_marks["subj_code"];
+                                                            $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
 
-                                                              $result_supply = $connect->query($sql_supply);
+                                                            $result_supply = $connect->query($sql_supply);
 
-                                                              $row_supply = $result_supply->fetch_assoc();
+                                                            $row_supply = $result_supply->fetch_assoc();
 
-                                                              if(isset($row_supply)){
-                                                                  $grade = $row_supply["grade"];
-                                                                  $grade_points = $row_supply["grade_points"];
-                                                                  $grade_count++;
-                                                                  $sum = $sum+$grade_points;
-                                                              }
-                                                              else{
-                                                                  $grade = $row_marks["grade"];
-                                                                  $grade_points = $row_marks["grade_points"];
-                                                                  $grade_count++;
-                                                                  $sum = $sum+$grade_points;
-                                                                  $supply_count++;
+                                                            if(isset($row_supply)){
+                                                                $grade = $row_supply["grade"];
+                                                                $grade_points = $row_supply["grade_points"];
+                                                                $grade_count++;
+                                                                $sum = $sum+$grade_points;
+                                                            }
+                                                            else{
+                                                                $grade = $row_marks["grade"];
+                                                                $grade_points = $row_marks["grade_points"];
+                                                                $grade_count++;
+                                                                $sum = $sum+$grade_points;
+                                                                $supply_count++;
 
-                                                              }
+                                                            }
 
-                                                          }
-                                                          else{
-                                                              $grade = $row_marks["grade"];
-                                                              $grade_points = $row_marks["grade_points"];
-                                                              $grade_count++;
-                                                              $sum = $sum+$grade_points;
-                                                          }
+                                                        }
+                                                        else{
+                                                            $grade = $row_marks["grade"];
+                                                            $grade_points = $row_marks["grade_points"];
+                                                            $grade_count++;
+                                                            $sum = $sum+$grade_points;
+                                                        }
 
-                                                      }
-                                                  }
+                                                    }
+                                                }
 
-                                              if($grade_count != 0){
-                                                  $agg_gradep = $agg_gradep + $sum;
-                                                  $total_subj = $total_subj + $grade_count;
-                                                  $gpa = ceil($sum/$grade_count);
-                                                  $gpa_ac = round($sum/$grade_count,2);
-                                                  if($gpa == 10){
-                                                      $grade = "O";
-                                                  }
-                                                  else if($gpa == 9){
-                                                      $grade = "A+";
-                                                  }
-                                                      else if($gpa == 8){
-                                                      $grade = "A";
-                                                  }
-                                                      else if($gpa == 7){
-                                                      $grade = "B+";
-                                                  }
-                                                      else if($gpa ==6){
-                                                      $grade = "B";
-                                                  }
-                                                      else if($gpa ==5){
-                                                      $grade = "C";
-                                                  }
-                                                      else if($gpa <= 4){
-                                                      $grade = "F";
-                                                  }
-                                              ?>
-                                              <tr>
-                                                  <td><?php echo $year_st?></td>
-                                                  <td><?php echo $sem_st?></td>
-                                                  <td><?php echo $grade;?></td>
-                                                  <td><?php echo $gpa_ac;?></td>
-                                                  <td><?php echo $supply_count;?></td>
-                                              </tr>
-                                              <?php }}}?>
-                                              <tr>
-                                                  <th colspan="3">GRADE POINT AVERAGE:</th>
-                                                  <td><?php echo round($agg_gradep/$total_subj,2);?></td>
-                                                  <td><?php echo " of ".$total_subj." subjects";?></td>
-                                              </tr>
-                                          </tbody>
-                                      </table>
+                                            if($grade_count != 0){
+                                                $agg_gradep = $agg_gradep + $sum;
+                                                $total_subj = $total_subj + $grade_count;
+                                                $gpa = ceil($sum/$grade_count);
+                                                $gpa_ac = round($sum/$grade_count,2);
+                                                if($gpa == 10){
+                                                    $grade = "O";
+                                                }
+                                                else if($gpa == 9){
+                                                    $grade = "A+";
+                                                }
+                                                    else if($gpa == 8){
+                                                    $grade = "A";
+                                                }
+                                                    else if($gpa == 7){
+                                                    $grade = "B+";
+                                                }
+                                                    else if($gpa ==6){
+                                                    $grade = "B";
+                                                }
+                                                    else if($gpa ==5){
+                                                    $grade = "C";
+                                                }
+                                                    else if($gpa <= 4){
+                                                    $grade = "F";
+                                                }
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $year_st?></td>
+                                                <td><?php echo $sem_st?></td>
+                                                <td><?php echo $grade;?></td>
+                                                <td><?php echo $gpa_ac;?></td>
+                                                <td><?php echo $supply_count;?></td>
+                                            </tr>
+                                            <?php }}}?>
+                                            <tr>
+                                                <th colspan="3">GRADE POINT AVERAGE:</th>
+                                                <td><?php echo round($agg_gradep/$total_subj,2);?></td>
+                                                <td><?php echo " of ".$total_subj." subjects";?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <?php }?>
                                 </div>
                             </div>
