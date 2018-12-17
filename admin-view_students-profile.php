@@ -660,6 +660,8 @@
                                             <?php
                                                 $year = array("I", "II", "III", "IV");
                                                 $sem = array("I", "II");
+                                                $agg_gradep = 0;
+                                                $total_subj = 0;
                                                 for ($x = 0; $x < 4; $x++) {
                                                     for ($y = 0; $y < 2; $y++) {
                                             ?>
@@ -670,6 +672,7 @@
 
                                                 $year_st = $year[$x];
                                                 $sem_st = $sem[$y];
+
 
                                                 $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' and year = '$year_st' and sem = '$sem_st'";
 
@@ -718,8 +721,12 @@
 
                                                     }
                                                 }
+
                                             if($grade_count != 0){
+                                                $agg_gradep = $agg_gradep + $sum;
+                                                $total_subj = $total_subj + $grade_count;
                                                 $gpa = ceil($sum/$grade_count);
+                                                $gpa_ac = round($sum/$grade_count,2);
                                                 if($gpa == 10){
                                                     $grade = "O";
                                                 }
@@ -746,15 +753,14 @@
                                                 <td><?php echo $year_st?></td>
                                                 <td><?php echo $sem_st?></td>
                                                 <td><?php echo $grade;?></td>
-                                                <td><?php echo $gpa;?></td>
+                                                <td><?php echo $gpa_ac;?></td>
                                                 <td><?php echo $supply_count;?></td>
                                             </tr>
                                             <?php }}}?>
                                             <tr>
-                                                <th>#</th>
                                                 <th colspan="3">GRADE POINT AVERAGE:</th>
-                                                <td><?php echo $gpa;?></td>
-                                                <td><?php echo $gpa;?></td>
+                                                <td><?php echo round($agg_gradep/$total_subj,2);?></td>
+                                                <td><?php echo " of ".$total_subj." subjects";?></td>
                                             </tr>
                                         </tbody>
                                     </table>

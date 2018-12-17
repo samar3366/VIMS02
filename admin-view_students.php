@@ -220,7 +220,7 @@
 
 
                                                 include('connection.php');
-                                                $sql = "SELECT * FROM student_details;";
+                                                $sql = "SELECT * FROM student_details ORDER BY batch DESC;";
 
                                                 $result = $connect->query($sql);
 

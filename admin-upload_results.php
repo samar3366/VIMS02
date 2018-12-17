@@ -95,7 +95,7 @@ if(isset($_POST['submit'])){
 
 
                       if($sub_name != "" && $sub_name != "Subject Name"){
-                        $qry1 = "INSERT INTO 16_results (htno, subj_code, subj_name, grade, grade_points, branch, year, sem, type, batch) VALUES ('$htno','$sub_code','$sub_name','$grade','$grade_points','$branch','$year','$sem','$type'.'$bat')";
+                        $qry1 = "INSERT INTO 16_results (htno, subj_code, subj_name, grade, grade_points, branch, year, sem, type, batch) VALUES ('$htno','$sub_code','$sub_name','$grade','$grade_points','$branch','$year','$sem','$type','$bat')";
                         $res1 = mysqli_query($connect,$qry1);
                       }
                   }

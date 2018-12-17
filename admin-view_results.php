@@ -41,7 +41,7 @@
     <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-    
+
 </head>
 
 <body class="fix-header fix-sidebar">
@@ -419,12 +419,12 @@
                                                             $val = $result1->fetch_assoc();
 
                                                             if(isset($val)){
-                                                                $grade = $row["grade"]."*";
-                                                                $grade_points = $row["grade_points"]."*";
+                                                                $grade = $val["grade"]."*";
+                                                                $grade_points = $val["grade_points"]."*";
                                                             }
                                                             else{
-                                                                $grade_points = 0;
                                                                 $grade = "Backlog";
+                                                                $grade_points = 0;
                                                             }
 
                                                         }

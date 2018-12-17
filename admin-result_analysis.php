@@ -497,6 +497,7 @@
 
 
                                                 $gpa = ceil($sum/$grade_count);
+                                                $gpa_ac = round($sum/$grade_count,2);
                                                 if($gpa == 10){
                                                     $grade = "O";
                                                 }
@@ -522,7 +523,7 @@
                                             <tr>
                                                 <td><?php echo $htno;?></td>
                                                 <td><?php echo $grade;?></td>
-                                                <td><?php echo $gpa;?></td>
+                                                <td><?php echo $gpa_ac;?></td>
                                                 <td><?php echo $supply_count;?></td>
                                             </tr>
                                             <?php }}}?>

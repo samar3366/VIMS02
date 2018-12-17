@@ -428,7 +428,7 @@
 
 
 
-                                                $sql = "SELECT count(*) as count from 16_results WHERE year = '$year' and sem = '$sem' and branch = '$branch' and subj_name = '$subj'";
+                                                $sql = "SELECT count(*) as count from 16_results WHERE year = '$year' and sem = '$sem' and branch = '$branch' and subj_name = '$subj' and type = 0";
 
                                                 $result = $connect->query($sql);
                                                 $row = $result->fetch_assoc();
