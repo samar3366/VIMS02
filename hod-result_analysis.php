@@ -183,7 +183,7 @@ if($sql){
                                         <div class="form-group">
                                             <label>Batch</label>
                                             <select class="form-control" name="batch">
-								                
+
 												<?php
                                                     $sql = "SELECT DISTINCT batch FROM student_details ORDER BY batch DESC;";
 
@@ -393,121 +393,122 @@ if($sql){
                                 <h4 class="card-title">ANALYSIS of Students</h4>
                                 <h6 class="card-subtitle">Total Results of the Student</h6>
                                 <div class="table-responsive m-t-40">
-                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>HTNO</th>
-                                                <th>GRADE</th>
-                                                <th>GPA</th>
-                                                <th>NO OF BACKLOGS</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>HTNO</th>
-                                                <th>GRADE</th>
-                                                <th>GPA</th>
-                                                <th>NO OF BACKLOGS</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <?php
+                                  <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                      <thead>
+                                          <tr>
+                                              <th>HTNO</th>
+                                              <th>GRADE</th>
+                                              <th>GPA</th>
+                                              <th>NO OF BACKLOGS</th>
+                                          </tr>
+                                      </thead>
+                                      <tfoot>
+                                          <tr>
+                                              <th>HTNO</th>
+                                              <th>GRADE</th>
+                                              <th>GPA</th>
+                                              <th>NO OF BACKLOGS</th>
+                                          </tr>
+                                      </tfoot>
+                                      <tbody>
+                                          <?php
 
-                                                $branch = $_POST["branch"];
-                                                $year = $_POST["year"];
-                                                $sem = $_POST["sem"];
-                                                $batch = $_POST["batch"];
-                                                //$table_name = $_POST["batch"]."_results";
+                                              $branch = $_POST["branch"];
+                                              $year = $_POST["year"];
+                                              $sem = $_POST["sem"];
+                                              $batch = $_POST["batch"];
+                                              //$table_name = $_POST["batch"]."_results";
 
-                                                include('connection.php');
-                                                $sql_htno = "SELECT DISTINCT htno FROM student_details WHERE batch = '$batch' and branch = '$branch'";
+                                              include('connection.php');
+                                              $sql_htno = "SELECT DISTINCT htno FROM student_details WHERE batch = '$batch' and branch = '$branch'";
 
-                                                $result_htno = $connect->query($sql_htno);
-                                                if ($result_htno->num_rows > 0) {
+                                              $result_htno = $connect->query($sql_htno);
+                                              if ($result_htno->num_rows > 0) {
 
-                                                while($row_htno = $result_htno->fetch_assoc()) {
+                                              while($row_htno = $result_htno->fetch_assoc()) {
 
-                                                $htno = $row_htno["htno"];
-                                                $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' AND year = '$year' AND sem = '$sem'";
+                                              $htno = $row_htno["htno"];
+                                              $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' AND year = '$year' AND sem = '$sem'";
 
-                                                $result_marks = $connect->query($sql_marks);
+                                              $result_marks = $connect->query($sql_marks);
 
-                                                $sum = 0;
-                                                $sum_credits = 0;
-                                                $count = 0;
-                                                $total_marks = 0;
-                                                $grade_count = 0;
-                                                $supply_count = 0;
+                                              $sum = 0;
+                                              $sum_credits = 0;
+                                              $count = 0;
+                                              $total_marks = 0;
+                                              $grade_count = 0;
+                                              $supply_count = 0;
 
-                                                if ($result_marks->num_rows > 0) {
+                                              if ($result_marks->num_rows > 0) {
 
-                                                    while($row_marks = $result_marks->fetch_assoc()) {
-                                                        if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
-                                                            $subj = $row_marks["subj_code"];
-                                                            $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
+                                                  while($row_marks = $result_marks->fetch_assoc()) {
+                                                      if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
+                                                          $subj = $row_marks["subj_code"];
+                                                          $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
 
-                                                            $result_supply = $connect->query($sql_supply);
+                                                          $result_supply = $connect->query($sql_supply);
 
-                                                            $row_supply = $result_supply->fetch_assoc();
+                                                          $row_supply = $result_supply->fetch_assoc();
 
-                                                            if(isset($row_supply)){
-                                                                $grade = $row_supply["grade"];
-                                                                $grade_points = $row_supply["grade_points"];
-                                                                $grade_count++;
-                                                                $sum = $sum+$grade_points;
-                                                            }
-                                                            else{
-                                                                $grade = $row_marks["grade"];
-                                                                $grade_points = $row_marks["grade_points"];
-                                                                $grade_count++;
-                                                                $sum = $sum+$grade_points;
-                                                                $supply_count++;
+                                                          if(isset($row_supply)){
+                                                              $grade = $row_supply["grade"];
+                                                              $grade_points = $row_supply["grade_points"];
+                                                              $grade_count++;
+                                                              $sum = $sum+$grade_points;
+                                                          }
+                                                          else{
+                                                              $grade = $row_marks["grade"];
+                                                              $grade_points = $row_marks["grade_points"];
+                                                              $grade_count++;
+                                                              $sum = $sum+$grade_points;
+                                                              $supply_count++;
 
-                                                            }
+                                                          }
 
-                                                        }
-                                                        else{
-                                                            $grade = $row_marks["grade"];
-                                                            $grade_points = $row_marks["grade_points"];
-                                                            $grade_count++;
-                                                            $sum = $sum+$grade_points;
-                                                        }
+                                                      }
+                                                      else{
+                                                          $grade = $row_marks["grade"];
+                                                          $grade_points = $row_marks["grade_points"];
+                                                          $grade_count++;
+                                                          $sum = $sum+$grade_points;
+                                                      }
 
-                                                    }
+                                                  }
 
 
-                                                $gpa = ceil($sum/$grade_count);
-                                                if($gpa == 10){
-                                                    $grade = "O";
-                                                }
-                                                else if($gpa == 9){
-                                                    $grade = "A+";
-                                                }
-                                                    else if($gpa == 8){
-                                                    $grade = "A";
-                                                }
-                                                    else if($gpa == 7){
-                                                    $grade = "B+";
-                                                }
-                                                    else if($gpa ==6){
-                                                    $grade = "B";
-                                                }
-                                                    else if($gpa ==5){
-                                                    $grade = "C";
-                                                }
-                                                    else if($gpa <= 4){
-                                                    $grade = "F";
-                                                }
-                                            ?>
-                                            <tr>
-                                                <td><?php echo $htno;?></td>
-                                                <td><?php echo $grade;?></td>
-                                                <td><?php echo $gpa;?></td>
-                                                <td><?php echo $supply_count;?></td>
-                                            </tr>
-                                            <?php }}}?>
-                                        </tbody>
-                                    </table>
+                                              $gpa = ceil($sum/$grade_count);
+                                              $gpa_ac = round($sum/$grade_count,2);
+                                              if($gpa == 10){
+                                                  $grade = "O";
+                                              }
+                                              else if($gpa == 9){
+                                                  $grade = "A+";
+                                              }
+                                                  else if($gpa == 8){
+                                                  $grade = "A";
+                                              }
+                                                  else if($gpa == 7){
+                                                  $grade = "B+";
+                                              }
+                                                  else if($gpa ==6){
+                                                  $grade = "B";
+                                              }
+                                                  else if($gpa ==5){
+                                                  $grade = "C";
+                                              }
+                                                  else if($gpa <= 4){
+                                                  $grade = "F";
+                                              }
+                                          ?>
+                                          <tr>
+                                              <td><?php echo $htno;?></td>
+                                              <td><?php echo $grade;?></td>
+                                              <td><?php echo $gpa_ac;?></td>
+                                              <td><?php echo $supply_count;?></td>
+                                          </tr>
+                                          <?php }}}?>
+                                      </tbody>
+                                  </table>
                                 </div>
                             </div>
                         </div>

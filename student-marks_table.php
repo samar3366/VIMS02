@@ -15,6 +15,7 @@
     $result = $connect->query($sql);
     $row = $result->fetch_assoc();
     $batch = $row["batch"];
+    $branch = $row["branch"];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -297,7 +298,7 @@
                                                 $table_name = $batch."_results";
 
                                                 //include('connection.php');
-                                                $sql = "SELECT * FROM $table_name WHERE htno LIKE '$batch%' AND type = '0' AND branch = '$branch' and htno = '$htno' ;";
+                                                $sql = "SELECT * FROM $table_name WHERE batch = '$batch' AND type = '0' AND branch = '$branch' and htno = '$htno' ;";
 
                                                 $result = $connect->query($sql);
 

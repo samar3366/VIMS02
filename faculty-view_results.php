@@ -410,8 +410,8 @@
                                                             $val = $result1->fetch_assoc();
 
                                                             if(isset($val)){
-                                                                $grade = $row["grade"]."*";
-                                                                $grade_points = $row["grade_points"]."*";
+                                                                $grade = $val["grade"]."*";
+                                                                $grade_points = $val["grade_points"]."*";
                                                             }
                                                             else{
                                                                 $grade_points = 0;

@@ -680,112 +680,124 @@
                                     </table>
                                     <?php }?>
                                     <?php if($batch >=16){?>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>YEAR</th>
-                                                <th>SEM</th>
-                                                <th>GRADE</th>
-                                                <th>GPA</th>
-                                                <th>NO OF BACKLOGS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                                $year = array("I", "II", "III", "IV");
-                                                $sem = array("I", "II");
-                                                for ($x = 0; $x < 4; $x++) {
-                                                    for ($y = 0; $y < 2; $y++) {
-                                            ?>
-                                            <?php
+                                      <table class="table">
+                                          <thead>
+                                              <tr>
+                                                  <th>YEAR</th>
+                                                  <th>SEM</th>
+                                                  <th>GRADE</th>
+                                                  <th>GPA</th>
+                                                  <th>NO OF BACKLOGS</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              <?php
+                                                  $year = array("I", "II", "III", "IV");
+                                                  $sem = array("I", "II");
+                                                  $agg_gradep = 0;
+                                                  $total_subj = 0;
+                                                  for ($x = 0; $x < 4; $x++) {
+                                                      for ($y = 0; $y < 2; $y++) {
+                                              ?>
+                                              <?php
 
 
-                                                $table_name = $batch."_results";
+                                                  $table_name = $batch."_results";
 
-                                                $year_st = $year[$x];
-                                                $sem_st = $sem[$y];
+                                                  $year_st = $year[$x];
+                                                  $sem_st = $sem[$y];
 
-                                                $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' and year = '$year_st' and sem = '$sem_st'";
 
-                                                $result_marks = $connect->query($sql_marks);
+                                                  $sql_marks = "SELECT * FROM 16_results WHERE type = 0 and htno = '$htno' and year = '$year_st' and sem = '$sem_st'";
 
-                                                $sum = 0;
-                                                $sum_credits = 0;
-                                                $count = 0;
-                                                $total_marks = 0;
-                                                $grade_count = 0;
-                                                $supply_count = 0;
+                                                  $result_marks = $connect->query($sql_marks);
 
-                                                if ($result_marks->num_rows > 0) {
+                                                  $sum = 0;
+                                                  $sum_credits = 0;
+                                                  $count = 0;
+                                                  $total_marks = 0;
+                                                  $grade_count = 0;
+                                                  $supply_count = 0;
 
-                                                    while($row_marks = $result_marks->fetch_assoc()) {
-                                                        if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
-                                                            $subj = $row_marks["subj_code"];
-                                                            $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
+                                                  if ($result_marks->num_rows > 0) {
 
-                                                            $result_supply = $connect->query($sql_supply);
+                                                      while($row_marks = $result_marks->fetch_assoc()) {
+                                                          if($row_marks["type"] == 0 && $row_marks["grade_points"] == 0){
+                                                              $subj = $row_marks["subj_code"];
+                                                              $sql_supply = "SELECT * FROM 16_results WHERE type = '1' and grade_points > 0 and htno = '$htno' and subj_code = '$subj';";
 
-                                                            $row_supply = $result_supply->fetch_assoc();
+                                                              $result_supply = $connect->query($sql_supply);
 
-                                                            if(isset($row_supply)){
-                                                                $grade = $row_supply["grade"];
-                                                                $grade_points = $row_supply["grade_points"];
-                                                                $grade_count++;
-                                                                $sum = $sum+$grade_points;
-                                                            }
-                                                            else{
-                                                                $grade = $row_marks["grade"];
-                                                                $grade_points = $row_marks["grade_points"];
-                                                                $grade_count++;
-                                                                $sum = $sum+$grade_points;
-                                                                $supply_count++;
+                                                              $row_supply = $result_supply->fetch_assoc();
 
-                                                            }
+                                                              if(isset($row_supply)){
+                                                                  $grade = $row_supply["grade"];
+                                                                  $grade_points = $row_supply["grade_points"];
+                                                                  $grade_count++;
+                                                                  $sum = $sum+$grade_points;
+                                                              }
+                                                              else{
+                                                                  $grade = $row_marks["grade"];
+                                                                  $grade_points = $row_marks["grade_points"];
+                                                                  $grade_count++;
+                                                                  $sum = $sum+$grade_points;
+                                                                  $supply_count++;
 
-                                                        }
-                                                        else{
-                                                            $grade = $row_marks["grade"];
-                                                            $grade_points = $row_marks["grade_points"];
-                                                            $grade_count++;
-                                                            $sum = $sum+$grade_points;
-                                                        }
+                                                              }
 
-                                                    }
-                                                }
-                                            if($grade_count != 0){
-                                                $gpa = ceil($sum/$grade_count);
-                                                if($gpa == 10){
-                                                    $grade = "O";
-                                                }
-                                                else if($gpa == 9){
-                                                    $grade = "A+";
-                                                }
-                                                    else if($gpa == 8){
-                                                    $grade = "A";
-                                                }
-                                                    else if($gpa == 7){
-                                                    $grade = "B+";
-                                                }
-                                                    else if($gpa ==6){
-                                                    $grade = "B";
-                                                }
-                                                    else if($gpa ==5){
-                                                    $grade = "C";
-                                                }
-                                                    else if($gpa <= 4){
-                                                    $grade = "F";
-                                                }
-                                            ?>
-                                            <tr>
-                                                <td><?php echo $year_st?></td>
-                                                <td><?php echo $sem_st?></td>
-                                                <td><?php echo $grade;?></td>
-                                                <td><?php echo $gpa;?></td>
-                                                <td><?php echo $supply_count;?></td>
-                                            </tr>
-                                            <?php }}}?>
-                                        </tbody>
-                                    </table>
+                                                          }
+                                                          else{
+                                                              $grade = $row_marks["grade"];
+                                                              $grade_points = $row_marks["grade_points"];
+                                                              $grade_count++;
+                                                              $sum = $sum+$grade_points;
+                                                          }
+
+                                                      }
+                                                  }
+
+                                              if($grade_count != 0){
+                                                  $agg_gradep = $agg_gradep + $sum;
+                                                  $total_subj = $total_subj + $grade_count;
+                                                  $gpa = ceil($sum/$grade_count);
+                                                  $gpa_ac = round($sum/$grade_count,2);
+                                                  if($gpa == 10){
+                                                      $grade = "O";
+                                                  }
+                                                  else if($gpa == 9){
+                                                      $grade = "A+";
+                                                  }
+                                                      else if($gpa == 8){
+                                                      $grade = "A";
+                                                  }
+                                                      else if($gpa == 7){
+                                                      $grade = "B+";
+                                                  }
+                                                      else if($gpa ==6){
+                                                      $grade = "B";
+                                                  }
+                                                      else if($gpa ==5){
+                                                      $grade = "C";
+                                                  }
+                                                      else if($gpa <= 4){
+                                                      $grade = "F";
+                                                  }
+                                              ?>
+                                              <tr>
+                                                  <td><?php echo $year_st?></td>
+                                                  <td><?php echo $sem_st?></td>
+                                                  <td><?php echo $grade;?></td>
+                                                  <td><?php echo $gpa_ac;?></td>
+                                                  <td><?php echo $supply_count;?></td>
+                                              </tr>
+                                              <?php }}}?>
+                                              <tr>
+                                                  <th colspan="3">GRADE POINT AVERAGE:</th>
+                                                  <td><?php echo round($agg_gradep/$total_subj,2);?></td>
+                                                  <td><?php echo " of ".$total_subj." subjects";?></td>
+                                              </tr>
+                                          </tbody>
+                                      </table>
                                     <?php }?>
                                 </div>
                             </div>

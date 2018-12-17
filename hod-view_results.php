@@ -184,7 +184,7 @@ if($sql){
                                         <div class="form-group">
                                             <label>Batch</label>
                                             <select class="form-control" name="batch">
-								                
+
 												<?php
                                                     $sql = "SELECT DISTINCT batch FROM student_details ORDER BY batch DESC;";
 
@@ -402,8 +402,8 @@ if($sql){
                                                             $val = $result1->fetch_assoc();
 
                                                             if(isset($val)){
-                                                                $grade = $row["grade"]."*";
-                                                                $grade_points = $row["grade_points"]."*";
+                                                                $grade = $val["grade"]."*";
+                                                                $grade_points = $val["grade_points"]."*";
                                                             }
                                                             else{
                                                                 $grade_points = 0;
