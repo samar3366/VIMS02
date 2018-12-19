@@ -21,8 +21,16 @@
     $search=$y;
 
     //get the latest attendance table
-    $q="select table_name from information_schema.tables where table_schema='vims' and table_name like '%$search%' and table_name like '%$branch%' order by create_time desc";
+    $q="select table_name from information_schema.tables where table_schema='vims02' and table_name like '%$search%' and table_name like '%$branch%' order by create_time desc";
     $r = $connect->query($q);
+
+		$c=mysqli_num_rows($r);
+    //if no attendance show an error message
+		if($c>0){
+      header("Location: student-view_att2.php");
+		}
+		//if no attendance show an error message
+
     $row = $r->fetch_assoc();
     $table_name=$row["table_name"];
 
@@ -33,21 +41,21 @@
 include('connection.php');
 ini_set('max_execution_time', 1000);
 //variables declaration
-$max=$min=0;
-$snid=$snhno=$snsno='';
-$tid=$thno=$tsno=0;
-$id=$hno=$sno='';
-$sn1=$sn2=$sn3=$sn4=$sn5=$sn6=$sn7=$sn8=$sn9=$sn10=$sn11=$sn12='';
-$s1=$s2=$s3=$s4=$s5=$s6=$s7=$s8=$s9=$s10=$s11=$s12=0;
-$ts1=$ts2=$ts3=$ts4=$ts5=$ts6=$ts7=$ts8=$ts9=$ts10=$ts11=$ts12=0;
-$fspell=0;
-$tospell=0;
-//total no of classes of all subjects
-$t=0;
-//total no of classes students attended
-$st=0;
-//count avg no of classes attended by a student of one particular subject
-$s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count=$s10count=$s11count=$s12count=0;
+// $max=$min=0;
+// $snid=$snhno=$snsno='';
+// $tid=$thno=$tsno=0;
+// $id=$hno=$sno='';
+// $sn1=$sn2=$sn3=$sn4=$sn5=$sn6=$sn7=$sn8=$sn9=$sn10=$sn11=$sn12='';
+// $s1=$s2=$s3=$s4=$s5=$s6=$s7=$s8=$s9=$s10=$s11=$s12=0;
+// $ts1=$ts2=$ts3=$ts4=$ts5=$ts6=$ts7=$ts8=$ts9=$ts10=$ts11=$ts12=0;
+// $fspell=0;
+// $tospell=0;
+// //total no of classes of all subjects
+// $t=0;
+// //total no of classes students attended
+// $st=0;
+// //count avg no of classes attended by a student of one particular subject
+// $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count=$s10count=$s11count=$s12count=0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +77,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "student-view_att2.php");
+        history.replaceState("", "", "student-view_att.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -187,7 +195,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">Marks Table</h3> </div>
+                    <h3 class="text-primary">Attendance</h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="student-marks_table.php">View Details</a></li>
@@ -203,200 +211,26 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Attendance</h4>
-                                <h6 class="card-subtitle">Total Results of all Students</h6>
-                                <div class="table-responsive m-t-40">
-                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                        <?php
-                       //get max and min spells
-                       $q="select max(spell) as max, min(spell) as min from `$table_name`";
-                       $r=mysqli_query($connect,$q);
-                       if($r){
-                         while($row=mysqli_fetch_array($r)){
-                           $max=$row['max'];
-                           $min=$row['min'];
-                         }
-                       }
-
-                       //get total no of Students
-                       $q1="select count(id) as students from `$table_name` where hno not in('SubjectCode','HTNO/TotalClass') and spell=1;";
-                       $r1=mysqli_query($connect,$q1);
-                       if($r1){
-                         while($row=mysqli_fetch_array($r)){
-                           $students=$row['students'];
-                         }
-                       }
-
-                       //get subject codes
-                       $qsub="select * from `$table_name` where hno in('SubjectCode')";
-                       $res=mysqli_query($connect,$qsub);
-                       if($res){
-                         while($row=mysqli_fetch_array($res)){
-                            $snid=$row['id'];
-                            $snsno=$row['sno'];
-                            $snhno=$row['hno'];
-                            $sn1=$row['s1'];
-                            $sn2=$row['s2'];
-                            $sn3=$row['s3'];
-                            $sn4=$row['s4'];
-                            $sn5=$row['s5'];
-                            $sn6=$row['s6'];
-                            $sn7=$row['s7'];
-                            $sn8=$row['s8'];
-                            $sn9=$row['s9'];
-                            $sn10=$row['s10'];
-                            $sn11=$row['s11'];
-                            $sn12=$row['s12'];
-                           break;
-                         }
-                       }
-                          //pspell is all spells
-                          $qsub="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5='' then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end) as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8='' then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11='' then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end) as s12 from `$table_name` where spell between '$min' and '$max' and hno  in ('HTNO/TotalClass') group by hno";
-                          $res=mysqli_query($connect,$qsub);
-                          if($res){
-                            while($row=mysqli_fetch_array($res)){
-                               $tid=$row['id'];
-                               $tsno=$row['sno'];
-                               $thno=$row['hno'];
-                               $ts1=$row['s1'];
-                               $ts2=$row['s2'];
-                               $ts3=$row['s3'];
-                               $ts4=$row['s4'];
-                               $ts5=$row['s5'];
-                               $ts6=$row['s6'];
-                               $ts7=$row['s7'];
-                               $ts8=$row['s8'];
-                               $ts9=$row['s9'];
-                               $ts10=$row['s10'];
-                               $ts11=$row['s11'];
-                               $ts12=$row['s12'];
-                            }
-                          }
-                          //total no of classes of all subjects
-                          if($ts1>=0) $t=$t+$ts1;
-                          if($ts2>=0) $t=$t+$ts2;
-                          if($ts3>=0) $t=$t+$ts3;
-                          if($ts4>=0) $t=$t+$ts4;
-                          if($ts5>=0) $t=$t+$ts5;
-                          if($ts6>=0) $t=$t+$ts6;
-                          if($ts7>=0) $t=$t+$ts7;
-                          if($ts8>=0) $t=$t+$ts8;
-                          if($ts9>=0) $t=$t+$ts9;
-                          if($ts10>=0) $t=$t+$ts10;
-                          if($ts11>=0) $t=$t+$ts11;
-                          if($ts12>=0) $t=$t+$ts12;
-
-                          //now print subject codes and total classes
-                          //echo "<table class='table table-striped table-hover'>";
-                          echo "<thead><tr>";
-                          echo "<th>".$snsno."</th>";
-                          echo "<th>".$snhno."</th>";
-                          if(!empty($sn1)) echo "<th>".$sn1."</th>";
-                          if(!empty($sn2)) echo "<th>".$sn2."</th>";
-                          if(!empty($sn3)) echo "<th>".$sn3."</th>";
-                          if(!empty($sn4)) echo "<th>".$sn4."</th>";
-                          if(!empty($sn5)) echo "<th>".$sn5."</th>";
-                          if(!empty($sn6)) echo "<th>".$sn6."</th>";
-                          if(!empty($sn7)) echo "<th>".$sn7."</th>";
-                          if(!empty($sn8)) echo "<th>".$sn8."</th>";
-                          if(!empty($sn9)) echo "<th>".$sn9."</th>";
-                          if(!empty($sn10)) echo "<th>".$sn10."</th>";
-                          if(!empty($sn11)) echo "<th>".$sn11."</th>";
-                          if(!empty($sn12)) echo "<th>".$sn12."</th>";
-                          echo "<th>Total No.of Classes</th>";
-                          echo "<th>Percentage</th>";
-                          echo "</tr></thead>";
-                          //print total classes
-                          echo "<thead><tr>";
-                          echo "<th>".$tsno."</th>";
-                          echo "<th>".$thno."</th>";
-                          if($ts1>=0) echo "<th>".$ts1."</th>";
-                          if($ts2>=0) echo "<th>".$ts2."</th>";
-                          if($ts3>=0) echo "<th>".$ts3."</th>";
-                          if($ts4>=0) echo "<th>".$ts4."</th>";
-                          if($ts5>=0) echo "<th>".$ts5."</th>";
-                          if($ts6>=0) echo "<th>".$ts6."</th>";
-                          if($ts7>=0) echo "<th>".$ts7."</th>";
-                          if($ts8>=0) echo "<th>".$ts8."</th>";
-                          if($ts9>=0) echo "<th>".$ts9."</th>";
-                          if($ts10>=0) echo "<th>".$ts10."</th>";
-                          if($ts11>=0) echo "<th>".$ts11."</th>";
-                          if($ts12>=0) echo "<th>".$ts12."</th>";
-                          echo "<th>".$t."</th>";
-                          echo "<th>100%</th>";
-                          echo "</tr></thead>";
-
-                          //print no of classes attended
-                          $qsub="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5='' then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end) as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8='' then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11='' then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end) as s12 from `$table_name` where spell between '$min' and '$max' and hno in('$htno') and hno not in ('HTNO/TotalClass','SubjectCode') group by hno";
-                          $res=mysqli_query($connect,$qsub);
-                          if($res){
-                            while($row=mysqli_fetch_array($res)){
-                             $st=0;
-                             echo "<tr>";
-                             echo "<td>".$row['sno']."</td>";
-                             echo "<td>".$row['hno']."</td>";
-                             if($row['s1']>=0){
-                               echo "<td>".$row['s1']."</td>";
-                               $st=$st+$row['s1'];
-                             }
-                             if($row['s2']>=0){
-                               echo "<td>".$row['s2']."</td>";
-                               $st=$st+$row['s2'];
-                             }
-                             if($row['s3']>=0){
-                               echo "<td>".$row['s3']."</td>";
-                               $st=$st+$row['s3'];
-                             }
-                             if($row['s4']>=0){
-                               echo "<td>".$row['s4']."</td>";
-                               $st=$st+$row['s4'];
-                             }
-                             if($row['s5']>=0){
-                               echo "<td>".$row['s5']."</td>";
-                               $st=$st+$row['s5'];
-                             }
-                             if($row['s6']>=0){
-                               echo "<td>".$row['s6']."</td>";
-                               $st=$st+$row['s6'];
-                             }
-                             if($row['s7']>=0){
-                               echo "<td>".$row['s7']."</td>";
-                               $st=$st+$row['s7'];
-                             }
-                             if($row['s8']>=0){
-                               echo "<td>".$row['s8']."</td>";
-                               $st=$st+$row['s8'];
-                             }
-                             if($row['s9']>=0){
-                               echo "<td>".$row['s9']."</td>";
-                               $st=$st+$row['s9'];
-                             }
-                             if($row['s10']>=0){
-                               echo "<td>".$row['s10']."</td>";
-                               $st=$st+$row['s10'];
-                             }
-                             if($row['s11']>=0){
-                               echo "<td>".$row['s11']."</td>";
-                               $st=$st+$row['s11'];
-                             }
-                             if($row['s12']>=0){
-                               echo "<td>".$row['s12']."</td>";
-                               $st=$st+$row['s12'];
-                             }
-                              //calculate % of students Attendance
-                              $p=($st/$t)*100;
-                              $p=round($p,2);
-                              //now print % and classes attended
-                              echo "<td>".$st."</td>";
-                              echo "<td>".$p."</td>";
-                              echo "</tr>";
-                            }
-                          }
-                          //pspell is all spells
-
-                ?>
-                                    </table>
-                                </div>
+                                <!-- <h4 class="card-title">Attendance</h4> -->
+                                <!-- <h6 class="card-subtitle">Total Results of all Students</h6> -->
+																<div class="row">
+								                    <div class="col-lg-6">
+								                        <div class="card">
+								                            <div class="card-body">
+								                                <h4 class="card-title">Attendance Report</h4>
+								                                <div class="card-content">
+								                                    <div class="alert alert-success">
+								                                        <h4 class="alert-heading">Sorry</h4>
+								                                        <p>As of now we dont have any of the Attendance data matching with your rollno.
+																												once we get it we will let you know.</p>
+								                                        <hr>
+								                                        <p class="mb-0"></p>
+								                                    </div>
+								                                </div>
+								                            </div>
+								                        </div>
+								                    </div>
+																</div>
                             </div>
                         </div>
                     </div>
@@ -405,6 +239,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
             </div>
             <!-- End Container fluid  -->
             <!-- footer -->
+						<div class="push"></div>
             <footer class="footer"> © 2018 Vignan's Institute Management System Developed by CSE Dept &amp; Theme by <a href="https://colorlib.com">Colorlib</a></footer>
             <!-- End footer -->
         </div>

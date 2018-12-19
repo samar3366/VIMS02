@@ -217,7 +217,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                             <select class="form-control" name="attendance">
                                                 <option></option>
 								                <?php
-                                                $x="select table_name from information_schema.tables where table_schema='vims' and table_name like '%attendance%' and table_name like '%$facDept%' order by create_time desc";
+                                                $x="select table_name from information_schema.tables where table_schema='vims02' and table_name like '%attendance%' and table_name like '%$facDept%' order by create_time desc";
                                                 $res=mysqli_query($connect,$x);
                                                 if($res){
                                                     while($row=mysqli_fetch_array($res)){

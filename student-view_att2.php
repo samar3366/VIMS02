@@ -1,4 +1,5 @@
 <?php
+
     if(isset($_COOKIE['id']))
     {
         session_id($_COOKIE['id']);
@@ -8,28 +9,42 @@
         header("Location:student-login.php");
     }
     include('connection.php');
+    $dbrollno='';
     $htno = $_SESSION["htno"];
     $sql = "SELECT * FROM student_details WHERE htno = '$htno'";
     $result = $connect->query($sql);
     $row = $result->fetch_assoc();
     $batch = $row["batch"];
     $branch=strtolower($row["branch"]);
+    $section=strtolower($row["section"]);
+    $sec=$branch."_".$section;
     //checking
-    $htno;
+    $htno=ltrim($htno);
+    $htno=rtrim($htno);
+    $htno=strtoupper($htno);
     $x=substr($htno,0,2);
     $y='20'.$x;
     $search=$y;
 
+
     //get the latest attendance table
-    $q="select table_name from information_schema.tables where table_schema='vims' and table_name like '%$search%' and table_name like '%$branch%' order by create_time desc";
+    $q="select table_name from information_schema.tables where table_schema='vims02' and table_name like
+    '%$search%' and table_name like '%$sec%' order by create_time desc";
     $r = $connect->query($q);
+		$c=mysqli_num_rows($r);
+    //if no attendance show an error message
+		if($c==0){
+      header("Location: student-view_att.php");
+		}
+		//if no attendance show an error message
+
     $row = $r->fetch_assoc();
     $table_name=$row["table_name"];
 
 
-?>
+    // echo $dbrollno;
+    // if($dbrollno=$htno) echo "string";
 
-<?php
 include('connection.php');
 ini_set('max_execution_time', 1000);
 //variables declaration
@@ -67,11 +82,6 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
     <!-- Custom CSS -->
     <link href="css/helper.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <script type="text/javascript">
-        window.onload = function() {
-        history.replaceState("", "", "student-view_att2.php");
-        }
-    </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -129,7 +139,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                             </a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="student-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="student-change_password.php"><i class="fa fa-edit"></i>Change Password</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="student/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
@@ -152,6 +162,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard </span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="student.php">Profile </a></li>
+                                <li><a href="student-change_password.php">Change Password</a></li>
                             </ul>
                         </li>
                         <li class="nav-label">View Details</li>
@@ -166,7 +177,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                 <li><a href="student-view_att.php">View Attendance</a></li>
                             </ul>
                         </li>
-                        <!-- <li class="nav-label">Manage</li>
+                        <li class="nav-label">Manage</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Accomplishments </span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="student-certificates.php">Certificates</a></li>
@@ -174,7 +185,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                 <li><a href="student-projects.php">Projects</a></li>
                                 <li><a href="student-skills.php">Skills</a></li>
                             </ul>
-                        </li> -->
+                        </li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -187,7 +198,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">Marks Table</h3> </div>
+                    <h3 class="text-primary">Attendance</h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="student-marks_table.php">View Details</a></li>
@@ -219,7 +230,8 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                        }
 
                        //get total no of Students
-                       $q1="select count(id) as students from `$table_name` where hno not in('SubjectCode','HTNO/TotalClass') and spell=1;";
+                       $q1="select count(id) as students from `$table_name` where hno not
+                       in('SubjectCode','HTNO/TotalClass') and spell=1;";
                        $r1=mysqli_query($connect,$q1);
                        if($r1){
                          while($row=mysqli_fetch_array($r)){
@@ -251,7 +263,16 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                          }
                        }
                           //pspell is all spells
-                          $qsub="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5='' then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end) as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8='' then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11='' then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end) as s12 from `$table_name` where spell between '$min' and '$max' and hno  in ('HTNO/TotalClass') group by hno";
+                          $qsub="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as
+                          s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else
+                          s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5=''
+                          then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end)
+                          as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8=''
+                          then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as
+                          s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11=''
+                          then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end)
+                          as s12 from `$table_name` where spell between '$min' and '$max' and hno
+                          in ('HTNO/TotalClass') group by hno";
                           $res=mysqli_query($connect,$qsub);
                           if($res){
                             while($row=mysqli_fetch_array($res)){
@@ -326,13 +347,23 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                           echo "<th>100%</th>";
                           echo "</tr></thead>";
 
-                          //print no of classes attended
-                          $qsub="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5='' then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end) as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8='' then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11='' then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end) as s12 from `$table_name` where spell between '$min' and '$max' and hno in('$htno') and hno not in ('HTNO/TotalClass','SubjectCode') group by hno";
-                          $res=mysqli_query($connect,$qsub);
+
+                          //print no.of classes attended
+                          $x="select id,sno,hno,sum(case when s1='' then -1 else s1 end) as
+                          s1,sum(case when s2='' then -1 else s2 end) as s2,sum(case when s3='' then -1 else
+                          s3 end) as s3,sum(case when s4='' then -1 else s4 end) as s4,sum(case when s5=''
+                          then -1 else s5 end) as s5,sum(case when s6='' then -1 else s6 end)
+                          as s6,sum(case when s7='' then -1 else s7 end) as s7,sum(case when s8=''
+                          then -1 else s8 end) as s8,sum(case when s9='' then -1 else s9 end) as
+                          s9,sum(case when s10='' then -1 else s10 end) as s10,sum(case when s11=''
+                          then -1 else s11 end) as s11,sum(case when s12='' then -1 else s12 end)
+                          as s12 from `$table_name` where spell between '$min' and '$max' and
+                          hno in ('$htno') group by hno";
+                          $res=mysqli_query($connect,$x);
                           if($res){
                             while($row=mysqli_fetch_array($res)){
                              $st=0;
-                             echo "<tr>";
+                             echo "<tbody><tr>";
                              echo "<td>".$row['sno']."</td>";
                              echo "<td>".$row['hno']."</td>";
                              if($row['s1']>=0){
@@ -388,11 +419,10 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                               $p=round($p,2);
                               //now print % and classes attended
                               echo "<td>".$st."</td>";
-                              echo "<td>".$p."</td>";
-                              echo "</tr>";
+                              echo "<td>".$p."%"."</td>";
+                              echo "</tr></tbody>";
                             }
                           }
-                          //pspell is all spells
 
                 ?>
                                     </table>
@@ -476,11 +506,24 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
+    <!--Block JavaScript -->
+		<script src="js/block/javascript.js"></script>
+
+    <script src="js/lib/datatables/datatables.min.js"></script>
+    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
+    <script src="js/lib/datatables/cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+    <script src="js/lib/datatables/cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+    <script src="js/lib/datatables/cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+    <script src="js/lib/datatables/datatables-init.js"></script>
     <script>
-        window.onload = function() {
-            history.replaceState("", "", "student-view_att.php");
+       window.onload = function() {
+            history.replaceState("", "", "student-view_att2.php");
         }
     </script>
+
     <script type="text/javascript">
         $(function () {
           $(document).bind("contextmenu",function(e){
@@ -498,27 +541,18 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
          );
       </script>
       <script>
-      $(document).keydown(function (event) {
-          if (event.keyCode == 123) { // Prevent F12
-              return false;
-          }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
-              return false;
-          }else if (event.ctrlKey && event.keyCode == 85) { // Prevent Ctrl+U
-              return false;
-          }
-      });
+
+      // $(document).keydown(function (event) {
+      //     if (event.keyCode == 123) { // Prevent F12
+      //         return false;
+      //     }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
+      //         return false;
+      //     }else if (event.ctrlKey && event.keyCode == 85) { // Prevent Ctrl+U
+      //         return false;
+      //     }
+      // });
+
       </script>
-
-
-    <script src="js/lib/datatables/datatables.min.js"></script>
-    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
-    <script src="js/lib/datatables/cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script src="js/lib/datatables/cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-    <script src="js/lib/datatables/cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
-    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
-    <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
-    <script src="js/lib/datatables/datatables-init.js"></script>
 
 </body>
 

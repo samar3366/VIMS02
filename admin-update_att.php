@@ -284,7 +284,7 @@ if(isset($_POST["upload"])){
                                             <label>Department</label>
                                             <select class="form-control" name="attendance" required>
                                                 <option>Select any:</option>
-                                                <?php $x="select table_name  from information_schema.tables where table_schema='vims' and table_name like '%attendance%' ";
+                                                <?php $x="select table_name  from information_schema.tables where table_schema='vims02' and table_name like '%attendance%' ";
                                                 $res=mysqli_query($connect,$x);
                                                 if($res){
                                                     while($row=mysqli_fetch_array($res)){
