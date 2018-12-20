@@ -17,7 +17,12 @@
 
     if(isset($_SESSION["hid"]))
     {
-        header("Location:student.php");
+        header("Location:hod.php");
+    }
+
+    if(isset($_SESSION["did"]))
+    {
+        header("Location:dean.php");
     }
 ?>
 <!DOCTYPE html>
@@ -117,7 +122,7 @@
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    
+
     <script type="text/javascript">
         $(function () {
           $(document).bind("contextmenu",function(e){
