@@ -34,7 +34,7 @@ if($sql){
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Hod Portal</title>
+    <title>DEAN Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -42,7 +42,7 @@ if($sql){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "hod-student.php");
+        history.replaceState("", "", "dean-student.php");
         }
     </script>
     <script type="text/javascript" src="javascript.js"></script>
@@ -91,8 +91,8 @@ if($sql){
                             <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/Admin_25px.png" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="hod-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
-                                    <li><a href="hod/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                    <li><a href="dean-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="dean/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -208,7 +208,7 @@ if($sql){
                                                     while($row = $result->fetch_assoc()) {
                                             ?>
                                             <tr>
-                                                <td><?php $htno=$row["htno"];echo "<a href='hod-student-profile.php?htno=".$htno."'>"; echo $htno."</a>";?></td>
+                                                <td><?php $htno=$row["htno"];echo "<a href='dean-student-profile.php?htno=".$htno."'>"; echo $htno."</a>";?></td>
                                                 <td><?php echo $row["name"];?></td>
                                                 <td><?php echo $row["batch"];?></td>
                                                 <td><?php echo $row["branch"];?></td>
@@ -238,7 +238,7 @@ if($sql){
     <div class="modal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="changePassModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-                <form action="hod/change_pass.php" method="post" novalidate="novalidate">
+                <form action="dean/change_pass.php" method="post" novalidate="novalidate">
                     <div class="modal-header">
                     <h5 class="modal-title">Change Password</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -296,11 +296,6 @@ if($sql){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    <script>
-        window.onload = function() {
-            history.replaceState("", "", "hod-student.php");
-        }
-    </script>
     <script type="text/javascript">
         $(function () {
           $(document).bind("contextmenu",function(e){
