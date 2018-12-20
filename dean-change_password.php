@@ -9,13 +9,12 @@
     if($_SESSION['did'] == null){
         header("Location:dean-login.php");
     }
-$dean=$_SESSION['did'];
+$did=$_SESSION['did'];
+$msg=$om=$nm=$nop='';
 ?>
+
 <?php
-$query="select ";
-?>
-<?php
-$dean=$_SESSION['did'];
+$did=$_SESSION['did'];
 $count=0;
 include("connection.php");
 $output=0;
@@ -26,6 +25,30 @@ if($sql){
     }
 }
 ?>
+<?php
+if(isset($_POST['update'])){
+  $op=$_POST['op'];
+  $np=$_POST['np'];
+  $cp=$_POST['cp'];
+  $r=mysqli_query($connect,"select * from dean where did='$did'");
+  while($row=mysqli_fetch_array($r)){
+    $dp=$row['pass'];
+  }
+  if($op!=$dp){
+    $om="Old Password is not Correct";
+  }else if($np!=$cp){
+    $nm="New Password and Confirm Password are not matching";
+  }else if($np==$op){
+    $nop="New Password and Old Password cannot be same";
+  }else if($op!=$np&&$np==$cp){
+    $r=mysqli_query($connect,"update dean set pass='$np' where did='$did'");
+    if($r===TRUE){
+      $msg="Password Updated Successfully!!!";
+    }else $msg=mysqli_error($connect);
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,7 +69,7 @@ if($sql){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "dean.php");
+        history.replaceState("", "", "dean-change_password.php");
         }
     </script>
     <script type="text/javascript" src="javascript.js"></script>
@@ -168,10 +191,56 @@ if($sql){
             <!-- Container fluid  -->
             <div class="container-fluid">
                 <!-- Start Page Content -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Change Password</h4><br>
+                                    <span class="text-success">
+                                      <label><?php echo $msg; ?></label>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                                            <div class="form-group">
+                                                <label>Old Password</label>
+                                                <input type="password" class="form-control" id="op" name="op" placeholder="Enter Old Password" required>
+                                                <span class="text-danger">
+                                                  <label><?php echo $om; ?></label>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>New Password</label>
+                                                <input type="password" class="form-control" id="np" name="np" placeholder="Enter New Password" required>
+                                                <span class="text-danger">
+                                                  <label><?php echo $nop; ?></label>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Confirm Password</label>
+                                                <input type="password" class="form-control" id="cp" name="cp" placeholder="Confirm New Password" required>
+                                                <span class="text-danger">
+                                                  <label><?php echo $nm; ?></label>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" name="show" onclick="changePassword()">
+                                                <label>Show Password</label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-rounded m-b-10 m-l-5" name="update">Update Password</button><br>
 
+                                        </form>
+                                    </div>
+                                </div>
 
-                <!-- End PAge Content -->
-            </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End PAge Content -->
+                </div>
+                <!-- End Container fluid  -->
             <!-- End Container fluid  -->
             <!-- footer -->
             <footer class="footer"> © 2018 Vignan's Institute Management System Developed by CSE Dept &amp; Theme by <a href="https://colorlib.com">Colorlib</a></footer>
@@ -241,6 +310,29 @@ if($sql){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
+    <script>
+    function changePassword() {
+    var x = document.getElementById("op");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+    var x = document.getElementById("np");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+    var x = document.getElementById("cp");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+    }
+    </script>
+
     <script type="text/javascript">
         $(function () {
           $(document).bind("contextmenu",function(e){
@@ -279,7 +371,27 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
     <script src="js/block/javascript.js"></script>
-
+    <script type="text/javascript">
+  $(document).ready(function() {
+   $('#op').bind('copy paste cut',function(e) {
+   e.preventDefault(); //disable cut,copy,paste;
+   });
+  });
+  </script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+  $('#np').bind('copy paste cut',function(e) {
+  e.preventDefault(); //disable cut,copy,paste
+  });
+  });
+  </script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+  $('#cp').bind('copy paste cut',function(e) {
+  e.preventDefault(); //disable cut,copy,paste
+  });
+  });
+  </script>
 
 </body>
 
