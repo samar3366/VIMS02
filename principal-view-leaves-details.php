@@ -10,7 +10,7 @@
     if($_SESSION['pid'] == null){
         header("Location:principal-login.php");
     }
-
+    include('connection.php');
 ?>
 
 
@@ -19,7 +19,7 @@ include('connection.php');
 $input = $_GET['id'];
 $arr = explode(" ",$input);
 $leave_id = $arr[0];
-$tableName = "leaves".$arr[1];
+$tableName = $arr[1];
 $sql=mysqli_query($connect,"select * from $tableName where leave_id='$leave_id'");
 if($sql){
     while($row=mysqli_fetch_array($sql)){
@@ -60,17 +60,11 @@ if($sql){
     }
 }
 
-if($hod_status == 'REJECTED'){
-  $msg = "rejected due the reason of ".$hod_remarks;
-}elseif ($principal_status == 'APPROVED') {
+if($principal_status == 'REJECTED'){
+  $msg = "rejected due the reason of ".$principal_remarks;
+}elseif($principal_status == 'APPROVED') {
   // code...
   $msg = "This leave is approved by everyone";
-}elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
-  // code...
-  $msg = "Request at Principal - yet to be approved";
-}elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-  // code...
-  $msg = "Request at Dean - yet to be approved";
 }
 if($tableName == 'leavescl'){
   $leave_type = 'CASUAL LEAVES';
@@ -251,7 +245,7 @@ if($tableName == 'leavescl'){
                   <div class="col-lg-6">
                       <div class="card">
                           <div class="card-title">
-                              <h4>Table Basic </h4>
+                              <h4><?php echo $leave_type;?> </h4>
 
                               <h4></h4>
                           </div>
@@ -342,7 +336,7 @@ if($tableName == 'leavescl'){
                       </div>
                   </div>
                   <?php
-                    if($hod_status != 'PENDING'){
+                    if($principal_status != 'PENDING'){
                       ?>
                       <div class="col-lg-6">
                           <div class="card">
@@ -464,7 +458,7 @@ if($tableName == 'leavescl'){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

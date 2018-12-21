@@ -10,7 +10,7 @@
     if($_SESSION['did'] == null){
         header("Location:dean-login.php");
     }
-
+    include('connection.php');
 ?>
 
 <?php
@@ -57,17 +57,14 @@ if($sql){
     }
 }
 
-if($hod_status == 'REJECTED'){
-  $msg = "rejected due the reason of ".$hod_remarks;
+if($dean_status == 'REJECTED'){
+  $msg = "rejected due the reason of ".$dean_remarks;
 }elseif ($principal_status == 'APPROVED') {
   // code...
   $msg = "This leave is approved by everyone";
 }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
   // code...
   $msg = "Request at Principal - yet to be approved";
-}elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-  // code...
-  $msg = "Request at Dean - yet to be approved";
 }
 if($tableName == 'leavescl'){
   $leave_type = 'CASUAL LEAVES';
@@ -213,7 +210,7 @@ if($tableName == 'leavescl'){
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo "5"; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
                               <li><a href="dean-view_leaves.php">View Leaves</a></li>
                               <li><a href="dean-view-leaves2.php">View Leaves(updated)</a></li>
@@ -250,7 +247,7 @@ if($tableName == 'leavescl'){
                   <div class="col-lg-6">
                       <div class="card">
                           <div class="card-title">
-                              <h4>Table Basic </h4>
+                              <h4><?php echo $leave_type;?> </h4>
 
                               <h4></h4>
                           </div>
@@ -341,7 +338,7 @@ if($tableName == 'leavescl'){
                       </div>
                   </div>
                   <?php
-                    if($hod_status != 'PENDING'){
+                    if($dean_status != 'PENDING'){
                       ?>
                       <div class="col-lg-6">
                           <div class="card">

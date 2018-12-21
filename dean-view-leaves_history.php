@@ -10,7 +10,7 @@
     if($_SESSION['did'] == null){
         header("Location:dean-login.php");
     }
-
+    include('connection.php');
 ?>
 
 <!DOCTYPE html>
@@ -125,7 +125,7 @@
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo "5"; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
                               <li><a href="dean-view_leaves.php">View Leaves</a></li>
                               <li><a href="dean-view-leaves2.php">View Leaves(updated)</a></li>

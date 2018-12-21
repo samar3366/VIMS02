@@ -10,7 +10,7 @@
     if($_SESSION['pid'] == null){
         header("Location:principal-login.php");
     }
-
+    include('connection.php');
 ?>
 
 <!DOCTYPE html>
