@@ -81,6 +81,32 @@ if($hod_status == 'REJECTED'){
   // code...
   $msg = "Request at Dean - yet to be approved";
 }
+if($tableName == 'leavescl'){
+  $leave_type = 'CASUAL LEAVES';
+}elseif ($tableName == 'leavesmtl') {
+  // code...
+  $leave_type = 'MATERNITY LEAVES';
+}elseif ($tableName == 'leavesal') {
+  // code...
+  $leave_type = 'ACADEMIC LEAVES';
+}elseif ($tableName == 'leavesod') {
+  // code...
+  $leave_type = 'ON-DUTY LEAVES';
+}elseif ($tableName == 'leavesml') {
+  // code...
+  $leave_type = 'EMERGENCY LEAVES';
+}elseif ($tableName == 'leavesccl') {
+  // code...
+  if($row['type'] == 'Request ccl'){
+    $leave_type = 'REQUEST CCL LEAVES';
+  }else{
+    $leave_type = 'APPLY CCL LEAVES';
+  }
+
+}elseif ($tableName == 'leaveseol') {
+  // code...
+  $leave_type = 'EXTRA ORDINARY LEAVES';
+}
 
 ?>
 
@@ -235,7 +261,7 @@ if($hod_status == 'REJECTED'){
                   <div class="col-lg-6">
                       <div class="card">
                           <div class="card-title">
-                              <h4>Table Basic </h4>
+                              <h4><?php echo $leave_type;?></h4>
 
                               <h4></h4>
                           </div>
@@ -282,12 +308,12 @@ if($hod_status == 'REJECTED'){
                                           <?php }elseif ($tableName == 'leavesmtl') {?>
                                             <tr>
                                                 <th>File for proof</th>
-                                                <td><?php echo $fdate;?></td>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
                                             </tr>
                                           <?php }elseif ($tableName == 'leavesal') {?>
                                             <tr>
                                                 <th>File for proof</th>
-                                                <td><?php echo $fdate;?></td>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
                                             </tr>
                                           <?php }elseif ($tableName == 'leavesod') {?>
                                             <tr>
@@ -296,12 +322,12 @@ if($hod_status == 'REJECTED'){
                                             </tr>
                                             <tr>
                                                 <th>File for proof</th>
-                                                <td><?php echo $fdate;?></td>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
                                             </tr>
                                           <?php }elseif ($tableName == 'leavesml') {?>
                                             <tr>
                                                 <th>File for proof</th>
-                                                <td><?php echo $fdate;?></td>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
                                             </tr>
                                           <?php }elseif ($tableName == 'leavesccl') {?>
                                             <tr>
