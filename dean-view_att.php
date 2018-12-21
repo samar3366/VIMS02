@@ -163,7 +163,9 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                         <li class="nav-label">Manage</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="dean-view_leaves.php">View Leaves</a></li>
+                              <li><a href="dean-view_leaves.php">View Leaves</a></li>
+                              <li><a href="dean-view-leaves2.php">View Leaves(updated)</a></li>
+                              <li><a href="dean-view-leaves_history.php">View Leaves History</a></li>
                             </ul>
                         </li>
                     </ul>

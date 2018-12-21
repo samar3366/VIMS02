@@ -228,7 +228,9 @@ if($tableName == 'leavescl'){
                         <li class="nav-label">Manage</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_leaves.php">View Leaves</a></li>
+                              <li><a href="hod-view_leaves.php">View Leaves</a></li>
+                              <li><a href="hod-view-leaves2.php">View Leaves(updated)</a></li>
+                              <li><a href="hod-view-leaves_history.php">View Leaves History</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -262,7 +264,6 @@ if($tableName == 'leavescl'){
                       <div class="card">
                           <div class="card-title">
                               <h4><?php echo $leave_type;?></h4>
-
                               <h4></h4>
                           </div>
                           <div class="card-body">

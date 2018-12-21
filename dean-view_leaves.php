@@ -12,18 +12,6 @@
     }
 
 ?>
-<?php
-$did=$_SESSION['did'];
-$count=0;
-include("connection.php");
-$output=0;
-$sql=mysqli_query($connect,"select count(leave_id) as count from facleave where status='0'");
-if($sql){
-    while($row=mysqli_fetch_array($sql)){
-        $count=$row['count'];
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -139,7 +127,9 @@ if($sql){
                         <li class="nav-label">Manage</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="dean-view_leaves.php">View Leaves</a></li>
+                              <li><a href="dean-view_leaves.php">View Leaves</a></li>
+                              <li><a href="dean-view-leaves2.php">View Leaves(updated)</a></li>
+                              <li><a href="dean-view-leaves_history.php">View Leaves History</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -189,8 +179,10 @@ if($sql){
                                       <tbody>
                                         <?php
                                         //get faculty dept
-                                        $count = 1;
-                                        $query=mysqli_query($connect,"select * from leavescl WHERE dean_status = 'PENDING' AND hod_status = 'APPROVED'");
+                                        $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                        for($i=0;$i<7;$i++){
+                                          $tableName = $leaves[$i];
+                                        $query=mysqli_query($connect,"select * from $tableName WHERE dean_status = 'PENDING' AND hod_status = 'APPROVED'");
                                         if($query){
                                             while($row=mysqli_fetch_array($query)){
 
@@ -198,7 +190,32 @@ if($sql){
                                               $facName = $row['facName'];
                                               $fdate = $row['fdate'];
                                               $tdate = $row['tdate'];
-                                              $leave_type = 'cl';
+                                              if($tableName == 'leavescl'){
+                                                $leave_type = 'CASUAL LEAVES';
+                                              }elseif ($tableName == 'leavesmtl') {
+                                                // code...
+                                                $leave_type = 'MATERNITY LEAVES';
+                                              }elseif ($tableName == 'leavesal') {
+                                                // code...
+                                                $leave_type = 'ACADEMIC LEAVES';
+                                              }elseif ($tableName == 'leavesod') {
+                                                // code...
+                                                $leave_type = 'ON-DUTY LEAVES';
+                                              }elseif ($tableName == 'leavesml') {
+                                                // code...
+                                                $leave_type = 'EMERGENCY LEAVES';
+                                              }elseif ($tableName == 'leavesccl') {
+                                                // code...
+                                                if($row['type'] == 'Request ccl'){
+                                                  $leave_type = 'REQUEST CCL LEAVES';
+                                                }else{
+                                                  $leave_type = 'APPLY CCL LEAVES';
+                                                }
+
+                                              }elseif ($tableName == 'leaveseol') {
+                                                // code...
+                                                $leave_type = 'EXTRA ORDINARY LEAVES';
+                                              }
                                               $facJntuId = $row['facJntuId'];?>
 
                                               <tr>
@@ -207,10 +224,11 @@ if($sql){
                                                   <td><?php echo $fdate;?></td>
                                                   <td><?php echo $tdate;?></td>
                                                   <td><?php echo $leave_type;?></td>
-                                                  <td><a href="dean-view-leaves-details.php?id=<?php echo $leave_id." ".$leave_type;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                                  <td><a href="dean-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
                                               </tr><?php
                                             }
                                         }
+                                      }
                                         ?>
                                       </tbody>
                                   </table>

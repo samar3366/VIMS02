@@ -1,4 +1,5 @@
 <?php
+
     if(isset($_COOKIE['id']))
     {
         session_id($_COOKIE['id']);
@@ -6,22 +7,12 @@
 
     session_start();
 
-    if($_SESSION['hid'] == null){
-        header("Location:hod-login.php");
+    if($_SESSION['pid'] == null){
+        header("Location:principal-login.php");
     }
+
 ?>
-<?php
-$hdept=$_SESSION['hid'];
-$count=0;
-include("connection.php");
-$output=0;
-$sql=mysqli_query($connect,"select count(leave_id) as count from facleave where status='0' and facDept='$hdept'");
-if($sql){
-    while($row=mysqli_fetch_array($sql)){
-        $count=$row['count'];
-    }
-}
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,10 +33,9 @@ if($sql){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "hod-student.php");
+        history.replaceState("", "", "principal-view-leaves_history.php");
         }
     </script>
-    <script type="text/javascript" src="javascript.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -91,8 +81,8 @@ if($sql){
                             <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/Admin_25px.png" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="hod-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
-                                    <li><a href="hod/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                      <li><a href="principal-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="principal/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -112,34 +102,33 @@ if($sql){
                         <li class="nav-label">Home</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod.php">Profile </a></li>
+                                <li><a href="principal.php">Profile </a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">View Details</li>
-                        <li> <a href="hod-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
+                        <li> <a href="principal-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
                         </li>
-                        <li> <a href="hod-faculty.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Faculty</span></a>
+                        <li> <a href="principal-faculty.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Faculty</span></a>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Exam Cell</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_results.php">View Results</a></li>
-                                <li><a href="hod-result_analysis.php">Result Analysis</a></li>
-                                <li><a href="hod-subject_analysis.php">Subject Analysis</a></li>
+                                <li><a href="principal-view_results.php">View Results</a></li>
+                                <li><a href="principal-result_analysis.php">Result Analysis</a></li>
+                                <li><a href="principal-subject_analysis.php">Subject Analysis</a></li>
                             </ul>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Attendance</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_att.php">View Attendance</a></li>
+                                <li><a href="principal-view_att.php">View Attendance</a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo "5"; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                              <li><a href="hod-view_leaves.php">View Leaves</a></li>
-                              <li><a href="hod-view-leaves2.php">View Leaves(updated)</a></li>
-                              <li><a href="hod-view-leaves_history.php">View Leaves History</a></li>
+                              <li><a href="principal-view_leaves.php">View Leaves</a></li>
+                              <li><a href="principal-view-leaves_history.php">View Leaves History</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -154,11 +143,11 @@ if($sql){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">View Students</h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['pid']?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">View Details</a></li>
-                        <li class="breadcrumb-item active">Student</li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Leaves</li>
                     </ol>
                 </div>
             </div>
@@ -167,65 +156,126 @@ if($sql){
             <div class="container-fluid">
                 <!-- Start Page Content -->
                 <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Student List</h4>
-                                <h6 class="card-subtitle">Total student's Information</h6>
-                                <div class="table-responsive m-t-40">
-                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>HTNO</th>
-                                                <th>NAME</th>
-                                                <th>BATCH</th>
-                                                <th>BRANCH</th>
-                                                <th>SECTION</th>
-                                                <th>NUMBER</th>
-                                                <th>MAIL</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>HTNO</th>
-                                                <th>NAME</th>
-                                                <th>BATCH</th>
-                                                <th>BRANCH</th>
-                                                <th>SECTION</th>
-                                                <th>NUMBER</th>
-                                                <th>MAIL</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <?php
+
+                  <div class="col-12">
+                       <div class="card">
+                           <div class="card-body">
+                               <h4 class="card-title">History of leaves</h4>
+                               <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                               <div class="table-responsive m-t-40">
+                                   <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                       <thead>
+                                           <tr>
+                                               <th>Leave ID</th>
+                                               <th>Faculty Name</th>
+                                               <th>From</th>
+                                               <th>To</th>
+                                               <th>Leave Type</th>
+                                               <th>Leave Status</th>
+                                               <th>View Details</th>
+                                           </tr>
+                                       </thead>
+                                       <tfoot>
+                                           <tr>
+                                             <th>Leave ID</th>
+                                             <th>Faculty Name</th>
+                                             <th>From</th>
+                                             <th>To</th>
+                                             <th>Leave Type</th>
+                                             <th>Leave Status</th>
+                                             <th>View Details</th>
+                                           </tr>
+                                       </tfoot>
+                                       <tbody>
+
+                                         <?php
+                                         //get faculty dept
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         for($i=0;$i<7;$i++){
+                                           $tableName = $leaves[$i];
+                                         $query=mysqli_query($connect,"select * from $tableName WHERE principal_status <> 'PENDING'");
+                                         if($query){
+                                             while($row=mysqli_fetch_array($query)){
+
+                                               $leave_id=$row['leave_id'];
+                                               $facName = $row['facName'];
+                                               $fdate = $row['fdate'];
+                                               $tdate = $row['tdate'];
+                                               if($tableName == 'leavescl'){
+                                                 $leave_type = 'CASUAL LEAVES';
+                                               }elseif ($tableName == 'leavesmtl') {
+                                                 // code...
+                                                 $leave_type = 'MATERNITY LEAVES';
+                                               }elseif ($tableName == 'leavesal') {
+                                                 // code...
+                                                 $leave_type = 'ACADEMIC LEAVES';
+                                               }elseif ($tableName == 'leavesod') {
+                                                 // code...
+                                                 $leave_type = 'ON-DUTY LEAVES';
+                                               }elseif ($tableName == 'leavesml') {
+                                                 // code...
+                                                 $leave_type = 'EMERGENCY LEAVES';
+                                               }elseif ($tableName == 'leavesccl') {
+                                                 // code...
+                                                 if($row['type'] == 'Request ccl'){
+                                                   $leave_type = 'REQUEST CCL LEAVES';
+                                                 }else{
+                                                   $leave_type = 'APPLY CCL LEAVES';
+                                                 }
+
+                                               }elseif ($tableName == 'leaveseol') {
+                                                 // code...
+                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }
+                                               $facJntuId = $row['facJntuId'];
+
+                                               $hod_status = $row['hod_status'];
+                                               $hod_remarks = $row['hod_remarks'];
+
+                                               $dean_status = $row['dean_status'];
+                                               $dean_remarks = $row['dean_remarks'];
+
+                                               $principal_status = $row['principal_status'];
+                                               $principal_remarks = $row['principal_remarks'];
 
 
-                                                include('connection.php');
-                                                $sql = "SELECT * FROM student_details;";
+                                               if($hod_status == 'REJECTED'){
+                                                 $msg = "REJECTED";
+                                               }elseif ($principal_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "APPROVED";
+                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "Request at Principal";
+                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
+                                                 // code...
+                                                 $msg = "Request at Dean";
+                                               }
+                                               ?>
 
-                                                $result = $connect->query($sql);
+                                               <tr>
+                                                   <th scope="row"><?php echo $leave_id;?></th>
+                                                   <td><?php echo $facName;?></td>
+                                                   <td><?php echo $fdate;?></td>
+                                                   <td><?php echo $tdate;?></td>
+                                                   <td><?php echo $leave_type;?></td>
+                                                   <td><?php echo $msg;?></td>
+                                                   <td><a href="principal-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                               </tr><?php
+                                             }
+                                         }
+                                       }
+                                         ?>
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
 
-                                                if ($result->num_rows > 0) {
 
-                                                    while($row = $result->fetch_assoc()) {
-                                            ?>
-                                            <tr>
-                                                <td><?php $htno=$row["htno"];echo "<a href='hod-student-profile.php?htno=".$htno."'>"; echo $htno."</a>";?></td>
-                                                <td><?php echo $row["name"];?></td>
-                                                <td><?php echo $row["batch"];?></td>
-                                                <td><?php echo $row["branch"];?></td>
-                                                <td><?php echo $row["section"];?></td>
-                                                <td><?php echo $row["number"];?></td>
-                                                <td><?php echo $row["mail"];?></td>
-                                            </tr>
-                                            <?php }}?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <!-- row ends -->
+               <!-- End PAge Content -->
+               </div>
+             </div>
 
                 <!-- End PAge Content -->
             </div>
@@ -236,11 +286,12 @@ if($sql){
         </div>
         <!-- End Page wrapper  -->
     </div>
+    <!-- End Wrapper -->
 
     <div class="modal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="changePassModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-                <form action="hod/change_pass.php" method="post" novalidate="novalidate">
+                <form action="javascript:;" novalidate="novalidate">
                     <div class="modal-header">
                     <h5 class="modal-title">Change Password</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -284,7 +335,7 @@ if($sql){
           </div>
         </div>
       </div>
-    <!-- End Wrapper -->
+
     <!-- All Jquery -->
     <script src="js/lib/jquery/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -298,38 +349,7 @@ if($sql){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    <script>
-        window.onload = function() {
-            history.replaceState("", "", "hod-student.php");
-        }
-    </script>
-    <script type="text/javascript">
-        $(function () {
-          $(document).bind("contextmenu",function(e){
-            e.preventDefault();
-            //alert("Right Click is not allowed");
-          }
-        );
-        /*$('.dvOne').bind("contextmenu",function(e){
-        e.preventDefault();
-        alert("Right Click is not allowed on div");
-        }
-        );
-        */
-        }
-         );
-      </script>
-      <script>
-      $(document).keydown(function (event) {
-          if (event.keyCode == 123) { // Prevent F12
-              return false;
-          }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
-              return false;
-          }else if (event.ctrlKey && event.keyCode == 85) { // Prevent Ctrl+U
-              return false;
-          }
-      });
-      </script>
+
 
     <script src="js/lib/datatables/datatables.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
@@ -340,7 +360,7 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 
