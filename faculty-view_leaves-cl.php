@@ -15,6 +15,7 @@
 ?>
 <?php
 //get faculty dept
+
 $query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
 if($query){
     while($row=mysqli_fetch_array($query)){
@@ -183,7 +184,7 @@ if($query){
                    <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">You have <?php echo 6-$utilized;?> remaining leaves from 12.</h4>
+                                <h4 class="card-title">View Leaves</h4>
                                 <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
                                 <div class="table-responsive m-t-40">
                                     <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">

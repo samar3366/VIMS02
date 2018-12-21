@@ -25,7 +25,7 @@ if($query){
 }
 ?>
 <?php
-  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
+  $err1=$err2=$err3=$err4=$err5=$err6=$err7=$success='';
   if(isset($_POST['apply'])){
     if(!empty($_POST['fdate'])){
     $d1=$_POST['fdate'];
@@ -68,7 +68,11 @@ if($query){
       $err4="Sorry, your file was not uploaded.";
       // if everything is ok, try to upload file
       //
-      } else {
+    }elseif (strtotime($d1) > strtotime($d2)) {
+      // code...
+      header("Location: faculty-apply_leaves-al.php?ack=3");
+    }
+      else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
@@ -261,6 +265,13 @@ if($query){
                                     <div class="alert alert-success alert-dismissible fade show">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
+                                    </div>
+                                    <?php
+                                    }else if($_GET['ack'] == 3){
+                                    ?>
+                                    <div class="alert alert-success alert-dismissible fade show">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <strong>Invalid Selection of Dates.</strong>
                                     </div>
                                     <?php }
                                     else

@@ -47,6 +47,9 @@ if($query){
           }elseif ($cdays > 7) {
             // code...
             header("Location: faculty-apply_leaves-eol.php?ack=2");
+          }elseif (strtotime($d1) > strtotime($d2)) {
+            // code...
+            header("Location: faculty-apply_leaves-ccl.php?ack=3");
           }
           else{
             $sql="insert into leavesccl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,type,reason)
@@ -230,6 +233,13 @@ if($query){
                                     <div class="alert alert-success alert-dismissible fade show">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
+                                    </div>
+                                    <?php
+                                  }else if($_GET['ack'] == 3){
+                                    ?>
+                                    <div class="alert alert-danger alert-dismissible fade show">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <strong>Invalid Selection of Dates.</strong>
                                     </div>
                                     <?php }
                                     else
