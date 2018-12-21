@@ -23,38 +23,7 @@ if($query){
     }
 }
 ?>
-<?php
-//get faculty dept
-$year = date("Y");
-$utilized = 0;
-$utilized1 = 0;
-$utilized2 = 0;
-$status = "PENDING";
-$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR hod_status='PENDING') AND facJntuId='$facJntuId'";
 
-$result = mysqli_query($connect,$sql);
-
-if ($result->num_rows > 0) {
-
-    while($row = $result->fetch_assoc()) {
-
-          if($row["month"] <= 6){
-              $utilized1+=$row["ndays"];
-          }
-          if($row["month"] > 6){
-              $utilized2+=$row["ndays"];
-          }
-    }
-}
-?>
-<?php
-$now = new \DateTime('now');
-$month = $now->format('m');
-if($month <= 6){
-  $utilized = $utilized1;
-}else{
-  $utilized = $utilized2;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

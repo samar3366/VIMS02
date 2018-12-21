@@ -14,48 +14,6 @@
     include('connection.php');
 ?>
 <?php
-    $year = date("Y");
-
-    $a=array();
-    $fid = $_SESSION['fid'];
-
-    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-
-            if($row["leave_type"] == "Academic Leave"){
-                $academics+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
-                $casual1+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
-                $casual2+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Medical Leave"){
-                $medical+=$row["ndays"];
-            }
-            if($row["leave_type"] == "lop"){
-                $lop+=$row["ndays"];
-            }
-            if($row["leave_type"] == "reqccl"){
-                $reqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $appccl+=$row["ndays"];
-            }
-        }
-    }
-
-?>
-
-<?php
 //get faculty dept
 $query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
 if($query){
@@ -114,7 +72,7 @@ if($query){
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
-          insert into leavesmtl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path)
+          insert into leavesal(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path)
           values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name')
           ");
              if($query){

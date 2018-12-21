@@ -29,7 +29,7 @@ if($sql){
 $input = $_GET['id'];
 $arr = explode(" ",$input);
 $leave_id = $arr[0];
-$tableName = "leaves".$arr[1];
+$tableName = $arr[1];
 $sql=mysqli_query($connect,"select * from $tableName where leave_id='$leave_id'");
 if($sql){
     while($row=mysqli_fetch_array($sql)){
@@ -39,27 +39,80 @@ if($sql){
         $fdate = $row['fdate'];
         $tdate = $row['tdate'];
         $ndays = $row['ndays'];
+        $hod_status = $row['hod_status'];
+        $hod_remarks = $row['hod_remarks'];
 
+        $dean_status = $row['dean_status'];
+        $dean_remarks = $row['dean_remarks'];
+
+        $principal_status = $row['principal_status'];
+        $principal_remarks = $row['principal_remarks'];
+
+        if($tableName == 'leavescl'){
+          $reason = $row['reason'];
+          $class_adjustment = $row['class_adjustment'];
+        }elseif ($tableName == 'leavesmtl') {
+          $file_name = $row['file_path'];
+        }elseif ($tableName == 'leavesal') {
+          $file_name = $row['file_path'];
+        }elseif ($tableName == 'leavesod') {
+          $type = $row['type'];
+          $file_name = $row['file_path'];
+        }elseif ($tableName == 'leavesml') {
+          $file_name = $row['file_path'];
+        }elseif ($tableName == 'leavesccl') {
+          $type = $row['type'];
+          $reason = $row['reason'];
+        }elseif ($tableName == 'leaveseol') {
+          $reason = $row['reason'];
+        }
     }
 }
+
+if($hod_status == 'REJECTED'){
+  $msg = "rejected due the reason of ".$hod_remarks;
+}elseif ($principal_status == 'APPROVED') {
+  // code...
+  $msg = "This leave is approved by everyone";
+}elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
+  // code...
+  $msg = "Request at Principal - yet to be approved";
+}elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
+  // code...
+  $msg = "Request at Dean - yet to be approved";
+}
+if($tableName == 'leavescl'){
+  $leave_type = 'CASUAL LEAVES';
+}elseif ($tableName == 'leavesmtl') {
+  // code...
+  $leave_type = 'MATERNITY LEAVES';
+}elseif ($tableName == 'leavesal') {
+  // code...
+  $leave_type = 'ACADEMIC LEAVES';
+}elseif ($tableName == 'leavesod') {
+  // code...
+  $leave_type = 'ON-DUTY LEAVES';
+}elseif ($tableName == 'leavesml') {
+  // code...
+  $leave_type = 'EMERGENCY LEAVES';
+}elseif ($tableName == 'leavesccl') {
+  // code...
+  if($row['type'] == 'Request ccl'){
+    $leave_type = 'REQUEST CCL LEAVES';
+  }else{
+    $leave_type = 'APPLY CCL LEAVES';
+  }
+
+}elseif ($tableName == 'leaveseol') {
+  // code...
+  $leave_type = 'EXTRA ORDINARY LEAVES';
+}
+
 ?>
 
 
 
-<?php
-  if(isset($_POST['forward'])){
-    $table_name = $_POST['tableName'];
-    $leave_id = $_POST['leave_id'];
-    $q=mysqli_query($connect,"update $table_name set hod_status='APPROVED' where leave_id='$leave_id'");
-  }
-  if(isset($_POST['reject'])){
-    $table_name = $_POST['tableName'];
-    $leave_id = $_POST['leave_id'];
-    $remarks = $_POST['remark'];
-    $q=mysqli_query($connect,"update $table_name set hod_status='REJECTED', dean_status='REJECTED', principal_status='REJECTED', hod_remarks=$remarks, dean_status=$remarks, principal_status=$remarks where leave_id='$leave_id'");
-  }
 
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -208,7 +261,7 @@ if($sql){
                   <div class="col-lg-6">
                       <div class="card">
                           <div class="card-title">
-                              <h4>Table Basic </h4>
+                              <h4><?php echo $leave_type;?></h4>
 
                               <h4></h4>
                           </div>
@@ -243,18 +296,54 @@ if($sql){
                                               <td><?php echo $ndays;?></td>
                                           </tr>
                                           <?php
-                                          if($tableName == 'leavescl'){
-                                          ?>
-                                          <tr>
-                                              <th>Reason</th>
-                                              <td><?php echo "reason";?></td>
-                                          </tr>
-                                          <tr>
-                                              <th>Class Adjustment</th>
-                                              <td><?php echo "class adjustment";?></td>
-                                          </tr>
-                                          <?php
-                                          }
+                                          if($tableName == 'leavescl'){?>
+                                            <tr>
+                                                <th>Reason</th>
+                                                <td><?php echo $reason;?></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Class Adjustment</th>
+                                                <td><?php echo $class_adjustment;?></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leavesmtl') {?>
+                                            <tr>
+                                                <th>File for proof</th>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leavesal') {?>
+                                            <tr>
+                                                <th>File for proof</th>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leavesod') {?>
+                                            <tr>
+                                                <th>Type</th>
+                                                <td><?php echo $type;?></td>
+                                            </tr>
+                                            <tr>
+                                                <th>File for proof</th>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leavesml') {?>
+                                            <tr>
+                                                <th>File for proof</th>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leavesccl') {?>
+                                            <tr>
+                                                <th>Type</th>
+                                                <td><?php echo $type;?></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Reason</th>
+                                                <td><?php echo $reason;?></td>
+                                            </tr>
+                                          <?php }elseif ($tableName == 'leaveseol') {?>
+                                            <tr>
+                                                <th>Reason</th>
+                                                <td><?php echo $reason;?></td>
+                                            </tr>
+                                        <?php  }
                                           ?>
                                       </tbody>
                                   </table>
@@ -262,6 +351,19 @@ if($sql){
                           </div>
                       </div>
                   </div>
+                  <?php
+                    if($hod_status != 'PENDING'){
+                      ?>
+                      <div class="col-lg-6">
+                          <div class="card">
+                              <div class="card-title">
+                                  <h4><?php echo $msg;?></h4><br>
+                              </div>
+                          </div>
+                      </div>
+                      <?php
+                    }else{
+                  ?>
                   <div class="col-lg-6">
                       <div class="card">
                           <div class="card-title">
@@ -284,6 +386,7 @@ if($sql){
                           </div>
                       </div>
                   </div>
+                <?php }?>
                   <!-- /# column -->
 
 
