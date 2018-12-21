@@ -29,6 +29,8 @@ if($query){
 <?php
 //get faculty dept
 $year = date("Y");
+$current_date = date("Y-m-d");
+echo $current_date;
 $utilized = 0;
 $utilized1 = 0;
 $utilized2 = 0;
@@ -63,6 +65,7 @@ $remaining = 6 - $utilized;
     if(isset($_POST['apply'])){
       $d1=$_POST['fdate'];
       $d2=$_POST['tdate'];
+
       $reason=$_POST['reason'];
       $class_adj=$_POST['class_adj'];
 
@@ -72,9 +75,16 @@ $remaining = 6 - $utilized;
       else{
         $date1 = new DateTime($_POST['fdate']);
         $date2 = new DateTime($_POST['tdate']);
+        $cd = new DateTime($current_date);
         $interval = $date1->diff($date2);
         $ndays=$interval->days;
         $ndays+=1;
+        $val = $date1->diff($cd);
+        $cdays = $val->days;
+        $cdays+=1;
+        echo $cdays;
+
+
 
 
         $x=$d1;
@@ -87,7 +97,11 @@ $remaining = 6 - $utilized;
         $rem = 6 - $utilized;
           if($cal > 6){
               header("Location: faculty-apply_leaves-cl.php?ack=0&rem=$rem");
-          }else{
+          }elseif ($cdays > 7) {
+            // code...
+            header("Location: faculty-apply_leaves-cl.php?ack=2");
+          }
+          else{
             $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept)
             values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept')";
             $query=mysqli_query($connect,$sql);
@@ -273,8 +287,15 @@ $remaining = 6 - $utilized;
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                             <strong>Enter Valid Details;</strong>
                                         </div>
-                                      <?php }}
+                                      <?php }else if($_GET['ack'] == 2){
+                                  ?>
+                                  <div class="alert alert-danger alert-dismissible fade show">
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                      <strong>Sorry you must apply on or before 7 days of the leave date.</strong>
+                                  </div>
+                                <?php }}
                                         ?>
+
 
 
                                 </div>
@@ -377,7 +398,6 @@ $remaining = 6 - $utilized;
                                 </label>
                                 <input type="password" data-val-equalto="Password not Match ", data-val-equalto-other="newPass" data-val="true" data-val-required="this is Required Field" class="form-control" name="confirmPass" id="confirmPass"/>
                                 <span class="field-validation-valid text-danger" data-valmsg-for="confirmPass" data-valmsg-replace="true"></span>
-
                             </div>
 
                         </div>
@@ -415,7 +435,7 @@ $remaining = 6 - $utilized;
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 
