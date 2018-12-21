@@ -683,7 +683,7 @@ if(isset($_POST['uploadpic'])){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    <!-- <script src="js/block/javascript.js"></script> -->
+    <script src="js/block/javascript.js"></script>
 
 </body>
 
