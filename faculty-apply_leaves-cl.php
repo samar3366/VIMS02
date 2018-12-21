@@ -30,7 +30,6 @@ if($query){
 //get faculty dept
 $year = date("Y");
 $current_date = date("Y-m-d");
-echo $current_date;
 $utilized = 0;
 $utilized1 = 0;
 $utilized2 = 0;
@@ -86,8 +85,8 @@ $remaining = 6 - $utilized;
 
 
 
-
         $x=$d1;
+
         $y=$d2;
         $t1=strtotime($x);
         $t2=strtotime($y);
@@ -100,16 +99,18 @@ $remaining = 6 - $utilized;
           }elseif ($cdays > 7) {
             // code...
             header("Location: faculty-apply_leaves-cl.php?ack=2");
+          }elseif (strtotime($d1) > strtotime($d2)) {
+            // code...
+            header("Location: faculty-apply_leaves-cl.php?ack=3");
           }
           else{
             $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason,class_adjustment)
             values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason','$class_adj')";
             $query=mysqli_query($connect,$sql);
-            header("Location: faculty-view_leaves-cl.php");
+            // header("Location: faculty-view_leaves-cl.php");
           }
       }
     }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -293,6 +294,12 @@ $remaining = 6 - $utilized;
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                       <strong>Sorry you must apply on or before 7 days of the leave date.</strong>
                                   </div>
+                                <?php }else if($_GET['ack'] == 3){
+                            ?>
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>Invalid Selection of Dates.</strong>
+                            </div>
                                 <?php }}
                                         ?>
 
