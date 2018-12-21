@@ -13,7 +13,79 @@
     $facJntuId=$_SESSION['fid'];
     include('connection.php');
 ?>
+<?php
+    $year = date("Y");
 
+    $a=array();
+    $fid = $_SESSION['fid'];
+
+    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
+
+    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+            if($row["leave_type"] == "Academic Leave"){
+                $academics+=$row["ndays"];
+            }
+            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
+                $casual1+=$row["ndays"];
+            }
+            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
+                $casual2+=$row["ndays"];
+            }
+            if($row["leave_type"] == "Medical Leave"){
+                $medical+=$row["ndays"];
+            }
+            if($row["leave_type"] == "lop"){
+                $lop+=$row["ndays"];
+            }
+            if($row["leave_type"] == "reqccl"){
+                $reqccl+=$row["ndays"];
+            }
+            if($row["leave_type"] == "appccl"){
+                $appccl+=$row["ndays"];
+            }
+        }
+    }
+    $r_academics=15-$academics;
+    $r_casual1=6-$casual1;
+    $r_casual2=6-$casual2;
+    $r_medical=10-$medical;
+    $r_ccl=$reqccl-$appccl;
+
+?>
+<?php
+    $year = date("Y");
+
+    $a=array();
+
+    $fid = $_SESSION['fid'];
+
+    $treqccl=0;$tappccl=0;
+
+    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND  status='Approved' AND facJntuId='$fid'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+            if($row["leave_type"] == "reqccl"){
+                $treqccl+=$row["ndays"];
+            }
+            if($row["leave_type"] == "appccl"){
+                $tappccl+=$row["ndays"];
+            }
+        }
+    }
+    $r_tccl=$treqccl-$tappccl;
+
+?>
 <?php
 //get faculty dept
 $query=mysqli_query($connect,"select facDept from faculty where facJntuId='$facJntuId'");
@@ -23,7 +95,107 @@ if($query){
     }
 }
 ?>
+<?php
 
+if(isset($_POST['apply'])){
+   $type=$_POST['type'];
+   $d1=$_POST['fdate'];
+   $d2=$_POST['tdate'];
+   $des=$_POST['des'];
+//calculate difference of dates
+$date1 = new DateTime($_POST['fdate']);
+$date2 = new DateTime($_POST['tdate']);
+$interval = $date1->diff($date2);
+$ndays=$interval->days;
+$ndays+=1;
+
+//get previous leave count
+
+
+//check leave type and limit for that
+switch($type){
+    case "Casual Leave"   : $x=$d1;
+                            $y=$d2;
+                            $t1=strtotime($x);
+                            $t2=strtotime($y);
+                            $month2=date("m",$t2);
+                            $month1=date("m",$t1);
+
+                            if($month1<=6 && $month2<=6)
+                            {
+                            $rem = $r_casual1-$ndays;
+                            if($r_casual1-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual1");}
+                           else{
+                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                            $query=mysqli_query($connect,$sql);
+                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
+                           }
+                        }
+                        else if($month1>6 && $month2>6)
+                            {
+                                $rem = $r_casual2-$ndays;
+                            if($r_casual2-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual2");}
+                           else{
+                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                            $query=mysqli_query($connect,$sql);
+                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
+                           }
+                        }
+                        else
+                        {
+                            header("Location: faculty-apply_leaves.php?ack=2");
+                        }
+                        break;
+    case "Academic Leave"   :
+                            $rem = $r_academics-$ndays;
+                        if($r_academics-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_academics");}
+                       else{
+                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                        $query=mysqli_query($connect,$sql);
+                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
+                       }
+                       break;
+    case "Medical Leave"   :
+                        $rem = $r_medical-$ndays;
+                       if($r_medical-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_medical");}
+                      else{
+                       $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                       values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                       $query=mysqli_query($connect,$sql);
+                       header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
+                      }
+                      break;
+    case "appccl"   :
+                        $rem = $r_tccl-$ndays;
+                        if($r_tccl-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_tccl");}
+                       else{
+                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                        $query=mysqli_query($connect,$sql);
+                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
+                       }
+                       break;
+    case "reqccl"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                        $query=mysqli_query($connect,$sql);
+                        header("Location: faculty-apply_leaves.php?ack=1&rem=$r_ccl");
+                        break;
+    case "lop"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
+                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
+                        $query=mysqli_query($connect,$sql);
+                        header("Location: faculty-apply_leaves.php?ack=1");
+                        break;
+
+
+
+
+}
+// shows the total amount of days (not divided into years, months and days like above)
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +216,7 @@ if($query){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "faculty-apply_leaves2.php");
+        history.replaceState("", "", "faculty-view_leaves-mtl.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -165,11 +337,12 @@ if($query){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['fid']?></h3> </div>
+                    <h3 class="text-primary">VIEW MATERNITY LEAVE(CL) DETAILS</h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Leaves</li>
+                      <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                      <li class="breadcrumb-item"><a href="faculty-apply_leaves2.php">Leaves</a></li>
+                      <li class="breadcrumb-item active">View Leaves</li>
                     </ol>
                 </div>
             </div>
@@ -178,104 +351,58 @@ if($query){
             <div class="container-fluid">
                 <!-- Start Page Content -->
                  <div class="row">
-                   <div class="col-lg-12">
-                       <div class="card">
-                           <div class="card-title">
-                               <h4>Table Basic </h4>
-                           </div>
-                           <div class="card-body">
-                               <div class="table-responsive">
-                                   <table class="table">
-                                       <thead>
-                                           <tr>
-                                               <th>#</th>
-                                               <th>TYPE</th>
-                                               <th>MAX</th>
-                                               <th>USED</th>
-                                               <th>REMAINING</th>
-                                               <th>APPLY LEAVES</th>
-                                               <th>VIEW DETAILS</th>
-                                           </tr>
-                                       </thead>
-                                       <tbody>
-                                           <tr>
-                                               <th scope="row">1</th>
-                                               <td>Casual Leave(CL)</td>
-                                               <td>12</td>
-                                               <td>3</td>
-                                               <td>9</td>
-                                               <td><a href="faculty-apply_leaves-cl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-cl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">2</th>
-                                               <td>Maternity Leave(MTL)</td>
-                                               <td>90</td>
-                                               <td>90</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-mtl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-mtl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">3</th>
-                                               <td>Academic Leave(AL)</td>
-                                               <td>14</td>
-                                               <td>12</td>
-                                               <td>2</td>
-                                               <td><a href="faculty-apply_leaves-al.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-al.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">4</th>
-                                               <td>On-Duty(OD)</td>
-                                               <td>17</td>
-                                               <td>12</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-od.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-od.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">5</th>
-                                               <td>Emergency Leave(ML)</td>
-                                               <td>7</td>
-                                               <td>2</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-ml.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ml.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">6</th>
-                                               <td>Compensatory Casual Leave(CCL)</td>
-                                               <td>12</td>
-                                               <td>12</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-ccl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ccl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">7</th>
-                                               <td>Extra Ordinary Leave(EOL)</td>
-                                               <td>2</td>
-                                               <td>1</td>
-                                               <td>1</td>
-                                               <td><a href="faculty-apply_leaves-eol.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-eol.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                       </tbody>
-                                   </table>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                   <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">You have 3 remaining leaves from 12.</h4>
+                                <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                                <div class="table-responsive m-t-40">
+                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Leave ID</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Request At</th>
+                                                <th>Status</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                              <th>Leave ID</th>
+                                              <th>From</th>
+                                              <th>To</th>
+                                              <th>Request At</th>
+                                              <th>Status</th>
+                                              <th>Remarks</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>29/12/2018</td>
+                                                <td>31/12/2018</td>
+                                                <td>hod</td>
+                                                <td>pending</td>
+                                                <td>docs inapproapriate</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
 
                 <!-- row ends -->
                 <!-- End PAge Content -->
                 </div>
+              </div>
+              </div>
             <!-- End Container fluid  -->
             <!-- footer -->
             <footer class="footer"> © 2018 Vignan's Institute Management System Developed by CSE Dept &amp; Theme by <a href="https://colorlib.com">Colorlib</a></footer>
             <!-- End footer -->
-            </div>
+
         <!-- End Page wrapper  -->
     </div>
     <!-- End Wrapper -->

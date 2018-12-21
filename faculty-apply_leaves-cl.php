@@ -14,16 +14,89 @@
     include('connection.php');
 ?>
 
+
 <?php
 //get faculty dept
-$query=mysqli_query($connect,"select facDept from faculty where facJntuId='$facJntuId'");
+$query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
 if($query){
     while($row=mysqli_fetch_array($query)){
         $dept=$row['facDept'];
+        $facName = $row['facName'];
+
     }
 }
 ?>
+<?php
+//get faculty dept
+$year = date("Y");
+$utilized = 0;
+$utilized1 = 0;
+$utilized2 = 0;
+$status = "PENDING";
+$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
 
+$result = mysqli_query($connect,$sql);
+
+if ($result->num_rows > 0) {
+
+    while($row = $result->fetch_assoc()) {
+
+          if($row["month"] <= 6){
+              $utilized1+=$row["ndays"];
+          }
+          if($row["month"] > 6){
+              $utilized2+=$row["ndays"];
+          }
+    }
+}
+$now = new \DateTime('now');
+$month = $now->format('m');
+if($month <= 6){
+  $utilized = $utilized1;
+}
+else{
+  $utilized = $utilized2;
+}
+$remaining = 6 - $utilized;
+?>
+<?php
+    if(isset($_POST['apply'])){
+      $d1=$_POST['fdate'];
+      $d2=$_POST['tdate'];
+      $reason=$_POST['reason'];
+      $class_adj=$_POST['class_adj'];
+
+      if($d1 == ''||$d2 == ''||$reason == ''||$class_adj == ''){
+          header("Location: faculty-apply_leaves-cl.php?ack=1");
+      }
+      else{
+        $date1 = new DateTime($_POST['fdate']);
+        $date2 = new DateTime($_POST['tdate']);
+        $interval = $date1->diff($date2);
+        $ndays=$interval->days;
+        $ndays+=1;
+
+
+        $x=$d1;
+        $y=$d2;
+        $t1=strtotime($x);
+        $t2=strtotime($y);
+        $month2=date("m",$t2);
+        $month1=date("m",$t1);
+        $cal = $utilized + $ndays;
+        $rem = 6 - $utilized;
+          if($cal > 6){
+              header("Location: faculty-apply_leaves-cl.php?ack=0&rem=$rem");
+          }else{
+            $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept)
+            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept')";
+            $query=mysqli_query($connect,$sql);
+            header("Location: faculty-view_leaves-cl.php");
+          }
+      }
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +117,7 @@ if($query){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "faculty-apply_leaves2.php");
+        history.replaceState("", "", "faculty-apply_leaves-cl.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -165,11 +238,12 @@ if($query){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['fid']?></h3> </div>
+                    <h3 class="text-primary">APPLY CASUAL LEAVES(CL)</h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Leaves</li>
+                      <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                      <li class="breadcrumb-item"><a href="faculty-apply_leaves2.php">Leaves</a></li>
+                      <li class="breadcrumb-item active">Apply Leaves</li>
                     </ol>
                 </div>
             </div>
@@ -178,104 +252,94 @@ if($query){
             <div class="container-fluid">
                 <!-- Start Page Content -->
                  <div class="row">
-                   <div class="col-lg-12">
-                       <div class="card">
-                           <div class="card-title">
-                               <h4>Table Basic </h4>
-                           </div>
-                           <div class="card-body">
-                               <div class="table-responsive">
-                                   <table class="table">
-                                       <thead>
-                                           <tr>
-                                               <th>#</th>
-                                               <th>TYPE</th>
-                                               <th>MAX</th>
-                                               <th>USED</th>
-                                               <th>REMAINING</th>
-                                               <th>APPLY LEAVES</th>
-                                               <th>VIEW DETAILS</th>
-                                           </tr>
-                                       </thead>
-                                       <tbody>
-                                           <tr>
-                                               <th scope="row">1</th>
-                                               <td>Casual Leave(CL)</td>
-                                               <td>12</td>
-                                               <td>3</td>
-                                               <td>9</td>
-                                               <td><a href="faculty-apply_leaves-cl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-cl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">2</th>
-                                               <td>Maternity Leave(MTL)</td>
-                                               <td>90</td>
-                                               <td>90</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-mtl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-mtl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">3</th>
-                                               <td>Academic Leave(AL)</td>
-                                               <td>14</td>
-                                               <td>12</td>
-                                               <td>2</td>
-                                               <td><a href="faculty-apply_leaves-al.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-al.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">4</th>
-                                               <td>On-Duty(OD)</td>
-                                               <td>17</td>
-                                               <td>12</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-od.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-od.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">5</th>
-                                               <td>Emergency Leave(ML)</td>
-                                               <td>7</td>
-                                               <td>2</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-ml.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ml.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">6</th>
-                                               <td>Compensatory Casual Leave(CCL)</td>
-                                               <td>12</td>
-                                               <td>12</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-ccl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ccl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">7</th>
-                                               <td>Extra Ordinary Leave(EOL)</td>
-                                               <td>2</td>
-                                               <td>1</td>
-                                               <td>1</td>
-                                               <td><a href="faculty-apply_leaves-eol.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-eol.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                       </tbody>
-                                   </table>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                    <?php
+                      if((6 - $utilized) > 0){
+                        ?>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>You have <?php echo $remaining;?> more to apply</h4><br>
+                                    <?php if(isset($_GET['ack'])){ echo "<br>";?>
+                                    <div class="card-content">
+                                        <?php if($_GET['ack'] == 0){ ?>
+                                        <div class="alert alert-danger alert-dismissible fade show">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <strong>Error Applying try to apply less than or equal to <?php echo $_GET['rem'];?></strong>
+                                        </div>
+                                        <?php
+                                            }else if($_GET['ack'] == 1){
+                                        ?>
+                                        <div class="alert alert-success alert-dismissible fade show">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <strong>Enter Valid Details;</strong>
+                                        </div>
+                                      <?php }}
+                                        ?>
 
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
+                                        ?>" method="post">
+
+                                            <div class="form-group">
+                                                <label>From Date</label>
+                                                <input type="date" class="form-control"
+                                                name="fdate" placeholder="dd/mm/yyyy">
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label>To Date</label>
+                                                <input type="date" class="form-control"
+                                                name="tdate" placeholder="dd/mm/yyyy">
+
+                                            </div>
+                                            <div class="form-group">
+                                            <label for="comment">Reason</label>
+                                            <textarea class="form-control" rows="8" id="reason" name="reason"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                            <label for="comment">Class Adjustment</label>
+                                            <textarea class="form-control" rows="8" id="class_adj" name="class_adj"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-info" name="apply">Submit</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+
+
+                    </div><?php
+                      }
+                      else{
+                        ?>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>You have exceeded the maximum limit</h4><br>
+                                    <h4>NOTE: if your application is in pending status then it is also considered as approved leaves from your limit.</h4><br>
+                                    <h4>please apply leave after your previous leave is approved or rejected by HOD, DEAN or PRINCIPAL</h4><br>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+
+
+                    </div><?php
+                      }
+                    ?>
                 <!-- row ends -->
                 <!-- End PAge Content -->
-                </div>
+            </div>
             <!-- End Container fluid  -->
             <!-- footer -->
             <footer class="footer"> © 2018 Vignan's Institute Management System Developed by CSE Dept &amp; Theme by <a href="https://colorlib.com">Colorlib</a></footer>
             <!-- End footer -->
-            </div>
+        </div>
         <!-- End Page wrapper  -->
     </div>
     <!-- End Wrapper -->

@@ -1,5 +1,5 @@
 <?php
-    $facJntuId=$dept='';
+
     if(isset($_COOKIE['id']))
     {
         session_id($_COOKIE['id']);
@@ -7,21 +7,10 @@
 
     session_start();
 
-    if($_SESSION['fid'] == null){
-        header("Location:faculty-login.php");
+    if($_SESSION['pid'] == null){
+        header("Location:principal-login.php");
     }
-    $facJntuId=$_SESSION['fid'];
     include('connection.php');
-?>
-
-<?php
-//get faculty dept
-$query=mysqli_query($connect,"select facDept from faculty where facJntuId='$facJntuId'");
-if($query){
-    while($row=mysqli_fetch_array($query)){
-        $dept=$row['facDept'];
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +33,7 @@ if($query){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "faculty-apply_leaves2.php");
+        history.replaceState("", "", "principal-view_leaves.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -70,7 +59,7 @@ if($query){
                 <div class="navbar-header">
                     <a class="navbar-brand" href="index.html">
                         <!-- Logo icon -->
-                        <b><img src="images/faculty_30.png" alt="homepage" class="dark-logo" /></b>
+                        <b><img src="images/University.png" alt="homepage" class="dark-logo" /></b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
                         <!-- <span><img src="images/logo-text.png" alt="homepage" class="dark-logo" /></span> -->
@@ -92,8 +81,8 @@ if($query){
                             <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/Admin_25px.png" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="javascript:;" data-toggle="modal" data-target="#changePassModal"><i class="ti-user"></i> Change Password</a></li>
-                                    <li><a href="faculty/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                      <li><a href="principal-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="principal/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -113,45 +102,34 @@ if($query){
                         <li class="nav-label">Home</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty.php">Profile </a></li>
+                                <li><a href="principal.php">Profile </a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">View Details</li>
-                        <li> <a href="faculty-view_student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
+                        <li> <a href="principal-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
                         </li>
-                        <li> <a href="hod-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Leaves</span></a>
+                        <li> <a href="principal-faculty.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Faculty</span></a>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Exam Cell</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-view_results.php">View Results</a></li>
-                                <li><a href="faculty-result_analysis.php">Result Analysis</a></li>
-                                <li><a href="faculty-subject_analysis.php">Subject Analysis</a></li>
+                                <li><a href="principal-view_results.php">View Results</a></li>
+                                <li><a href="principal-result_analysis.php">Result Analysis</a></li>
+                                <li><a href="principal-subject_analysis.php">Subject Analysis</a></li>
+                                <li><a href="principal-backlogs.php">Backlogs</a></li>
                             </ul>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Attendance</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-view_att.php">View Attendance</a></li>
+                                <li><a href="principal-view_att.php">View Attendance</a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Edit Profile</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo "5"; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-edit_pd.php">Personal Details</a></li>
-                                <li><a href="faculty-edit_ad.php">Academic Details</a></li>
-                                <li><a href="faculty-add_exp.php">Work Experience</a></li>
-                                <li><a href="faculty-add_rpub.php">Research Publications</a></li>
-                                <li><a href="faculty-add_rpro.php">Research Project</a></li>
-                                <li><a href="faculty-add_bpub.php">Books Published</a></li>
-                                <li><a href="faculty-add_doc.php">Doctorial Guidance</a></li>
-                                <li><a href="faculty-add_soc.php">Professional Society Membership</a></li>
+                                <li><a href="principal-view_leaves.php">View Leaves</a></li>
                             </ul>
-
-                        </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -165,7 +143,7 @@ if($query){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['fid']?></h3> </div>
+                    <h3 class="text-primary">WELCOME </h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -177,105 +155,66 @@ if($query){
             <!-- Container fluid  -->
             <div class="container-fluid">
                 <!-- Start Page Content -->
-                 <div class="row">
-                   <div class="col-lg-12">
-                       <div class="card">
-                           <div class="card-title">
-                               <h4>Table Basic </h4>
-                           </div>
-                           <div class="card-body">
-                               <div class="table-responsive">
-                                   <table class="table">
-                                       <thead>
-                                           <tr>
-                                               <th>#</th>
-                                               <th>TYPE</th>
-                                               <th>MAX</th>
-                                               <th>USED</th>
-                                               <th>REMAINING</th>
-                                               <th>APPLY LEAVES</th>
-                                               <th>VIEW DETAILS</th>
-                                           </tr>
-                                       </thead>
-                                       <tbody>
-                                           <tr>
-                                               <th scope="row">1</th>
-                                               <td>Casual Leave(CL)</td>
-                                               <td>12</td>
-                                               <td>3</td>
-                                               <td>9</td>
-                                               <td><a href="faculty-apply_leaves-cl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-cl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">2</th>
-                                               <td>Maternity Leave(MTL)</td>
-                                               <td>90</td>
-                                               <td>90</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-mtl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-mtl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">3</th>
-                                               <td>Academic Leave(AL)</td>
-                                               <td>14</td>
-                                               <td>12</td>
-                                               <td>2</td>
-                                               <td><a href="faculty-apply_leaves-al.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-al.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">4</th>
-                                               <td>On-Duty(OD)</td>
-                                               <td>17</td>
-                                               <td>12</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-od.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-od.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">5</th>
-                                               <td>Emergency Leave(ML)</td>
-                                               <td>7</td>
-                                               <td>2</td>
-                                               <td>5</td>
-                                               <td><a href="faculty-apply_leaves-ml.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ml.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">6</th>
-                                               <td>Compensatory Casual Leave(CCL)</td>
-                                               <td>12</td>
-                                               <td>12</td>
-                                               <td>0</td>
-                                               <td><a href="faculty-apply_leaves-ccl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-ccl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                           <tr>
-                                               <th scope="row">7</th>
-                                               <td>Extra Ordinary Leave(EOL)</td>
-                                               <td>2</td>
-                                               <td>1</td>
-                                               <td>1</td>
-                                               <td><a href="faculty-apply_leaves-eol.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
-                                               <td><a href="faculty-view_leaves-eol.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
-                                           </tr>
-                                       </tbody>
-                                   </table>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                <div class="row">
 
-                <!-- row ends -->
+                  <div class="col-lg-12">
+                      <div class="card">
+                          <div class="card-title">
+                              <h4>Table Basic </h4>
+                          </div>
+                          <div class="card-body">
+                              <div class="table-responsive">
+                                  <table class="table">
+                                      <thead>
+                                          <tr>
+                                              <th>LEAVE ID</th>
+                                              <th>NAME</th>
+                                              <th>FROM</th>
+                                              <th>TO</th>
+                                              <th>LEAVE TYPE</th>
+                                              <th>VIEW DETAILS</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                        <?php
+                                        //get faculty dept
+                                        $count = 1;
+                                        $query=mysqli_query($connect,"select * from leavescl WHERE principal_status = 'PENDING' AND dean_status = 'APPROVED' AND hod_status = 'APPROVED'");
+                                        if($query){
+                                            while($row=mysqli_fetch_array($query)){
+
+                                              $leave_id=$row['leave_id'];
+                                              $facName = $row['facName'];
+                                              $fdate = $row['fdate'];
+                                              $tdate = $row['tdate'];
+                                              $leave_type = 'cl';
+                                              $facJntuId = $row['facJntuId'];?>
+
+                                              <tr>
+                                                  <th scope="row"><?php echo $leave_id;?></th>
+                                                  <td><?php echo $facName;?></td>
+                                                  <td><?php echo $fdate;?></td>
+                                                  <td><?php echo $tdate;?></td>
+                                                  <td><?php echo $leave_type;?></td>
+                                                  <td><a href="principal-view-leaves-details.php?id=<?php echo $leave_id." ".$leave_type;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                              </tr><?php
+                                            }
+                                        }
+                                        ?>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
                 <!-- End PAge Content -->
-                </div>
+            </div>
             <!-- End Container fluid  -->
             <!-- footer -->
             <footer class="footer"> © 2018 Vignan's Institute Management System Developed by CSE Dept &amp; Theme by <a href="https://colorlib.com">Colorlib</a></footer>
             <!-- End footer -->
-            </div>
+        </div>
         <!-- End Page wrapper  -->
     </div>
     <!-- End Wrapper -->
@@ -327,6 +266,7 @@ if($query){
           </div>
         </div>
       </div>
+
     <!-- All Jquery -->
     <script src="js/lib/jquery/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -351,7 +291,7 @@ if($query){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 
