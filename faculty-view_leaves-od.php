@@ -13,189 +13,7 @@
     $facJntuId=$_SESSION['fid'];
     include('connection.php');
 ?>
-<?php
-    $year = date("Y");
 
-    $a=array();
-    $fid = $_SESSION['fid'];
-
-    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-
-            if($row["leave_type"] == "Academic Leave"){
-                $academics+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
-                $casual1+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
-                $casual2+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Medical Leave"){
-                $medical+=$row["ndays"];
-            }
-            if($row["leave_type"] == "lop"){
-                $lop+=$row["ndays"];
-            }
-            if($row["leave_type"] == "reqccl"){
-                $reqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $appccl+=$row["ndays"];
-            }
-        }
-    }
-    $r_academics=15-$academics;
-    $r_casual1=6-$casual1;
-    $r_casual2=6-$casual2;
-    $r_medical=10-$medical;
-    $r_ccl=$reqccl-$appccl;
-
-?>
-<?php
-    $year = date("Y");
-
-    $a=array();
-
-    $fid = $_SESSION['fid'];
-
-    $treqccl=0;$tappccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND  status='Approved' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-            if($row["leave_type"] == "reqccl"){
-                $treqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $tappccl+=$row["ndays"];
-            }
-        }
-    }
-    $r_tccl=$treqccl-$tappccl;
-
-?>
-<?php
-//get faculty dept
-$query=mysqli_query($connect,"select facDept from faculty where facJntuId='$facJntuId'");
-if($query){
-    while($row=mysqli_fetch_array($query)){
-        $dept=$row['facDept'];
-    }
-}
-?>
-<?php
-
-if(isset($_POST['apply'])){
-   $type=$_POST['type'];
-   $d1=$_POST['fdate'];
-   $d2=$_POST['tdate'];
-   $des=$_POST['des'];
-//calculate difference of dates
-$date1 = new DateTime($_POST['fdate']);
-$date2 = new DateTime($_POST['tdate']);
-$interval = $date1->diff($date2);
-$ndays=$interval->days;
-$ndays+=1;
-
-//get previous leave count
-
-
-//check leave type and limit for that
-switch($type){
-    case "Casual Leave"   : $x=$d1;
-                            $y=$d2;
-                            $t1=strtotime($x);
-                            $t2=strtotime($y);
-                            $month2=date("m",$t2);
-                            $month1=date("m",$t1);
-
-                            if($month1<=6 && $month2<=6)
-                            {
-                            $rem = $r_casual1-$ndays;
-                            if($r_casual1-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual1");}
-                           else{
-                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                            $query=mysqli_query($connect,$sql);
-                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                           }
-                        }
-                        else if($month1>6 && $month2>6)
-                            {
-                                $rem = $r_casual2-$ndays;
-                            if($r_casual2-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual2");}
-                           else{
-                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                            $query=mysqli_query($connect,$sql);
-                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                           }
-                        }
-                        else
-                        {
-                            header("Location: faculty-apply_leaves.php?ack=2");
-                        }
-                        break;
-    case "Academic Leave"   :
-                            $rem = $r_academics-$ndays;
-                        if($r_academics-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_academics");}
-                       else{
-                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                       }
-                       break;
-    case "Medical Leave"   :
-                        $rem = $r_medical-$ndays;
-                       if($r_medical-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_medical");}
-                      else{
-                       $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                       values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                       $query=mysqli_query($connect,$sql);
-                       header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                      }
-                      break;
-    case "appccl"   :
-                        $rem = $r_tccl-$ndays;
-                        if($r_tccl-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_tccl");}
-                       else{
-                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                       }
-                       break;
-    case "reqccl"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$r_ccl");
-                        break;
-    case "lop"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1");
-                        break;
-
-
-
-
-}
-// shows the total amount of days (not divided into years, months and days like above)
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -379,14 +197,42 @@ switch($type){
                                             </tr>
                                         </tfoot>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>29/12/2018</td>
-                                                <td>31/12/2018</td>
-                                                <td>hod</td>
-                                                <td>pending</td>
-                                                <td>docs inapproapriate</td>
-                                            </tr>
+                                          <?php
+                                          //get faculty dept
+                                          $query=mysqli_query($connect,"select * from leavesod where facJntuId='$facJntuId'");
+                                          if($query){
+                                              while($row=mysqli_fetch_array($query)){
+                                                  $leave_id=$row['leave_id'];
+                                                  $fdate = $row['fdate'];
+                                                  $tdate = $row['tdate'];
+                                                  if($row['hod_status'] == 'PENDING'){
+                                                    $requestAt = 'HOD';
+                                                  }elseif ($row['dean_status'] == 'PENDING') {
+                                                    $requestAt = 'DEAN';
+                                                  }elseif ($row['principal_status'] == 'PENDING') {
+                                                    $requestAt = 'PRINCIPAL';
+                                                  }else{
+                                                    $requestAt = 'REQUEST COMPLETED';
+                                                  }
+
+                                                  if($row['hod_status'] == 'REJECTED' || $row['dean_status'] == 'REJECTED' || $row['principal_status'] == 'REJECTED'){
+                                                    $statusApp = 'REJECTED';
+                                                  }elseif($row['principal_status'] == 'APPROVED'){
+                                                    $statusApp = 'APPROVED';
+                                                  }else{
+                                                    $statusApp = 'PENDING';
+                                                  }?>
+                                                  <tr>
+                                                      <td><?php echo $leave_id;?></td>
+                                                      <td><?php echo $fdate;?></td>
+                                                      <td><?php echo $tdate;?></td>
+                                                      <td><?php echo $requestAt;?></td>
+                                                      <td><?php echo $statusApp;?></td>
+                                                      <td><?php echo $row['hod_remarks'];?></td>
+                                                  </tr><?php
+                                              }
+                                          }
+                                          ?>
                                         </tbody>
                                     </table>
                                 </div>

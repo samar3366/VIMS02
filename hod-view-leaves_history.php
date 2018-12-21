@@ -1,5 +1,5 @@
 <?php
-    $facJntuId=$dept='';
+
     if(isset($_COOKIE['id']))
     {
         session_id($_COOKIE['id']);
@@ -7,128 +7,22 @@
 
     session_start();
 
-    if($_SESSION['fid'] == null){
-        header("Location:faculty-login.php");
-    }
-    $facJntuId=$_SESSION['fid'];
-    include('connection.php');
-?>
-<?php
-    $year = date("Y");
-
-    $a=array();
-    $fid = $_SESSION['fid'];
-
-    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-
-            if($row["leave_type"] == "Academic Leave"){
-                $academics+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
-                $casual1+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
-                $casual2+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Medical Leave"){
-                $medical+=$row["ndays"];
-            }
-            if($row["leave_type"] == "lop"){
-                $lop+=$row["ndays"];
-            }
-            if($row["leave_type"] == "reqccl"){
-                $reqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $appccl+=$row["ndays"];
-            }
-        }
+    if($_SESSION['hid'] == null){
+        header("Location:hod-login.php");
     }
 
 ?>
 <?php
-//get faculty dept
-$query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
-if($query){
-    while($row=mysqli_fetch_array($query)){
-        $dept=$row['facDept'];
-        $facName = $row['facName'];
-
+$hdept=$_SESSION['hid'];
+$count=0;
+include("connection.php");
+$output=0;
+$sql=mysqli_query($connect,"select count(leave_id) as count from facleave where status='0' and facDept='$hdept'");
+if($sql){
+    while($row=mysqli_fetch_array($sql)){
+        $count=$row['count'];
     }
 }
-?>
-<?php
-  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
-  if(isset($_POST['apply'])){
-    if(!empty($_POST['fdate'])){
-    $d1=$_POST['fdate'];
-    $d2 =$_POST['tdate'];
-    $status="PENDING";
-    $date1 = new DateTime($_POST['fdate']);
-    $date2 = new DateTime($_POST['tdate']);
-    $interval = $date1->diff($date2);
-    $ndays=$interval->days;
-    $ndays+=1;
-     //$filename=$_FILES["fileToUpload"]["name"];
-     $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
-
-     $target_dir = "uploads/";
-     $time = time();
-     $new_name = $time."_".basename($filename);
-     $target_file = $target_dir.$new_name;
-     $uploadOk = 1;
-     $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-
-      // Check if file already exists
-      if (file_exists($target_file)) {
-      $err1="Sorry, file already exists.";
-      $uploadOk = 0;
-      }
-
-      // Check file size
-      if ($_FILES["fileToUpload"]["size"] > 500000000) {
-      $err2="Sorry, your file is too large.";
-      $uploadOk = 0;
-      }
-
-      // Allow certain file formats
-      if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif" && $fileType != "docx" && $fileType != "pdf" && $fileType != "pptx" && $fileType != "mp3" && $fileType != "mp4" ) {
-       $err3="Sorry, only JPG, JPEG, PNG , GIF ,MP4 , MP3 , PDF , DOCX files are allowed.";
-       $uploadOk = 0;
-      }
-      // Check if $uploadOk is set to 0 by an error
-      if ($uploadOk == 0) {
-      $err4="Sorry, your file was not uploaded.";
-      // if everything is ok, try to upload file
-      //
-      } else {
-          if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-          //update dtabase
-          $query=mysqli_query($connect,"
-          insert into leavesml(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path)
-          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name')
-          ");
-             if($query){
-             $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
-             }else{
-             $err6="Something went wrong. please try again later.";
-             }
-          } else {
-          $err5="Sorry, there was an error uploading your file.";
-          }
-      }
-
-
-    }
-  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +44,7 @@ if($query){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "faculty-apply_leaves-ml.php");
+        history.replaceState("", "", "hod-view-leaves_history.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -176,7 +70,7 @@ if($query){
                 <div class="navbar-header">
                     <a class="navbar-brand" href="index.html">
                         <!-- Logo icon -->
-                        <b><img src="images/faculty_30.png" alt="homepage" class="dark-logo" /></b>
+                        <b><img src="images/University.png" alt="homepage" class="dark-logo" /></b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
                         <!-- <span><img src="images/logo-text.png" alt="homepage" class="dark-logo" /></span> -->
@@ -198,8 +92,8 @@ if($query){
                             <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/Admin_25px.png" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="javascript:;" data-toggle="modal" data-target="#changePassModal"><i class="ti-user"></i> Change Password</a></li>
-                                    <li><a href="faculty/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                      <li><a href="hod-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="hod/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -219,45 +113,34 @@ if($query){
                         <li class="nav-label">Home</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty.php">Profile </a></li>
+                                <li><a href="hod.php">Profile </a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">View Details</li>
-                        <li> <a href="faculty-view_student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
+                        <li> <a href="hod-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
                         </li>
-                        <li> <a href="hod-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Leaves</span></a>
+                        <li> <a href="hod-faculty.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Faculty</span></a>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Exam Cell</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-view_results.php">View Results</a></li>
-                                <li><a href="faculty-result_analysis.php">Result Analysis</a></li>
-                                <li><a href="faculty-subject_analysis.php">Subject Analysis</a></li>
+                                <li><a href="hod-view_results.php">View Results</a></li>
+                                <li><a href="hod-result_analysis.php">Result Analysis</a></li>
+                                <li><a href="hod-subject_analysis.php">Subject Analysis</a></li>
+                                <li><a href="hod-backlogs.php">Backlogs</a></li>
                             </ul>
                         </li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Attendance</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-view_att.php">View Attendance</a></li>
+                                <li><a href="hod-view_att.php">View Attendance</a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Edit Profile</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="faculty-edit_pd.php">Personal Details</a></li>
-                                <li><a href="faculty-edit_ad.php">Academic Details</a></li>
-                                <li><a href="faculty-add_exp.php">Work Experience</a></li>
-                                <li><a href="faculty-add_rpub.php">Research Publications</a></li>
-                                <li><a href="faculty-add_rpro.php">Research Project</a></li>
-                                <li><a href="faculty-add_bpub.php">Books Published</a></li>
-                                <li><a href="faculty-add_doc.php">Doctorial Guidance</a></li>
-                                <li><a href="faculty-add_soc.php">Professional Society Membership</a></li>
+                                <li><a href="hod-view_leaves.php">View Leaves</a></li>
                             </ul>
-
-                        </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -271,12 +154,11 @@ if($query){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">APPLY EMERGENCY/MEDICAL LEAVES(CL)</h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid']?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                      <li class="breadcrumb-item"><a href="faculty-apply_leaves2.php">Leaves</a></li>
-                      <li class="breadcrumb-item active">Apply Leaves</li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Leaves</li>
                     </ol>
                 </div>
             </div>
@@ -284,71 +166,128 @@ if($query){
             <!-- Container fluid  -->
             <div class="container-fluid">
                 <!-- Start Page Content -->
-                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-title">
-                                <h4>You have 3 more to apply</h4><br>
-                                <?php if(isset($_GET['ack'])){ echo "<br>";?>
-                                <div class="card-content">
-                                    <?php if($_GET['ack'] == 0){ ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Your have only <?php echo $_GET['rem'];?> Leaves</strong>
-                                    </div>
-                                    <?php
-                                        }else if($_GET['ack'] == 1){
-                                    ?>
-                                    <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
-                                    </div>
-                                    <?php }
-                                    else
-                                    {?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Month selection</strong>
-                                    </div>
+                <div class="row">
 
-                                   <?php }
+                  <div class="col-12">
+                       <div class="card">
+                           <div class="card-body">
+                               <h4 class="card-title">History of leaves</h4>
+                               <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                               <div class="table-responsive m-t-40">
+                                   <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                       <thead>
+                                           <tr>
+                                               <th>Leave ID</th>
+                                               <th>Faculty Name</th>
+                                               <th>From</th>
+                                               <th>To</th>
+                                               <th>Leave Type</th>
+                                               <th>Leave Status</th>
+                                               <th>View Details</th>
+                                           </tr>
+                                       </thead>
+                                       <tfoot>
+                                           <tr>
+                                             <th>Leave ID</th>
+                                             <th>Faculty Name</th>
+                                             <th>From</th>
+                                             <th>To</th>
+                                             <th>Leave Type</th>
+                                             <th>Leave Status</th>
+                                             <th>View Details</th>
+                                           </tr>
+                                       </tfoot>
+                                       <tbody>
+
+                                         <?php
+                                         //get faculty dept
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         for($i=0;$i<7;$i++){
+                                           $tableName = $leaves[$i];
+                                         $query=mysqli_query($connect,"select * from $tableName WHERE hod_status <> 'PENDING' AND facDept='$hdept'");
+                                         if($query){
+                                             while($row=mysqli_fetch_array($query)){
+
+                                               $leave_id=$row['leave_id'];
+                                               $facName = $row['facName'];
+                                               $fdate = $row['fdate'];
+                                               $tdate = $row['tdate'];
+                                               if($tableName == 'leavescl'){
+                                                 $leave_type = 'CASUAL LEAVES';
+                                               }elseif ($tableName == 'leavesmtl') {
+                                                 // code...
+                                                 $leave_type = 'MATERNITY LEAVES';
+                                               }elseif ($tableName == 'leavesal') {
+                                                 // code...
+                                                 $leave_type = 'ACADEMIC LEAVES';
+                                               }elseif ($tableName == 'leavesod') {
+                                                 // code...
+                                                 $leave_type = 'ON-DUTY LEAVES';
+                                               }elseif ($tableName == 'leavesml') {
+                                                 // code...
+                                                 $leave_type = 'EMERGENCY LEAVES';
+                                               }elseif ($tableName == 'leavesccl') {
+                                                 // code...
+                                                 if($row['type'] == 'Request ccl'){
+                                                   $leave_type = 'REQUEST CCL LEAVES';
+                                                 }else{
+                                                   $leave_type = 'APPLY CCL LEAVES';
+                                                 }
+
+                                               }elseif ($tableName == 'leaveseol') {
+                                                 // code...
+                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }
+                                               $facJntuId = $row['facJntuId'];
+
+                                               $hod_status = $row['hod_status'];
+                                               $hod_remarks = $row['hod_remarks'];
+
+                                               $dean_status = $row['dean_status'];
+                                               $dean_remarks = $row['dean_remarks'];
+
+                                               $principal_status = $row['principal_status'];
+                                               $principal_remarks = $row['principal_remarks'];
 
 
-                                }?>
+                                               if($hod_status == 'REJECTED'){
+                                                 $msg = "REJECTED";
+                                               }elseif ($principal_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "APPROVED";
+                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "Request at Principal";
+                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
+                                                 // code...
+                                                 $msg = "Request at Dean";
+                                               }
+                                               ?>
 
-                            </div>
-                            <div class="card-body">
-                                <div class="basic-form">
-                                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
-                                    ?>" method="post" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <label>From Date</label>
-                                            <input type="date" class="form-control"
-                                            name="fdate" placeholder="dd/mm/yyyy">
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label>To Date</label>
-                                            <input type="date" class="form-control"
-                                            name="tdate" placeholder="dd/mm/yyyy">
-
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="exampleInputFile">Upload</label>
-                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-                                        </div>
-                                        <button type="submit" class="btn btn-info" name="apply">Submit</button>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /# column -->
+                                               <tr>
+                                                   <th scope="row"><?php echo $leave_id;?></th>
+                                                   <td><?php echo $facName;?></td>
+                                                   <td><?php echo $fdate;?></td>
+                                                   <td><?php echo $tdate;?></td>
+                                                   <td><?php echo $leave_type;?></td>
+                                                   <td><?php echo $msg;?></td>
+                                                   <td><a href="hod-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                               </tr><?php
+                                             }
+                                         }
+                                       }
+                                         ?>
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
 
 
-                </div>
-                <!-- row ends -->
+               <!-- row ends -->
+               <!-- End PAge Content -->
+               </div>
+             </div>
+
                 <!-- End PAge Content -->
             </div>
             <!-- End Container fluid  -->
@@ -407,6 +346,7 @@ if($query){
           </div>
         </div>
       </div>
+
     <!-- All Jquery -->
     <script src="js/lib/jquery/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -431,7 +371,7 @@ if($query){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

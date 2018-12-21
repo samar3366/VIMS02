@@ -102,8 +102,8 @@ $remaining = 6 - $utilized;
             header("Location: faculty-apply_leaves-cl.php?ack=2");
           }
           else{
-            $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept)
-            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept')";
+            $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason,class_adjustment)
+            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason','$class_adj')";
             $query=mysqli_query($connect,$sql);
             header("Location: faculty-view_leaves-cl.php");
           }

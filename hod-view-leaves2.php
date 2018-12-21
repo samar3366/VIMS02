@@ -171,7 +171,7 @@ if($sql){
                   <div class="col-lg-12">
                       <div class="card">
                           <div class="card-title">
-                              <h4>Table Basic </h4>
+                              <h4>Validate Leaves</h4>
                           </div>
                           <div class="card-body">
                               <div class="table-responsive">
@@ -200,7 +200,32 @@ if($sql){
                                               $facName = $row['facName'];
                                               $fdate = $row['fdate'];
                                               $tdate = $row['tdate'];
-                                              $leave_type = 'cl';
+                                              if($tableName == 'leavescl'){
+                                                $leave_type = 'CASUAL LEAVES';
+                                              }elseif ($tableName == 'leavesmtl') {
+                                                // code...
+                                                $leave_type = 'MATERNITY LEAVES';
+                                              }elseif ($tableName == 'leavesal') {
+                                                // code...
+                                                $leave_type = 'ACADEMIC LEAVES';
+                                              }elseif ($tableName == 'leavesod') {
+                                                // code...
+                                                $leave_type = 'ON-DUTY LEAVES';
+                                              }elseif ($tableName == 'leavesml') {
+                                                // code...
+                                                $leave_type = 'EMERGENCY LEAVES';
+                                              }elseif ($tableName == 'leavesccl') {
+                                                // code...
+                                                if($row['type'] == 'Request ccl'){
+                                                  $leave_type = 'REQUEST CCL LEAVES';
+                                                }else{
+                                                  $leave_type = 'APPLY CCL LEAVES';
+                                                }
+
+                                              }elseif ($tableName == 'leaveseol') {
+                                                // code...
+                                                $leave_type = 'EXTRA ORDINARY LEAVES';
+                                              }
                                               $facJntuId = $row['facJntuId'];?>
 
                                               <tr>
@@ -209,7 +234,7 @@ if($sql){
                                                   <td><?php echo $fdate;?></td>
                                                   <td><?php echo $tdate;?></td>
                                                   <td><?php echo $leave_type;?></td>
-                                                  <td><a href="hod-view-leaves-details.php?id=<?php echo $leave_id." ".$leave_type;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                                  <td><a href="hod-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
                                               </tr><?php
                                             }
                                         }

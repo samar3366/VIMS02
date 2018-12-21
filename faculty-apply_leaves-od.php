@@ -52,150 +52,87 @@
             }
         }
     }
-    $r_academics=15-$academics;
-    $r_casual1=6-$casual1;
-    $r_casual2=6-$casual2;
-    $r_medical=10-$medical;
-    $r_ccl=$reqccl-$appccl;
-
-?>
-<?php
-    $year = date("Y");
-
-    $a=array();
-
-    $fid = $_SESSION['fid'];
-
-    $treqccl=0;$tappccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND  status='Approved' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-            if($row["leave_type"] == "reqccl"){
-                $treqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $tappccl+=$row["ndays"];
-            }
-        }
-    }
-    $r_tccl=$treqccl-$tappccl;
 
 ?>
 <?php
 //get faculty dept
-$query=mysqli_query($connect,"select facDept from faculty where facJntuId='$facJntuId'");
+$query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
 if($query){
     while($row=mysqli_fetch_array($query)){
         $dept=$row['facDept'];
+        $facName = $row['facName'];
+
     }
 }
 ?>
+
 <?php
+  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
+  if(isset($_POST['apply'])){
+    if(!empty($_POST['fdate'])){
+    $d1=$_POST['fdate'];
+    $d2 =$_POST['tdate'];
+    $type = $_POST['type'];
+    $status="PENDING";
+    $date1 = new DateTime($_POST['fdate']);
+    $date2 = new DateTime($_POST['tdate']);
+    $interval = $date1->diff($date2);
+    $ndays=$interval->days;
+    $ndays+=1;
+     //$filename=$_FILES["fileToUpload"]["name"];
+     $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
-if(isset($_POST['apply'])){
-   $type=$_POST['type'];
-   $d1=$_POST['fdate'];
-   $d2=$_POST['tdate'];
-   $des=$_POST['des'];
-//calculate difference of dates
-$date1 = new DateTime($_POST['fdate']);
-$date2 = new DateTime($_POST['tdate']);
-$interval = $date1->diff($date2);
-$ndays=$interval->days;
-$ndays+=1;
+     $target_dir = "uploads/";
+     $time = time();
+     $new_name = $time."_".basename($filename);
+     $target_file = $target_dir.$new_name;
+     $uploadOk = 1;
+     $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-//get previous leave count
+      // Check if file already exists
+      if (file_exists($target_file)) {
+      $err1="Sorry, file already exists.";
+      $uploadOk = 0;
+      }
 
+      // Check file size
+      if ($_FILES["fileToUpload"]["size"] > 500000000) {
+      $err2="Sorry, your file is too large.";
+      $uploadOk = 0;
+      }
 
-//check leave type and limit for that
-switch($type){
-    case "Casual Leave"   : $x=$d1;
-                            $y=$d2;
-                            $t1=strtotime($x);
-                            $t2=strtotime($y);
-                            $month2=date("m",$t2);
-                            $month1=date("m",$t1);
-
-                            if($month1<=6 && $month2<=6)
-                            {
-                            $rem = $r_casual1-$ndays;
-                            if($r_casual1-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual1");}
-                           else{
-                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                            $query=mysqli_query($connect,$sql);
-                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                           }
-                        }
-                        else if($month1>6 && $month2>6)
-                            {
-                                $rem = $r_casual2-$ndays;
-                            if($r_casual2-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_casual2");}
-                           else{
-                            $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                            values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                            $query=mysqli_query($connect,$sql);
-                            header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                           }
-                        }
-                        else
-                        {
-                            header("Location: faculty-apply_leaves.php?ack=2");
-                        }
-                        break;
-    case "Academic Leave"   :
-                            $rem = $r_academics-$ndays;
-                        if($r_academics-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_academics");}
-                       else{
-                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                       }
-                       break;
-    case "Medical Leave"   :
-                        $rem = $r_medical-$ndays;
-                       if($r_medical-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_medical");}
-                      else{
-                       $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                       values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                       $query=mysqli_query($connect,$sql);
-                       header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                      }
-                      break;
-    case "appccl"   :
-                        $rem = $r_tccl-$ndays;
-                        if($r_tccl-$ndays<0){ header("Location: faculty-apply_leaves.php?ack=0&rem=$r_tccl");}
-                       else{
-                        $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$rem");
-                       }
-                       break;
-    case "reqccl"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1&rem=$r_ccl");
-                        break;
-    case "lop"   : $sql="insert into facleave(facJntuId,leave_type,fdate,tdate,ndays,description,status,facDept)
-                        values('$facJntuId','$type','$d1','$d2','$ndays','$des',0,'$dept')";
-                        $query=mysqli_query($connect,$sql);
-                        header("Location: faculty-apply_leaves.php?ack=1");
-                        break;
+      // Allow certain file formats
+      if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif" && $fileType != "docx" && $fileType != "pdf" && $fileType != "pptx" && $fileType != "mp3" && $fileType != "mp4" ) {
+       $err3="Sorry, only JPG, JPEG, PNG , GIF ,MP4 , MP3 , PDF , DOCX files are allowed.";
+       $uploadOk = 0;
+      }
+      // Check if $uploadOk is set to 0 by an error
+      if ($uploadOk == 0) {
+      $err4="Sorry, your file was not uploaded.";
+      // if everything is ok, try to upload file
+      //
+      } else {
+          if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+          //update dtabase
+          $query=mysqli_query($connect,"
+          insert into leavesod(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,type)
+          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$type')
+          ");
+             if($query){
+             $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
+             }else{
+             $err6="Something went wrong. please try again later.";
+             }
+          } else {
+          $err5="Sorry, there was an error uploading your file.";
+          }
+      }
 
 
-
-
-}
-// shows the total amount of days (not divided into years, months and days like above)
-}
+    }
+  }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -386,7 +323,7 @@ switch($type){
                             <div class="card-body">
                                 <div class="basic-form">
                                     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
-                                    ?>" method="post">
+                                    ?>" method="post" enctype="multipart/form-data">
                                     <div class="form-group has-success">
                                        <label class="control-label">Type</label>
                                        <select class="form-control custom-select" name="type">
@@ -408,7 +345,10 @@ switch($type){
                                             name="tdate" placeholder="dd/mm/yyyy">
 
                                         </div>
-                                        <input type="file" name="excelfile">
+                                        <div class="form-group">
+                                          <label for="exampleInputFile">Upload</label>
+                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+                                        </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>
                                 </div>
