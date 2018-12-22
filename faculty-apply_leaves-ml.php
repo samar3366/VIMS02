@@ -14,44 +14,7 @@
     include('connection.php');
 ?>
 <?php
-    $year = date("Y");
 
-    $a=array();
-    $fid = $_SESSION['fid'];
-
-    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-
-            if($row["leave_type"] == "Academic Leave"){
-                $academics+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
-                $casual1+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
-                $casual2+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Medical Leave"){
-                $medical+=$row["ndays"];
-            }
-            if($row["leave_type"] == "lop"){
-                $lop+=$row["ndays"];
-            }
-            if($row["leave_type"] == "reqccl"){
-                $reqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $appccl+=$row["ndays"];
-            }
-        }
-    }
 
 ?>
 <?php
@@ -66,7 +29,7 @@ if($query){
 }
 ?>
 <?php
-  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
+  $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
   if(isset($_POST['apply'])){
     if(!empty($_POST['fdate'])){
     $d1=$_POST['fdate'];
@@ -77,6 +40,26 @@ if($query){
     $interval = $date1->diff($date2);
     $ndays=$interval->days;
     $ndays+=1;
+
+    $date_arr1 = explode("-",$_POST['fdate']);
+    $date_arr2 = explode("-",$_POST['tdate']);
+
+    $year1 = $date_arr1[0];
+    $year2 = $date_arr2[0];
+    $utilized = 0;
+
+    $sql = "SELECT ndays FROM leavesml WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+          $utilized+=$row['ndays'];
+        }
+    }
+    $remaining = 7 - $utilized;
      //$filename=$_FILES["fileToUpload"]["name"];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
@@ -111,7 +94,12 @@ if($query){
       //
       }elseif (strtotime($d1) > strtotime($d2)) {
         // code...
-        header("Location: faculty-apply_leaves-ml.php?ack=3");
+        $err8 = "Invalid selection of dates";
+      }elseif($year1 != $year2){
+        $err9 = "Invalid selection of year";
+      }elseif ($remaining < $ndays) {
+        // code...
+        $err7 = "you can apply only $remaining leaves";
       }else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
@@ -258,9 +246,12 @@ if($query){
                             </ul>
 
                         </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                              <li><a href="faculty-apply_leaves.php">Apply Leaves</a></li>
+                              <li><a href="faculty-apply_leaves2.php">Apply Leaves(updated)</a></li>
+                              <li><a href="faculty-view_leaves.php">View Leaves</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -291,41 +282,13 @@ if($query){
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
-                                <h4>You have 3 more to apply</h4><br>
-                                <?php if(isset($_GET['ack'])){ echo "<br>";?>
-                                <div class="card-content">
-                                    <?php if($_GET['ack'] == 0){ ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Your have only <?php echo $_GET['rem'];?> Leaves</strong>
-                                    </div>
-                                    <?php
-                                        }else if($_GET['ack'] == 1){
-                                    ?>
-                                    <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
-                                    </div>
-                                    <?php
-                                  }else if($_GET['ack'] == 3){
-                                    ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Selection of Dates.</strong>
-                                    </div>
-                                    <?php }
-                                    else
-                                    {?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Month selection</strong>
-                                    </div>
-
-                                   <?php }
-
-
-                                }?>
-
+                                <h4>Apply leaves</h4><br>
+                                <div class="text-info">
+                                  <?php echo $success;?>
+                                </div>
+                                <div class="text-danger">
+                                  <?php echo $err1.$err2.$err3.$err4.$err5.$err6.$err7.$err8.$err9;?>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="basic-form">

@@ -218,7 +218,7 @@ if($sql){
                                                 $leave_type = 'EMERGENCY LEAVES';
                                               }elseif ($tableName == 'leavesccl') {
                                                 // code...
-                                                if($row['type'] == 'Request ccl'){
+                                                if($row['type'] == 'Requestccl'){
                                                   $leave_type = 'REQUEST CCL LEAVES';
                                                 }else{
                                                   $leave_type = 'APPLY CCL LEAVES';

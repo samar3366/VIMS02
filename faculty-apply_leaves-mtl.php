@@ -20,18 +20,36 @@ if($query){
     while($row=mysqli_fetch_array($query)){
         $dept=$row['facDept'];
         $facName = $row['facName'];
+        $facGen = $row['facGen'];
+        $facDoj = $row['facDoj'];
 
     }
 }
 ?>
+
 <?php
-  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
+$nleaves = 0;
+$query=mysqli_query($connect,"select * from leavesmtl where facJntuId='$facJntuId'");
+if($query){
+    while($row=mysqli_fetch_array($query)){
+        $nleaves++;
+    }
+}
+?>
+<?php
+  $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
   if(isset($_POST['apply'])){
-    if(!empty($_POST['fdate'])){
+    if((!empty($_POST['fdate'])) && $nleaves <= 2){
     $d1=$_POST['fdate'];
     $d2 =  date('Y-m-d', strtotime($d1. ' + 90 days'));
     $ndays=90;
     $status="PENDING";
+    $date1 = new DateTime($_POST['fdate']);
+    $date2 = new DateTime($facDoj);
+
+    $interval = $date1->diff($date2);
+    $cdays=$interval->days;
+    $cdays+=1;
      //$filename=$_FILES["fileToUpload"]["name"];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
@@ -64,7 +82,18 @@ if($query){
       $err4="Sorry, your file was not uploaded.";
       // if everything is ok, try to upload file
       //
-      } else {
+    }elseif ($facGen == '' || $facDoj == '') {
+      // code...
+      $err7 = "Sorry, trouble retrieving profile details please Update your profile";
+    }
+    elseif ($facGen == 'Male') {
+      // code...
+      $err8 = "You are not supposed to apply this leave";
+    }elseif ($cdays < 365) {
+      // code...
+      $err9 = "Minimum of 1 year experience is required to apply this leave";
+    }
+       else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
@@ -210,9 +239,12 @@ if($query){
                             </ul>
 
                         </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                              <li><a href="faculty-apply_leaves.php">Apply Leaves</a></li>
+                              <li><a href="faculty-apply_leaves2.php">Apply Leaves(updated)</a></li>
+                              <li><a href="faculty-view_leaves.php">View Leaves</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -244,32 +276,12 @@ if($query){
                         <div class="card">
                             <div class="card-title">
                                 <h4>You have 3 more to apply</h4><br>
-                                <?php if(isset($_GET['ack'])){ echo "<br>";?>
-                                <div class="card-content">
-                                    <?php if($_GET['ack'] == 0){ ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Your have only <?php echo $_GET['rem'];?> Leaves</strong>
-                                    </div>
-                                    <?php
-                                        }else if($_GET['ack'] == 1){
-                                    ?>
-                                    <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
-                                    </div>
-                                    <?php }
-                                    else
-                                    {?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Month selection</strong>
-                                    </div>
-
-                                   <?php }
-
-
-                                }?>
+                                <div class="text-info">
+                                  <?php echo $success;?>
+                                </div>
+                                <div class="text-danger">
+                                  <?php echo $err1.$err2.$err3.$err4.$err5.$err6.$err7.$err8.$err9;?>
+                                </div>
 
                             </div>
                             <div class="card-body">
@@ -277,12 +289,7 @@ if($query){
                                     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
                                     ?>" method="post" enctype="multipart/form-data">
                                         <!-- message -->
-                                        <div class="error-message">
-                                          <?php echo $err1,$err2,$err3,$err4,$err5; ?>
-                                        </div>
-                                        <div class="success-message text-info">
-                                          <?php echo $success; ?>
-                                        </div>
+
                                         <!-- message -->
                                         <div class="form-group">
                                             <label>From Date</label>

@@ -29,27 +29,7 @@
 
         while($row = $result->fetch_assoc()) {
 
-            if($row["leave_type"] == "Academic Leave"){
-                $academics+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] <= 6){
-                $casual1+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Casual Leave" && $row["month"] > 6){
-                $casual2+=$row["ndays"];
-            }
-            if($row["leave_type"] == "Medical Leave"){
-                $medical+=$row["ndays"];
-            }
-            if($row["leave_type"] == "lop"){
-                $lop+=$row["ndays"];
-            }
-            if($row["leave_type"] == "reqccl"){
-                $reqccl+=$row["ndays"];
-            }
-            if($row["leave_type"] == "appccl"){
-                $appccl+=$row["ndays"];
-            }
+
         }
     }
 
@@ -79,6 +59,32 @@ if($query){
     $interval = $date1->diff($date2);
     $ndays=$interval->days;
     $ndays+=1;
+
+    $year = date("Y");
+
+    $a=array();
+    $fid = $_SESSION['fid'];
+
+    $date_arr1 = explode("-",$_POST['fdate']);
+    $date_arr2 = explode("-",$_POST['tdate']);
+
+    $year1 = $date_arr1[0];
+    $year2 = $date_arr2[0];
+
+
+
+    $sql = "SELECT ndays FROM facleave WHERE YEAR(fdate)=$year1 AND NOT hod_status='Rejected' AND facJntuId='$facJntuId'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+          $utilized+=$row['ndays'];
+        }
+    }
+    $remaining = 7 - $utilized;
      //$filename=$_FILES["fileToUpload"]["name"];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
@@ -113,8 +119,12 @@ if($query){
       //
       }elseif (strtotime($d1) > strtotime($d2)) {
         // code...
-        header("Location: faculty-apply_leaves-od.php?ack=3");
-      }else {
+        $err8 = "Invalid selection of dates";
+      }elseif ($remaining < $utilized) {
+        // code...
+        $err7 = "you have only $remaining leaves";
+      }
+      else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
@@ -261,9 +271,12 @@ if($query){
                             </ul>
 
                         </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                              <li><a href="faculty-apply_leaves.php">Apply Leaves</a></li>
+                              <li><a href="faculty-apply_leaves2.php">Apply Leaves(updated)</a></li>
+                              <li><a href="faculty-view_leaves.php">View Leaves</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>

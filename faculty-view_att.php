@@ -174,9 +174,12 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                 <li><a href="faculty-add_ws.php">Workshops Attended</a></li>
                             </ul>
                         </li>
-                        <li> <a href="faculty-apply_leaves.php" aria-expanded="false"><i class="fa fa-plane"></i><span class="hide-menu">Apply Leaves</span></a>
-                        </li>
-                        <li> <a href="faculty-view_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">View Leaves</span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                              <li><a href="faculty-apply_leaves.php">Apply Leaves</a></li>
+                              <li><a href="faculty-apply_leaves2.php">Apply Leaves(updated)</a></li>
+                              <li><a href="faculty-view_leaves.php">View Leaves</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
