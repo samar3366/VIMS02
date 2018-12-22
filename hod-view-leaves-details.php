@@ -97,7 +97,7 @@ if($tableName == 'leavescl'){
   $leave_type = 'EMERGENCY LEAVES';
 }elseif ($tableName == 'leavesccl') {
   // code...
-  if($row['type'] == 'Request ccl'){
+  if($row['type'] == 'Requestccl'){
     $leave_type = 'REQUEST CCL LEAVES';
   }else{
     $leave_type = 'APPLY CCL LEAVES';
@@ -226,7 +226,7 @@ if($tableName == 'leavescl'){
                         </li>
                         <li class="nav-devider"></li>
                         <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves <span class="label label-rounded label-info"><?php echo $count; ?></span></span></a>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
                             <ul aria-expanded="false" class="collapse">
                               <li><a href="hod-view_leaves.php">View Leaves</a></li>
                               <li><a href="hod-view-leaves2.php">View Leaves(updated)</a></li>
