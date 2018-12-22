@@ -13,27 +13,7 @@
     $facJntuId=$_SESSION['fid'];
     include('connection.php');
 ?>
-<?php
-    $year = date("Y");
 
-    $a=array();
-    $fid = $_SESSION['fid'];
-
-    $academics=0;$casual1=0;$casual2=0;$medical=0;$lop=0;$reqccl=0;$appccl=0;
-
-    $sql = "SELECT leave_type,ndays,EXTRACT(MONTH FROM fdate) as month FROM facleave WHERE YEAR(fdate)=$year AND NOT status='Rejected' AND facJntuId='$fid'";
-
-    $result = mysqli_query($connect,$sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-
-
-        }
-    }
-
-?>
 <?php
 //get faculty dept
 $query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
@@ -47,7 +27,7 @@ if($query){
 ?>
 
 <?php
-  $err1=$err2=$err3=$err4=$err5=$err6=$success='';
+  $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
   if(isset($_POST['apply'])){
     if(!empty($_POST['fdate'])){
     $d1=$_POST['fdate'];
@@ -71,20 +51,29 @@ if($query){
     $year1 = $date_arr1[0];
     $year2 = $date_arr2[0];
 
+    $utilized = 0;
+    $utilizede = 0;
+    $count = 0;
 
-
-    $sql = "SELECT ndays FROM facleave WHERE YEAR(fdate)=$year1 AND NOT hod_status='Rejected' AND facJntuId='$facJntuId'";
+    $sql = "SELECT * FROM leavesod WHERE YEAR(fdate)=$year1 AND NOT hod_status='Rejected' AND facJntuId='$facJntuId'";
 
     $result = mysqli_query($connect,$sql);
 
     if ($result->num_rows > 0) {
 
         while($row = $result->fetch_assoc()) {
+          if($row['type'] == 'Spot Evaluation'){
+            $count++;
+            $utilized+=$row['ndays'];
+          }elseif ($row['type'] == 'Exam Related') {
+            // code...
+            $utilizede+=$row['ndays'];
+          }
 
-          $utilized+=$row['ndays'];
         }
     }
-    $remaining = 7 - $utilized;
+    $remaining = 10 - $utilized;
+    $remaininge = 7 - $utilizede;
      //$filename=$_FILES["fileToUpload"]["name"];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
@@ -120,9 +109,19 @@ if($query){
       }elseif (strtotime($d1) > strtotime($d2)) {
         // code...
         $err8 = "Invalid selection of dates";
-      }elseif ($remaining < $utilized) {
+      }elseif($year1 != $year2){
+
+        $err7 = "Invalid selection of year";
+      }elseif ($count > 2 && $type == 'Spot Evaluation') {
+        // code...
+      }
+      elseif ($remaining < $utilized && $type == 'Spot Evaluation') {
         // code...
         $err7 = "you have only $remaining leaves";
+      }
+      elseif ($remaininge < $utilizede && $type == 'Exam Related') {
+        // code...
+        $err7 = "you have only $remaininge leaves";
       }
       else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -307,41 +306,12 @@ if($query){
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
-                                <h4>You have 3 more to apply</h4><br>
-                                <?php if(isset($_GET['ack'])){ echo "<br>";?>
-                                <div class="card-content">
-                                    <?php if($_GET['ack'] == 0){ ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Your have only <?php echo $_GET['rem'];?> Leaves</strong>
-                                    </div>
-                                    <?php
-                                        }else if($_GET['ack'] == 1){
-                                    ?>
-                                    <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
-                                    </div>
-                                    <?php
-                                    }else if($_GET['ack'] == 3){
-                                    ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Selection of Dates.</strong>
-                                    </div>
-                                    <?php }
-                                    else
-                                    {?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Month selection</strong>
-                                    </div>
-
-                                   <?php }
-
-
-                                }?>
-
+                              <div class="text-info">
+                                <?php echo $success;?>
+                              </div>
+                              <div class="text-danger">
+                                <?php echo $err1.$err2.$err3.$err4.$err5.$err6.$err7.$err8.$err9;?>
+                              </div>
                             </div>
                             <div class="card-body">
                                 <div class="basic-form">

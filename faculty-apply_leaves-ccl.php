@@ -34,7 +34,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $reason=$_POST['reason'];
       $status = "PENDING";
       if($d1 == ''||$d2 == ''||$reason == ''||$type == ''){
-          header("Location: faculty-apply_leaves-eol.php?ack=1");
+          $err5 = "Fill all the fields";
       }
       else{
         $date1 = new DateTime($_POST['fdate']);
