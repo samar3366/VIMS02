@@ -78,6 +78,27 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $ndays=$interval->days;
       $ndays+=1;
 
+      $utilized = 0;
+      $utilized1 = 0;
+      $utilized2 = 0;
+      $status = "PENDING";
+      $sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+
+      $result = mysqli_query($connect,$sql);
+
+      if ($result->num_rows > 0) {
+      
+          while($row = $result->fetch_assoc()) {
+
+                if($row["month"] <= 6){
+                    $utilized1+=$row["ndays"];
+                }
+                if($row["month"] > 6){
+                    $utilized2+=$row["ndays"];
+                }
+          }
+      }
+
       //check if applied previously
       $utilized=0;
       $res = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");

@@ -28,37 +28,8 @@ if($query){
 ?>
 <?php
 //get faculty dept
-$year = date("Y");
-$current_date = date("Y-m-d");
-$utilized = 0;
-$utilized1 = 0;
-$utilized2 = 0;
-$status = "PENDING";
-$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
 
-$result = mysqli_query($connect,$sql);
 
-if ($result->num_rows > 0) {
-
-    while($row = $result->fetch_assoc()) {
-
-          if($row["month"] <= 6){
-              $utilized1+=$row["ndays"];
-          }
-          if($row["month"] > 6){
-              $utilized2+=$row["ndays"];
-          }
-    }
-}
-$now = new \DateTime('now');
-$month = $now->format('m');
-if($month <= 6){
-  $utilized = $utilized1;
-}
-else{
-  $utilized = $utilized2;
-}
-$remaining = 6 - $utilized;
 ?>
 <?php
     if(isset($_POST['apply'])){
@@ -67,6 +38,47 @@ $remaining = 6 - $utilized;
 
       $reason=$_POST['reason'];
       $class_adj=$_POST['class_adj'];
+
+      $date_arr1 = explode("-",$_POST['fdate']);
+      $date_arr2 = explode("-",$_POST['tdate']);
+
+      $year1 = $date_arr1[0];
+      $year2 = $date_arr2[0];
+
+      $month = $date_arr1[1];
+
+      $year = date("Y");
+      $current_date = date("Y-m-d");
+      $utilized = 0;
+      $utilized1 = 0;
+      $utilized2 = 0;
+      $status = "PENDING";
+      $sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year1 AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+
+      $result = mysqli_query($connect,$sql);
+
+      if ($result->num_rows > 0) {
+
+          while($row = $result->fetch_assoc()) {
+
+                if($row["month"] <= 6){
+                    $utilized1+=$row["ndays"];
+                }
+                if($row["month"] > 6){
+                    $utilized2+=$row["ndays"];
+                }
+          }
+      }
+
+
+
+      if($month <= 6){
+        $utilized = $utilized1;
+      }
+      else{
+        $utilized = $utilized2;
+      }
+      $remaining = 6 - $utilized;
 
       if($d1 == ''||$d2 == ''||$reason == ''||$class_adj == ''){
           header("Location: faculty-apply_leaves-cl.php?ack=1");
@@ -101,7 +113,9 @@ $remaining = 6 - $utilized;
             header("Location: faculty-apply_leaves-cl.php?ack=2");
           }elseif (strtotime($d1) > strtotime($d2)) {
             // code...
-            header("Location: faculty-apply_leaves-cl.php?ack=3");
+            $error = "Invalid selection of date";
+          }elseif($year1 != $year2){
+            $err7 = "Invalid selection of year";
           }
           else{
             $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason,class_adjustment)
