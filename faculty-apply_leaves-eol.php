@@ -24,11 +24,11 @@ if($query){
     }
 }
 ?>
+
 <?php
 //get faculty dept
 $year = date("Y");
 $current_date = date("Y-m-d");
-echo $current_date;
 $utilized = 0;
 $utilized1 = 0;
 $utilized2 = 0;
@@ -59,31 +59,49 @@ else{
 }
 $remaining = 6 - $utilized;
 ?>
+
 <?php
+$err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
     if(isset($_POST['apply'])){
       $d1=$_POST['fdate'];
       $d2=$_POST['tdate'];
+      //to check years
+      $date_arr1 = explode("-",$_POST['fdate']);
+      $date_arr2 = explode("-",$_POST['tdate']);
+      $year1 = $date_arr1[0];
+      $year2 = $date_arr2[0];
+      // No of days
+      $date1 = new DateTime($_POST['fdate']);
+      $date2 = new DateTime($_POST['tdate']);
+      $cd = new DateTime($current_date);
+      $interval = $date1->diff($date2);
+      $ndays=$interval->days;
+      $ndays+=1;
+
+      //check if applied previously
+      $utilized=0;
+      $res = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
+      if ($result->num_rows > 0) {
+          while($row = $result->fetch_assoc()) {
+            $utilized+=$row['ndays'];
+          }
+      }
+      $leavesLeft = 2 - $utilized;
+
 
       $reason=$_POST['reason'];
-
       if($d1 == ''||$d2 == ''||$reason == ''){
-          header("Location: faculty-apply_leaves-eol.php?ack=1");
-      }
-      else{
-        $date1 = new DateTime($_POST['fdate']);
-        $date2 = new DateTime($_POST['tdate']);
-        $cd = new DateTime($current_date);
-        $interval = $date1->diff($date2);
-        $ndays=$interval->days;
-        $ndays+=1;
-        $val = $date1->diff($cd);
-        $cdays = $val->days;
-        $cdays+=1;
-        echo $cdays;
-
-
-
-
+        $err1 = "Please Select All the Fields";
+      }elseif ($remaining != 0) { // as he/she can apply only after the exhausting of all their casual leaves.
+        // cannot apply if casual leaves are not completed
+        $err2 = "You can This Leave Only after completion of your Casual Leaves";
+      }elseif ($ndays > 2) {
+        // code...
+        echo "Max of 2 days can be permitted";
+      }elseif ($remaining < $leavesLeft) {
+        // code...
+        $err7 = "you can apply only $remaining leaves";
+      }else{
         $x=$d1;
         $y=$d2;
         $t1=strtotime($x);
@@ -92,14 +110,13 @@ $remaining = 6 - $utilized;
         $month1=date("m",$t1);
         $cal = $utilized + $ndays;
         $rem = 6 - $utilized;
-          if($cal > 6){
+          if($cal > 2){
               header("Location: faculty-apply_leaves-eol.php?ack=0&rem=$rem");
-          }elseif ($cdays > 7) {
-            // code...
-            header("Location: faculty-apply_leaves-eol.php?ack=2");
           }elseif (strtotime($d1) > strtotime($d2)) {
             // code...
-            header("Location: faculty-apply_leaves-eol.php?ack=3");
+            $err8 = "Invalid selection of dates";
+          }elseif($year1 != $year2){
+            $err9 = "Invalid selection of year";
           }
           else{
             $sql="insert into leaveseol(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason)
@@ -272,62 +289,31 @@ $remaining = 6 - $utilized;
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
-                                <h4>You have 3 more to apply</h4><br>
-                                <?php if(isset($_GET['ack'])){ echo "<br>";?>
-                                <div class="card-content">
-                                    <?php if($_GET['ack'] == 0){ ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Your have only <?php echo $_GET['rem'];?> Leaves</strong>
-                                    </div>
-                                    <?php
-                                        }else if($_GET['ack'] == 1){
-                                    ?>
-                                    <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>You have <?php echo $_GET['rem'];?> Remaining Leaves</strong>
-                                    </div>
-                                    <?php
-                                    }else if($_GET['ack'] == 3){
-                                    ?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Selection of Dates.</strong>
-                                    </div>
-                                    <?php }
-                                    else
-                                    {?>
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>Invalid Month selection</strong>
-                                    </div>
-
-                                   <?php }
-
-
-                                }?>
-
+                                <h4>Apply Leaves</h4><br>
+                                <div class="text-info">
+                                  <?php echo $success;?>
+                                </div>
+                                <div class="text-danger">
+                                  <?php echo $err1.$err2.$err3.$err4.$err5.$err6.$err7.$err8.$err9;?>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="basic-form">
                                     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
                                     ?>" method="post">
-
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
                                             name="fdate" placeholder="dd/mm/yyyy">
-
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
-
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Reason</label>
-                                        <textarea class="form-control" rows="8" id="desc" name="des"></textarea>
+                                        <textarea class="form-control" rows="8" id="reason" name="reason"></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>
@@ -423,7 +409,7 @@ $remaining = 6 - $utilized;
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 
