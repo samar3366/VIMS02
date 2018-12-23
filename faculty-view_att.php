@@ -219,8 +219,16 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                             <label>Table</label>
                                             <select class="form-control" name="attendance">
                                                 <option></option>
-								                <?php
-                                                $x="select table_name from information_schema.tables where table_schema='vims02' and table_name like '%attendance%' and table_name like '%$facDept%' order by create_time desc";
+								                <?php           //get current database name
+                                $dbnamequery = mysqli_query($connect,"select database()");
+                                $dbname = '';
+                                if ($dbnamequery->num_rows > 0) {
+
+                                    while($row = $dbnamequery->fetch_assoc()) {
+                                      $dbname = $row['database()'];
+                                    }
+                                }
+                                                $x="select table_name from information_schema.tables where table_schema='$dbname' and table_name like '%attendance%' and table_name like '%$facDept%' order by create_time desc";
                                                 $res=mysqli_query($connect,$x);
                                                 if($res){
                                                     while($row=mysqli_fetch_array($res)){

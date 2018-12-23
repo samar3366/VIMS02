@@ -10,6 +10,7 @@
         header("Location:principal-login.php");
     }
 ?>
+
 <?php
 include('connection.php');
 ini_set('max_execution_time', 1000);
@@ -193,7 +194,15 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                             <select class="form-control" name="attendance">
                                                 <option></option>
 								                <?php
-                                                $x="select table_name from information_schema.tables where table_schema='vims' and table_name like '%attendance%' and table_name like '%$hdept%' order by create_time desc";
+                                $dbnamequery = mysqli_query($connect,"select database()");
+                                $dbname = '';
+                                if ($dbnamequery->num_rows > 0) {
+
+                                    while($row = $dbnamequery->fetch_assoc()) {
+                                      $dbname = $row['database()'];
+                                    }
+                                }
+                                                $x="select table_name from information_schema.tables where table_schema='$dbname' and table_name like '%attendance%' and table_name like '%$hdept%' order by create_time desc";
                                                 $res=mysqli_query($connect,$x);
                                                 if($res){
                                                     while($row=mysqli_fetch_array($res)){
@@ -877,7 +886,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
     <script src="js/lib/datatables/cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
-    <script src="js/lib/datatables/datatables-init.js"></script>
+    <!-- <script src="js/lib/datatables/datatables-init.js"></script> -->
 
 </body>
 

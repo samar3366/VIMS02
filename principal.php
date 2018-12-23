@@ -12,6 +12,30 @@
     include('connection.php');
 //$hdept=$_SESSION['pid'];
 ?>
+
+<?php
+//get current database name
+$dbnamequery = mysqli_query($connect,"select database()");
+$dbname = '';
+if ($dbnamequery->num_rows > 0) {
+
+    while($row = $dbnamequery->fetch_assoc()) {
+      $dbname = $row['database()'];
+    }
+}
+//get current month and year
+$currentMonth=date('m');
+$currentYear=date('Y');
+// know which  semester by month and date
+$currentSem = '';
+if($currentMonth == 12 || $currentMonth == 1 || $currentMonth == 2 ||
+$currentMonth == 3 || $currentMonth == 4 || $currentMonth == 5 ){
+    $currentSem = 'ii';
+}elseif($currentMonth == 6 || $currentMonth == 7 || $currentMonth == 8 ||
+$currentMonth == 9 || $currentMonth == 10 || $currentMonth == 11 ){
+    $currentSem = 'i';
+}
+?>
 <?php
 //get the tables names
 $x="select min(AttPercentage) as min,count(hno) as c from(
@@ -218,10 +242,10 @@ if($result){
             <!-- Container fluid  -->
             <div class="container-fluid">
                 <!-- Start Page Content -->
-                  <div class="row"><!-- 1st row starts here -->
+                  <!-- <div class="row"><!-- 1st row starts here -->
 
                     <!-- CSE Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>CSE Attendance Analysis</h4>
@@ -243,12 +267,12 @@ if($result){
                                                 <td>2015-2019</td>
                                                 <td class="color-primary">
                                                 <?php
-                                                echo $c1;
+                                                //echo $c1;
                                                 ?>
                                                 </td>
                                                 <td class="color-primary">
                                                 <?php
-                                                echo $c2;
+                                                //echo $c2;
                                                 ?>
                                                 </td>
                                             </tr>
@@ -274,7 +298,7 @@ if($result){
 
 
                     <!-- ECE Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>ECE Attendance Analysis</h4>
@@ -314,15 +338,15 @@ if($result){
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- ECE table ends -->
 
-                  </div><!-- 1st row ends here-->
+                  <!-- </div><!-- 1st row ends here-->
 
-                  <div class="row"><!-- 2nd row starts here-->
+                  <!-- <div class="row"><!-- 2nd row starts here-->
 
                     <!-- mech Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>Mechanical Attendance Analysis</h4>
@@ -362,12 +386,12 @@ if($result){
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- mech table ends -->
 
 
                     <!-- civil Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>CIVIL Attendance Analysis</h4>
@@ -410,12 +434,12 @@ if($result){
                     </div>
                     <!-- civil table ends -->
 
-                  </div><!--2nd  row ends here-->
+                  <!-- </div><!--2nd  row ends here-->
 
-                  <div class="row"><!-- 3rd row starts here-->
+                  <!-- <div class="row"><!-- 3rd row starts here-->
 
                     <!-- eee Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>EEE Attendance Analysis</h4>
@@ -460,7 +484,7 @@ if($result){
 
 
                     <!-- eie Table -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
                                 <h4>EIE Attendance Analysis</h4>
@@ -503,7 +527,7 @@ if($result){
                     </div>
                     <!-- eie table ends -->
 
-                  </div><!-- 3rd row ends here-->
+                  <!-- </div><!-- 3rd row ends here-->
 
 
                 <!-- End PAge Content -->
