@@ -54,7 +54,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Hod Portal</title>
+    <title>Dean Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -214,7 +214,7 @@ $s1count=$s2count=$s3count=$s4count=$s5count=$s6count=$s7count=$s8count=$s9count
                                       $dbname = $row['database()'];
                                     }
                                 }
-                                
+
                                                 $x="select table_name from information_schema.tables where table_schema='$dbname' and table_name like '%attendance%' order by create_time desc";
                                                 $res=mysqli_query($connect,$x);
                                                 if($res){

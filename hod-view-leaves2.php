@@ -1,4 +1,4 @@
-<?php
+php
 
     if(isset($_COOKIE['id']))
     {
@@ -332,7 +332,7 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <!-- <script src="js/block/javascript.js"></script> -->
+    <script src="js/block/javascript.js"></script>
 
 </body>
 

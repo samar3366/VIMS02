@@ -93,14 +93,14 @@ if(isset($_POST['uploadpic'])){
                     <ul class="navbar-nav my-lg-0">
                         <!-- Profile -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-muted " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               <!-- display propic -->
                               <?php
                               $res=mysqli_query($connect,"select * from student_details where htno='$htno'");
                               while($row=mysqli_fetch_array($res))
                               {
                                if($row['propic']==NULL) echo '<img src="images/Student2.png" alt="user" class="profile-pic" />';
-                               else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" width="100%;"/>';
+                               else echo '<img style="border-radius:50%; width:25px; height:25px; object-fit: cover;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
                               }
                               ?>
                               <!-- display propic -->
@@ -183,13 +183,13 @@ if(isset($_POST['uploadpic'])){
                                           {
                                            if($row['propic']==NULL) {echo "<img src='images/Student2.png'>";}
                                            else{
-                                             echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
+                                             echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
                                            }
                                           }
                                           ?>
                                           <!-- display propic -->
                                         </div>
-                                        <a href="#changePropic" data-toggle="modal" data-target="#changePropic" class="text-info"><i class="fa fa-upload"></i>Upload Picture</a><br>
+                                        <a href="#changePropic" data-toggle="modal" data-toggle="tooltip" title="Upload Picture of Size in KB's" data-target="#changePropic" class="text-info"><i class="fa fa-upload"></i>Upload Picture</a><br>
                                     </header>
                                     <?php
 
@@ -683,7 +683,7 @@ if(isset($_POST['uploadpic'])){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

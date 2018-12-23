@@ -107,8 +107,8 @@ if(isset($_POST['uploadpic'])){
                               while($row=mysqli_fetch_array($res))
                               {
                                 if($row['propic']==NULL) echo '<img src="images/Student2.png" alt="user" class="profile-pic" />';
-                                else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" width="100%;"/>';
-                              }
+                                else echo '<img style="border-radius:50%; width:25px; height:25px; object-fit: cover;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
+                               }
                               ?>
                               <!-- display propic -->
                             </a>
@@ -216,12 +216,13 @@ if(isset($_POST['uploadpic'])){
                                             while($row=mysqli_fetch_array($res))
                                             {
                                               if($row['propic']==NULL){ echo '<img src="images/Student2.png" alt="user" class="profile-pic" />'; break; }
-                                              else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
-                                            }
+                                              else{
+                                                echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
+                                              }}
                                             ?>
                                             <!-- display propic -->
                                         </div>
-                                        <a href="#changePropic" data-toggle="modal" data-target="#changePropic" class="text-info"><i class="fa fa-upload"></i>Upload Picture</a><br>
+                                        <a href="#changePropic" data-toggle="modal" data-toggle="tooltip" title="Upload Picture of Size in KB's" data-target="#changePropic" class="text-info"><i class="fa fa-upload"></i>Upload Picture</a><br>
                                     </header>
                                     <?php
 
@@ -234,11 +235,11 @@ if(isset($_POST['uploadpic'])){
 
                                         $row = $result->fetch_assoc();
                                     ?>
-                                    <h3><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
-                                    <div class="desc">
+                                    <h3 class="text-info"><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
+                                    <div class="desc text-info">
 
-                                        <?php echo $row["facDesig"].",".$row["facDept"]."<br>".
-                                        "Mobile No:".$row["facMobile"].","."Mail Id:".$row["facEmail"];?>
+                                        <?php echo $row["facDesig"]." - ".$row["facDept"]."<br>".
+                                        "Mobile No : ".$row["facMobile"]."<br>"."Mail Id : ".$row["facEmail"];?>
                                     </div>
                                 </div>
                             </div>

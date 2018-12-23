@@ -17,7 +17,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Admin Portal|Add Details</title>
+    <title>Admin Portal|Add Student Details</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->

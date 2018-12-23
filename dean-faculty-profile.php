@@ -34,7 +34,7 @@ if($sql){
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Hod Portal</title>
+    <title>Dean Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -175,16 +175,16 @@ if($sql){
                                     <header>
                                         <div class="avatar">
                                           <?php
-                                        $facJntuId = $_GET["facJntuId"];
-                                        $res=mysqli_query($connect,"select * from facacademic where facJntuId='$facJntuId'");
-                                        while($row=mysqli_fetch_array($res))
-                                        {
-                                         if($row['propic']==NULL) {echo "<img src='images/faculty_30.png'>";}
-                                         else{
-                                           echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
-                                         }
-                                        }
-                                        ?>
+                                          $facJntuId = $_GET["facJntuId"];
+                                          //$facJntuId = $_SESSION["fid"];
+                                          $res=mysqli_query($connect,"select * from facacademic where facJntuId='$facJntuId'");
+                                          while($row=mysqli_fetch_array($res))
+                                          {
+                                            if($row['propic']==NULL){ echo '<img src="images/Student2.png" alt="user" class="profile-pic" />'; break; }
+                                            else{
+                                              echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
+                                            }}
+                                          ?>
                                         </div>
                                         <!-- <a href="#"><i class="fa fa-upload"></i>Upload Picture</a><br> -->
                                     </header>
@@ -199,11 +199,11 @@ if($sql){
 
                                         $row = $result->fetch_assoc();
                                     ?>
-                                    <h3><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
-                                    <div class="desc">
+                                    <h3 class="text-info"><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
+                                    <div class="desc text-info">
 
-                                        <?php echo $row["facDesig"].",".$row["facDept"]."<br>".
-                                        "Mobile No:".$row["facMobile"].","."Mail Id:".$row["facEmail"];?>
+                                        <?php echo $row["facDesig"]." - ".$row["facDept"]."<br>".
+                                        "Mobile No : ".$row["facMobile"]."<br>"."Mail Id : ".$row["facEmail"];?>
                                     </div>
                                 </div>
                             </div>

@@ -86,8 +86,8 @@
                               while($row=mysqli_fetch_array($res))
                               {
                                 if($row['propic']==NULL) echo '<img src="images/Student2.png" alt="user" class="profile-pic" />';
-                                else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" width="100%;"/>';
-                              }
+                                else echo '<img style="border-radius:50%; width:25px; height:25px; object-fit: cover;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
+                               }
                               ?>
                               <!-- display propic -->
                             </a>
@@ -191,15 +191,15 @@
                                         <div class="avatar">
                                           <?php
                                           $htno = $_GET['htno'];
-                                        $res=mysqli_query($connect,"select * from student_details where htno='$htno'");
-                                        while($row=mysqli_fetch_array($res))
-                                        {
-                                         if($row['propic']==NULL) {echo "<img src='images/Student2.png'>";}
-                                         else{
-                                           echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
-                                         }
-                                        }
-                                        ?>
+                                          $res=mysqli_query($connect,"select * from student_details where htno='$htno'");
+                                          while($row=mysqli_fetch_array($res))
+                                          {
+                                           if($row['propic']==NULL) {echo "<img src='images/Student2.png'>";}
+                                           else{
+                                             echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
+                                           }
+                                          }
+                                          ?>
                                         </div>
 
                                     </header>
@@ -219,11 +219,11 @@
 
 
 
-                                    <h3><?php echo $row["name"]." - ".$row["htno"];?></h3>
-                                    <div class="desc">
+                                    <h3 class="text-info"><?php echo $row["name"]." - ".$row["htno"];?></h3>
+                                    <div class="desc text-info">
 
-                                        <?php echo $row["batch"].",".$row["branch"]."-".$row["section"]."<br>".
-                                        "Mobile No:".$row["number"].","."Mail Id:".$row["mail"];
+                                        <?php echo $row["batch"]." Batch : ".$row["branch"]." - ".$row["section"]."<br>".
+                                        "Mobile No : ".$row["number"]."<br>"."Mail Id : ".$row["mail"];
                                             $batch = $row["batch"];
                                         ?>
                                     </div>

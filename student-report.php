@@ -132,8 +132,8 @@
                               while($row=mysqli_fetch_array($res))
                               {
                                if($row['propic']==NULL) echo '<img src="images/Student2.png" alt="user" class="profile-pic" />';
-                               else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" width="100%;"/>';
-                              }
+                               else echo '<img style="border-radius:50%; width:25px; height:25px; object-fit: cover;" id="profile-image1" class="img img-responsive profile-pic" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
+                               }
                               ?>
                               <!-- display propic -->
                             </a>

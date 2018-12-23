@@ -23,7 +23,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Hod Portal</title>
+    <title>Principal Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -31,7 +31,7 @@
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "principal.php");
+        history.replaceState("", "", "principal-faculty.php");
         }
     </script>
     <script type="text/javascript" src="javascript.js"></script>
@@ -165,12 +165,14 @@
                                           <!-- display propic -->
                                           <?php
                                           $facJntuId = $_GET["facJntuId"];
+                                          //$facJntuId = $_SESSION["fid"];
                                           $res=mysqli_query($connect,"select * from facacademic where facJntuId='$facJntuId'");
                                           while($row=mysqli_fetch_array($res))
                                           {
-                                            if($row['propic']==NULL) echo '<img src="images/faculty_30.png" alt="user" class="profile-pic" />';
-                                            else echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
-                                          }
+                                            if($row['propic']==NULL){ echo '<img src="images/Student2.png" alt="user" class="profile-pic" />'; break; }
+                                            else{
+                                              echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
+                                            }}
                                           ?>
                                           <!-- display propic -->
                                         </div>
@@ -187,11 +189,11 @@
 
                                         $row = $result->fetch_assoc();
                                     ?>
-                                    <h3><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
-                                    <div class="desc">
+                                    <h3 class="text-info"><?php echo $row["facName"]." - ".$row["facJntuId"];?></h3>
+                                    <div class="desc text-info">
 
-                                        <?php echo $row["facDesig"].",".$row["facDept"]."<br>".
-                                        "Mobile No:".$row["facMobile"].","."Mail Id:".$row["facEmail"];?>
+                                        <?php echo $row["facDesig"]." - ".$row["facDept"]."<br>".
+                                        "Mobile No : ".$row["facMobile"]."<br>"."Mail Id : ".$row["facEmail"];?>
                                     </div>
                                 </div>
                             </div>
@@ -862,7 +864,7 @@
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <!-- <script src="js/block/javascript.js"></script> -->
+    <script src="js/block/javascript.js"></script>
 
 </body>
 

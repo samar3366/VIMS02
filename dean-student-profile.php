@@ -35,7 +35,7 @@ if($sql){
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>DEAN Portal</title>
+    <title>Dean Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -176,14 +176,14 @@ if($sql){
                                 <div class="card-two">
                                     <header>
                                         <div class="avatar">
-                                            <?php
-                                            $htno = $_GET['htno'];
+                                          <?php
+                                          $htno = $_GET['htno'];
                                           $res=mysqli_query($connect,"select * from student_details where htno='$htno'");
                                           while($row=mysqli_fetch_array($res))
                                           {
                                            if($row['propic']==NULL) {echo "<img src='images/Student2.png'>";}
                                            else{
-                                             echo '<img style="border-radius:50%; padding-top:0px;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" />';
+                                             echo '<center><img style="border-radius:50%; width:140px; height:140px; object-fit: cover;" id="profile-image1" class="img img-responsive" src="data:image/jpeg;base64,'.base64_encode($row['propic'] ).'" /></center>';
                                            }
                                           }
                                           ?>
