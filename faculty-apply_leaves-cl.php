@@ -16,6 +16,8 @@
 
 
 <?php
+$utilized=0;
+$remaining=0;
 //get faculty dept
 $query=mysqli_query($connect,"select * from faculty where facJntuId='$facJntuId'");
 if($query){

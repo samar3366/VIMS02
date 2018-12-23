@@ -87,7 +87,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $result = mysqli_query($connect,$sql);
 
       if ($result->num_rows > 0) {
-      
+
           while($row = $result->fetch_assoc()) {
 
                 if($row["month"] <= 6){
@@ -101,10 +101,11 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
 
       //check if applied previously
       $utilized=0;
-      $res = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
+      // $res = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
+      $result = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
       if ($result->num_rows > 0) {
           while($row = $result->fetch_assoc()) {
-            $utilized+=$row['ndays'];
+            $utilized=$row['ndays'];
           }
       }
       $leavesLeft = 2 - $utilized;
@@ -113,38 +114,43 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $reason=$_POST['reason'];
       if($d1 == ''||$d2 == ''||$reason == ''){
         $err1 = "Please Select All the Fields";
+      }elseif ($leavesLeft == 0) {
+        // code...
+        $err4 = "You have applied this leave already";
       }elseif ($remaining != 0) { // as he/she can apply only after the exhausting of all their casual leaves.
         // cannot apply if casual leaves are not completed
         $err2 = "You can This Leave Only after completion of your Casual Leaves";
-      }elseif ($ndays > 2) {
+      }elseif (strtotime($d1) > strtotime($d2)) {
         // code...
-        echo "Max of 2 days can be permitted";
-      }elseif ($remaining < $leavesLeft) {
+        $err8 = "Invalid selection of dates";
+      }elseif ($ndays != 2) {
         // code...
-        $err7 = "you can apply only $remaining leaves";
+        $err6 = "Max of 2 days can be permitted";
+      }elseif($year1 != $year2){
+        $err9 = "Invalid selection of year";
       }else{
-        $x=$d1;
-        $y=$d2;
-        $t1=strtotime($x);
-        $t2=strtotime($y);
-        $month2=date("m",$t2);
-        $month1=date("m",$t1);
-        $cal = $utilized + $ndays;
-        $rem = 6 - $utilized;
-          if($cal > 2){
-              header("Location: faculty-apply_leaves-eol.php?ack=0&rem=$rem");
-          }elseif (strtotime($d1) > strtotime($d2)) {
-            // code...
-            $err8 = "Invalid selection of dates";
-          }elseif($year1 != $year2){
-            $err9 = "Invalid selection of year";
-          }
-          else{
+        // $x=$d1;
+        // $y=$d2;
+        // $t1=strtotime($x);
+        // $t2=strtotime($y);
+        // $month2=date("m",$t2);
+        // $month1=date("m",$t1);
+        // $cal = $utilized + $ndays;
+        // $rem = 6 - $utilized;
+        //   if($cal > 2){
+        //       header("Location: faculty-apply_leaves-eol.php?ack=0&rem=$rem");
+        //   }
+        //   else{
+        //     $sql="insert into leaveseol(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason)
+        //     values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason')";
+        //     $query=mysqli_query($connect,$sql);
+        //     header("Location: faculty-view_leaves-eol.php");
+        //   }
+
             $sql="insert into leaveseol(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason)
             values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason')";
             $query=mysqli_query($connect,$sql);
             header("Location: faculty-view_leaves-eol.php");
-          }
       }
     }
 
