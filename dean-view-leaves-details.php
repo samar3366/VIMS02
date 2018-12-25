@@ -59,11 +59,17 @@ if($sql){
     }
 }
 
-if($dean_status == 'REJECTED'){
-  $msg = "rejected due the reason of ".$dean_remarks;
+if($hod_status == 'REJECTED'){
+  $msg = "REJECTED by HOD";
+}elseif ($dean_status == 'REJECTED') {
+  // code...
+  $msg = "REJECTED by DEAN";
+}elseif ($principal_status == 'REJECTED') {
+  // code...
+  $msg = "REJECTED by PRINCIPAL";
 }elseif ($principal_status == 'APPROVED') {
   // code...
-  $msg = "This leave is approved by everyone";
+  $msg = "APPROVED";
 }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
   // code...
   $msg = "Request at Principal - yet to be approved";
@@ -293,10 +299,6 @@ if($tableName == 'leavescl'){
                                                 <th>Reason</th>
                                                 <td><?php echo $reason;?></td>
                                             </tr>
-                                            <tr>
-                                                <th>Class Adjustment</th>
-                                                <td><?php echo $class_adjustment;?></td>
-                                            </tr>
                                           <?php }elseif ($tableName == 'leavesmtl') {?>
                                             <tr>
                                                 <th>File for proof</th>
@@ -350,6 +352,19 @@ if($tableName == 'leavescl'){
                           <div class="card">
                               <div class="card-title">
                                   <h4><?php echo $msg;?></h4><br>
+                                  <h4 class="text-primary">REMARKS:</h4><br>
+                                  <?php if($hod_remarks != ''){
+                                    echo "<h4>HOD : </h4>";
+                                    echo "<h4>".$hod_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($dean_remarks != ''){
+                                    echo "<h4>DEAN : </h4>";
+                                    echo "<h4>".$dean_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($principal_remarks != ''){
+                                    echo "<h4>PRINCIPAL : </h4>";
+                                    echo "<h4>".$principal_remarks."</h4><br>";
+                                  }?>
                               </div>
                           </div>
                       </div>

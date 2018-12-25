@@ -248,18 +248,6 @@
                                                $principal_remarks = $row['principal_remarks'];
 
 
-                                               if($hod_status == 'REJECTED'){
-                                                 $msg = "REJECTED";
-                                               }elseif ($principal_status == 'APPROVED') {
-                                                 // code...
-                                                 $msg = "APPROVED";
-                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
-                                                 // code...
-                                                 $msg = "Request at Principal";
-                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-                                                 // code...
-                                                 $msg = "Request at Dean";
-                                               }
                                                ?>
 
                                                <tr>

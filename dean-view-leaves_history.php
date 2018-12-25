@@ -241,16 +241,19 @@
 
 
                                                if($hod_status == 'REJECTED'){
-                                                 $msg = "REJECTED";
+                                                 $msg = "REJECTED by HOD";
+                                               }elseif ($dean_status == 'REJECTED') {
+                                                 // code...
+                                                 $msg = "REJECTED by DEAN";
+                                               }elseif ($principal_status == 'REJECTED') {
+                                                 // code...
+                                                 $msg = "REJECTED by PRINCIPAL";
                                                }elseif ($principal_status == 'APPROVED') {
                                                  // code...
                                                  $msg = "APPROVED";
                                                }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
                                                  // code...
                                                  $msg = "Request at Principal";
-                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-                                                 // code...
-                                                 $msg = "Request at Dean";
                                                }
                                                ?>
 

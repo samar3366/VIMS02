@@ -57,7 +57,6 @@ if($sql){
 
         if($tableName == 'leavescl'){
           $reason = $row['reason'];
-          $class_adjustment = $row['class_adjustment'];
         }elseif ($tableName == 'leavesmtl') {
           $file_name = $row['file_path'];
         }elseif ($tableName == 'leavesal') {
@@ -76,17 +75,18 @@ if($sql){
     }
 }
 
+$msg = '';
 if($hod_status == 'REJECTED'){
-  $msg = "rejected at hod due the reason of ".$hod_remarks;
+  $msg = "REJECTED by HOD";
 }elseif ($dean_status == 'REJECTED') {
   // code...
-  $msg = "rejected at dean due the reason of ".$dean_remarks;
+  $msg = "REJECTED by DEAN";
 }elseif ($principal_status == 'REJECTED') {
   // code...
-  $msg = "rejected at principal due the reason of ".$principal_remarks;
+  $msg = "REJECTED by PRINCIPAL";
 }elseif ($principal_status == 'APPROVED') {
   // code...
-  $msg = "This leave is approved by everyone";
+  $msg = "APPROVED";
 }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
   // code...
   $msg = "Request at Principal - yet to be approved";
@@ -266,7 +266,7 @@ if($sql){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid']?></h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid'];?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -323,17 +323,13 @@ if($sql){
                                           </tr>
                                           <tr>
                                               <th>Total no leaves available</th>
-                                              <td><?php echo $remaining;?></td>
+                                              <td><?php echo $ndays;?></td>
                                           </tr>
                                           <?php
                                           if($tableName == 'leavescl'){?>
                                             <tr>
                                                 <th>Reason</th>
                                                 <td><?php echo $reason;?></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Class Adjustment</th>
-                                                <td><?php echo $class_adjustment;?></td>
                                             </tr>
                                           <?php }elseif ($tableName == 'leavesmtl') {?>
                                             <tr>
@@ -368,6 +364,11 @@ if($sql){
                                                 <th>Reason</th>
                                                 <td><?php echo $reason;?></td>
                                             </tr>
+                                          <?php }elseif ($tableName == 'leavesmrl') {?>
+                                            <tr>
+                                                <th>File for proof</th>
+                                                <td><a target="_blank" href='<?php echo "uploads/".$file_name?>'>DOWNLOAD FILE</a></td>
+                                            </tr>
                                           <?php }elseif ($tableName == 'leaveseol') {?>
                                             <tr>
                                                 <th>Reason</th>
@@ -388,7 +389,19 @@ if($sql){
                           <div class="card">
                               <div class="card-title">
                                   <h4><?php echo $msg;?></h4><br>
-                                  <h4><?php echo $msg;?></h4><br>
+                                  <h4 class="text-primary">REMARKS:</h4><br>
+                                  <?php if($hod_remarks != ''){
+                                    echo "<h4>HOD : </h4>";
+                                    echo "<h4>".$hod_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($dean_remarks != ''){
+                                    echo "<h4>DEAN : </h4>";
+                                    echo "<h4>".$dean_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($principal_remarks != ''){
+                                    echo "<h4>PRINCIPAL : </h4>";
+                                    echo "<h4>".$principal_remarks."</h4><br>";
+                                  }?>
                               </div>
                           </div>
                       </div>
@@ -506,7 +519,7 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

@@ -190,7 +190,7 @@
 
                                          <?php
                                          //get faculty dept
-                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
                                          for($i=0;$i<7;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE principal_status <> 'PENDING'");
@@ -240,16 +240,16 @@
 
 
                                                if($hod_status == 'REJECTED'){
-                                                 $msg = "REJECTED";
+                                                 $msg = "REJECTED by HOD";
+                                               }elseif ($dean_status == 'REJECTED') {
+                                                 // code...
+                                                 $msg = "REJECTED by DEAN";
+                                               }elseif ($principal_status == 'REJECTED') {
+                                                 // code...
+                                                 $msg = "REJECTED by PRINCIPAL";
                                                }elseif ($principal_status == 'APPROVED') {
                                                  // code...
                                                  $msg = "APPROVED";
-                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
-                                                 // code...
-                                                 $msg = "Request at Principal";
-                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-                                                 // code...
-                                                 $msg = "Request at Dean";
                                                }
                                                ?>
 
