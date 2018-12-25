@@ -29,7 +29,8 @@ $input = $_GET['id'];
 $arr = explode(" ",$input);
 $leave_id = $arr[0];
 $tableName = $arr[1];
-
+$ndays='';
+$reason='';
 
 
 ?>
@@ -72,7 +73,7 @@ if($sql){
         }elseif ($tableName == 'leaveseol') {
           $reason = $row['reason'];
         }elseif ($tableName == 'leavesmrl') {
-          $reason = $row['reason'];
+          $file_name = $row['file_path'];
         }
     }
 }
@@ -424,7 +425,7 @@ if($sql){
                                   <form action="hod/approve2.php" method="post">
                                       <div class="form-group">
                                       <label for="comment">Remarks</label>
-                                      <textarea class="form-control" rows="8" id="remark" name="remark"></textarea>
+                                      <textarea class="form-control" rows="8" id="remark" name="remark" required></textarea>
                                       </div>
                                       <input type='hidden' name='tableName' value='<?php echo $tableName;?>' />
                                       <input type='hidden' name='leave_id' value='<?php echo $leave_id;?>' />

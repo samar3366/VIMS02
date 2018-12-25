@@ -37,6 +37,27 @@ if($query){
 }
 ?>
 <?php
+$flag=0;
+$datesArray=array();
+$i=0;
+$sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+$rowcount=mysqli_num_rows($result);
+if($result->num_rows > 0) {
+    while($row = mysqli_fetch_array($result)){
+            $datesArray[$i]=$row['fdate'];
+            $count = 1;
+            $flag = 1;
+    }
+}else{
+   $count = 0;
+};
+$countDates=count($datesArray);
+$lastDate=$datesArray[$countDates-1];
+
+
+?>
+<?php
   $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
   if(isset($_POST['apply'])){
     if((!empty($_POST['fdate'])) && $nleaves <= 2){
@@ -52,6 +73,11 @@ if($query){
     $cdays+=1;
      //$filename=$_FILES["fileToUpload"]["name"];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
+
+     //min gap of 1 year
+     $interval1 = $date1->diff($lastDate);
+     $cdays1=$interval1->days;
+     $cdays1+=1;
 
      $target_dir = "uploads/";
      $time = time();
@@ -85,6 +111,9 @@ if($query){
       }elseif ($facGen == '' || $facDoj == '') {
       // code...
       $err7 = "Sorry, trouble retrieving profile details please Update your profile";
+    }elseif ($rowcount > 2 ) {
+      // code...
+      $err9 = "You Have Alreay Utilized 2 Times. Cannot Apply Further";
     }
     elseif ($facGen == 'Male') {
       // code...
@@ -92,6 +121,10 @@ if($query){
     }elseif ($cdays < 365) {
       // code...
       $err9 = "Minimum of 1 year experience is required to apply this leave";
+    }
+    elseif ($cdays1 < 365) {
+      // code...
+      $err9 = "A Min of 1 Year Gap should be mainted Before applying 2nd leave";
     }
        else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -298,11 +331,11 @@ if($query){
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Class Adjustment</label>
-                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj" required></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>
-                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp" required>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>

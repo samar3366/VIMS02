@@ -191,7 +191,7 @@
                                          <?php
                                          //get faculty dept
                                          $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
-                                         for($i=0;$i<7;$i++){
+                                         for($i=0;$i<8;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE principal_status = 'PENDING' AND dean_status = 'APPROVED'");
                                          if($query){
@@ -235,6 +235,10 @@
                                                  // code...
                                                  $leave_type = 'EXTRA ORDINARY LEAVES';
                                                }
+                                               elseif ($tableName == 'leavesmrl') {
+                                                 // code...
+                                                 $leave_type = 'MARRIAGE LEAVES';
+                                               }
                                                $facJntuId = $row['facJntuId'];
 
                                                $hod_status = $row['hod_status'];
@@ -247,7 +251,7 @@
                                                $principal_remarks = $row['principal_remarks'];
 
 
-                                              
+
                                                ?>
 
                                                <tr>

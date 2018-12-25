@@ -23,7 +23,153 @@ if($query){
     }
 }
 ?>
+<?php
+//Maintain Count
 
+//Academic Leave Count
+$year1=date('Y');
+$utilizedAL=0;
+$remAL=0;
+$sql = "SELECT ndays FROM leavesal WHERE YEAR(fdate)=$year1 AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+          $utilizedAL+=$row['ndays'];
+    }
+}
+$remAL = 14 - $utilizedAL;
+
+//Casual Leave
+$utilizedCL=0;
+$utilizedCL1=0;
+$utilizedCL2=0;
+$remCL=0;
+$year1=date('Y');
+$month=date('m');
+$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year1 AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+          if($row["month"] <= 6){
+              $utilizedCL1+=$row["ndays"];
+          }
+          if($row["month"] > 6){
+              $utilizedCL2+=$row["ndays"];
+          }
+    }
+}
+if($month <= 6){
+  $utilizedCL = $utilizedCL1;
+}
+else{
+  $utilizedCL = $utilizedCL2;
+}
+$remCL = 6 - $utilizedCL;
+
+//Extra Ordinary Leave
+$year = date("Y");
+$current_date = date("Y-m-d");
+$utilized = 0;
+$utilized1 = 0;
+$utilized2 = 0;
+$flagEOL=0;
+$status = "PENDING";
+$sql = "SELECT * FROM leaveseol WHERE  YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+$rowcount=mysqli_num_rows($result);
+
+if($rowcount>1) $flagEOL=2;
+
+//Medical Leave
+    $year1=date('Y');
+    $utilizedML=0;
+    $remML=0;
+    $sql = "SELECT ndays FROM leavesml WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+    $result = mysqli_query($connect,$sql);
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+          $utilizedML+=$row['ndays'];
+        }
+    }
+    $remML = 7 - $utilizedML;
+
+//Marriage Leave
+$flagMRL=0;
+$sql = "SELECT * FROM leavesmrl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+if ($result->num_rows > 0) {
+    $count = 1;
+    while($row = mysqli_fetch_array($result))
+          $flagMRL = 1;
+}else{
+   $count = 0;
+};
+
+//Maternity Leave
+$flagMTL=0;
+$countMTL=0;
+$sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+$rowcount=mysqli_num_rows($result);
+if ($result->num_rows > 0) {
+    while($row = mysqli_fetch_array($result))
+          $flagMTL += 1;
+}else{
+   $countMTL = 0;
+};
+
+//On Duty Leave
+    $countOD=0;
+    $utilizedOD=0;
+    $utilizedeOD=0;
+    $remainingOD=0;
+    $remainingeOD=0;
+    $year1=date('Y');
+    $sql = "SELECT * FROM leavesod WHERE YEAR(fdate)=$year1 AND NOT hod_status='Rejected' AND facJntuId='$facJntuId'";
+    $result = mysqli_query($connect,$sql);
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+          if($row['type'] == 'Spot Evaluation'){
+            $count++;
+            $utilizedOD+=$row['ndays'];
+          }elseif ($row['type'] == 'Exam Related') {
+            // code...
+            $utilizedeOD+=$row['ndays'];
+          }
+        }
+    }
+    $remainingOD = 10 - $utilizedOD;
+    $remainingeOD = 7 - $utilizedeOD;
+
+
+    $haveccl = 0;
+    $utilccl = 0;
+    $sql = "SELECT ndays FROM leavesccl WHERE YEAR(fdate)=$year1 AND principal_status='APPROVED' AND facJntuId='$facJntuId' AND type = 'Requestccl'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+          $haveccl+=$row['ndays'];
+        }
+    }
+
+    $sql = "SELECT ndays FROM leavesccl WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId' AND type = 'Applyccl'";
+
+    $result = mysqli_query($connect,$sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+          $utilccl+=$row['ndays'];
+        }
+    }
+    $remccl = 0;
+    $remccl = $haveccl - $utilccl;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -205,17 +351,17 @@ if($query){
                                                <th scope="row">1</th>
                                                <td>Casual Leave(CL)</td>
                                                <td>12</td>
-                                               <td>3</td>
-                                               <td>9</td>
+                                               <td><?php echo $utilizedCL; ?></td>
+                                               <td><?php echo $remCL; ?></td>
                                                <td><a href="faculty-apply_leaves-cl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-cl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
                                            <tr>
                                                <th scope="row">2</th>
                                                <td>Maternity Leave(MTL)</td>
-                                               <td>90</td>
-                                               <td>90</td>
-                                               <td>0</td>
+                                               <td>2(Life Time)</td>
+                                               <td><?php echo $flagMTL; ?></td>
+                                               <td><?php echo 2 - $flagMTL; ?></td>
                                                <td><a href="faculty-apply_leaves-mtl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-mtl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
@@ -223,8 +369,8 @@ if($query){
                                                <th scope="row">3</th>
                                                <td>Academic Leave(AL)</td>
                                                <td>14</td>
-                                               <td>12</td>
-                                               <td>2</td>
+                                               <td><?php echo $utilizedAL; ?></td>
+                                               <td><?php echo $remAL; ?></td>
                                                <td><a href="faculty-apply_leaves-al.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-al.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
@@ -232,26 +378,26 @@ if($query){
                                                <th scope="row">4</th>
                                                <td>On-Duty(OD)</td>
                                                <td>17</td>
-                                               <td>12</td>
-                                               <td>5</td>
+                                               <td><?php echo ($utilizedOD+$utilizedeOD); ?></td>
+                                               <td><?php echo ($remainingOD+$remainingeOD); ?></td>
                                                <td><a href="faculty-apply_leaves-od.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-od.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
                                            <tr>
                                                <th scope="row">5</th>
-                                               <td>Emergency Leave(ML)</td>
+                                               <td>Emergency/Medical Leave(ML)</td>
                                                <td>7</td>
-                                               <td>2</td>
-                                               <td>5</td>
+                                               <td><?php echo $utilizedML; ?></td>
+                                               <td><?php echo $remML; ?></td>
                                                <td><a href="faculty-apply_leaves-ml.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-ml.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
                                            <tr>
                                                <th scope="row">6</th>
                                                <td>Compensatory Casual Leave(CCL)</td>
-                                               <td>12</td>
-                                               <td>12</td>
-                                               <td>0</td>
+                                               <td><?php echo $haveccl; ?></td>
+                                               <td><?php echo $utilccl; ?></td>
+                                               <td><?php echo $remccl; ?></td>
                                                <td><a href="faculty-apply_leaves-ccl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-ccl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
@@ -259,17 +405,37 @@ if($query){
                                                <th scope="row">7</th>
                                                <td>Extra Ordinary Leave(EOL)</td>
                                                <td>2</td>
-                                               <td>1</td>
-                                               <td>1</td>
+                                               <td><?php echo $flagEOL; ?></td>
+                                               <td><?php echo 2-$flagEOL; ?></td>
                                                <td><a href="faculty-apply_leaves-eol.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-eol.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
                                            <tr>
                                                <th scope="row">8</th>
                                                <td>Marriage Leaves</td>
-                                               <td>2</td>
-                                               <td>1</td>
-                                               <td>1</td>
+                                               <td>7</td>
+                                               <td>
+                                               <?php
+                                                if ($flagMRL==1) {
+                                                  // code...
+                                                  echo 7;
+                                                } else {
+                                                  // code...
+                                                  echo 0;
+                                                }
+                                               ?>
+                                               </td>
+                                               <td>
+                                               <?php
+                                                if ($flagMRL==1) {
+                                                  // code...
+                                                  echo 0;
+                                                } else {
+                                                  // code...
+                                                  echo 7;
+                                                }
+                                               ?>
+                                               </td>
                                                <td><a href="faculty-apply_leaves-mrl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-mrl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
@@ -363,7 +529,7 @@ if($query){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

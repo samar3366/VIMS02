@@ -192,7 +192,7 @@
                                          <?php
                                          //get faculty dept
                                          $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
-                                         for($i=0;$i<7;$i++){
+                                         for($i=0;$i<8;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE dean_status = 'PENDING' AND hod_status = 'APPROVED'");
                                          if($query){
@@ -235,6 +235,9 @@
                                                }elseif ($tableName == 'leaveseol') {
                                                  // code...
                                                  $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }elseif ($tableName == 'leavesmrl') {
+                                                 // code...
+                                                 $leave_type = 'MARRIAGE LEAVES';
                                                }
                                                $facJntuId = $row['facJntuId'];
 
@@ -257,7 +260,7 @@
                                                    <td><?php echo $fdate;?></td>
                                                    <td><?php echo $tdate;?></td>
                                                    <td><?php echo $leave_type;?></td>
-                                                   <td><a href="principal-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                                   <td><a href="dean-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
                                                </tr><?php
                                              }
                                          }

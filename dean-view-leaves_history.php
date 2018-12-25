@@ -192,7 +192,7 @@
                                          <?php
                                          //get faculty dept
                                          $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
-                                         for($i=0;$i<7;$i++){
+                                         for($i=0;$i<8;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE dean_status <> 'PENDING'");
                                          if($query){
@@ -207,6 +207,9 @@
                                                }elseif ($tableName == 'leavesmtl') {
                                                  // code...
                                                  $leave_type = 'MATERNITY LEAVES';
+                                               }elseif ($tableName == 'leavesmrl') {
+                                                 // code...
+                                                 $leave_type = 'MARRIAGE LEAVES';
                                                }elseif ($tableName == 'leavesal') {
                                                  // code...
                                                  $leave_type = 'ACADEMIC LEAVES';

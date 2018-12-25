@@ -26,38 +26,18 @@ if($query){
 ?>
 
 <?php
-//get faculty dept
 $year = date("Y");
 $current_date = date("Y-m-d");
 $utilized = 0;
 $utilized1 = 0;
 $utilized2 = 0;
+$flagEOL=0;
 $status = "PENDING";
-$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
-
+$sql = "SELECT * FROM leaveseol WHERE  YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
 $result = mysqli_query($connect,$sql);
+$rowcount=mysqli_num_rows($result);
 
-if ($result->num_rows > 0) {
-
-    while($row = $result->fetch_assoc()) {
-
-          if($row["month"] <= 6){
-              $utilized1+=$row["ndays"];
-          }
-          if($row["month"] > 6){
-              $utilized2+=$row["ndays"];
-          }
-    }
-}
-$now = new \DateTime('now');
-$month = $now->format('m');
-if($month <= 6){
-  $utilized = $utilized1;
-}
-else{
-  $utilized = $utilized2;
-}
-$remaining = 6 - $utilized;
+if($rowcount>1) $flagEOL=1;
 ?>
 
 <?php
@@ -127,6 +107,9 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       }elseif ($ndays != 2) {
         // code...
         $err6 = "Max of 2 days can be permitted";
+      }elseif ($flagEOL == 1) {
+        // code...
+        $err6 = "You Have Alreay Applied This Leave";
       }elseif($year1 != $year2){
         $err9 = "Invalid selection of year";
       }else{
@@ -332,20 +315,20 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
-                                            name="fdate" placeholder="dd/mm/yyyy">
+                                            name="fdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
-                                            name="tdate" placeholder="dd/mm/yyyy">
+                                            name="tdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Class Adjustment</label>
-                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj" required></textarea>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Reason</label>
-                                        <textarea class="form-control" rows="8" id="reason" name="reason"></textarea>
+                                        <textarea class="form-control" rows="8" id="reason" name="reason" required></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>

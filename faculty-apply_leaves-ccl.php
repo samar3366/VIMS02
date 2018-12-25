@@ -276,20 +276,20 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
-                                            name="fdate" placeholder="dd/mm/yyyy">
+                                            name="fdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
-                                            name="tdate" placeholder="dd/mm/yyyy">
+                                            name="tdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Class Adjustment</label>
-                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj" required></textarea>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Reason for Leave/Work done for & to claim CCL</label>
-                                        <textarea class="form-control" rows="8" id="reason" name="reason"></textarea>
+                                        <textarea class="form-control" rows="8" id="reason" name="reason" required></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>

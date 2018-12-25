@@ -191,7 +191,7 @@
                                          <?php
                                          //get faculty dept
                                          $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
-                                         for($i=0;$i<7;$i++){
+                                         for($i=0;$i<8;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE principal_status <> 'PENDING'");
                                          if($query){

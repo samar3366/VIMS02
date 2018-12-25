@@ -25,13 +25,13 @@ if($query){
 $count=0;
 $utilized='';
 $days='';
+$flag=0;
 $principal_status='';
-$sql = "SELECT * FROM leavesmrl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$sql = "SELECT * FROM leavesmrl WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
 $result = mysqli_query($connect,$sql);
 if ($result->num_rows > 0) {
     $count = 1;
     while($row = mysqli_fetch_array($result))
-          $alreadyClaimedDays=$row['ndays'];
           $flag = 1;
 }else{
    $count = 0;
@@ -43,6 +43,7 @@ if ($result->num_rows > 0) {
     if(!empty($_POST['fdate'])){
     $d1=$_POST['fdate'];
     $d2 =$_POST['tdate'];
+    $class_adj=$_POST['class_adj'];
     $status="PENDING";
     $date1 = new DateTime($_POST['fdate']);
     $date2 = new DateTime($_POST['tdate']);
@@ -93,7 +94,7 @@ if ($result->num_rows > 0) {
         $err8 = "Invalid selection of dates";
       }elseif ($flag == 1) {
         // code...
-        $err8 = "You Cannot Apply This Leave.";
+        $err8 = "You Have Already Claimed Leave.";
       }elseif ($ndays < 7) {
         // code...
         $err8 = "Can Claim Exactly 7 Days.";
@@ -106,8 +107,8 @@ if ($result->num_rows > 0) {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
-          insert into leavesmrl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,class_adjustment)
-          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$class_adj')
+          insert into leavesmrl(facJntuId,fdate,tdate,hod_status,ndays,dean_status,principal_status,facName,facDept,file_path,class_adjustment)
+          values('$facJntuId','$d1','$d2','$status','7','$status','$status','$facName','$dept','$new_name','$class_adj')
           ");
              if($query){
              $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
@@ -299,20 +300,20 @@ if ($result->num_rows > 0) {
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
-                                            name="fdate" placeholder="dd/mm/yyyy">
+                                            name="fdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
-                                            name="tdate" placeholder="dd/mm/yyyy">
+                                            name="tdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Class Adjustment</label>
-                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj" required></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>
-                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp" required>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>

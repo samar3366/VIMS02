@@ -101,6 +101,9 @@ if($tableName == 'leavescl'){
 }elseif ($tableName == 'leaveseol') {
   // code...
   $leave_type = 'EXTRA ORDINARY LEAVES';
+}elseif ($tableName == 'leavesmrl') {
+  // code...
+  $leave_type = 'MARRIAGE LEAVES';
 }
 ?>
 
@@ -385,7 +388,7 @@ if($tableName == 'leavescl'){
                                   <form action="principal/approve2.php" method="post">
                                       <div class="form-group">
                                       <label for="comment">Remarks</label>
-                                      <textarea class="form-control" rows="8" id="remark" name="remark"></textarea>
+                                      <textarea class="form-control" rows="8" id="remark" name="remark" required></textarea>
                                       </div>
                                       <input type='hidden' name='tableName' value='<?php echo $tableName;?>' />
                                       <input type='hidden' name='leave_id' value='<?php echo $leave_id;?>' />

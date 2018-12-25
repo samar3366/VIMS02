@@ -298,20 +298,20 @@ if($query){
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
-                                            name="fdate" placeholder="dd/mm/yyyy">
+                                            name="fdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
-                                            name="tdate" placeholder="dd/mm/yyyy">
+                                            name="tdate" placeholder="dd/mm/yyyy" required>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Class Adjustment</label>
-                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj" required></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>
-                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+                                          <input type="file" name="fileToUpload" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp" required>
                                         </div>
                                         <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                     </form>
