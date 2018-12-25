@@ -65,6 +65,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
     if(isset($_POST['apply'])){
       $d1=$_POST['fdate'];
       $d2=$_POST['tdate'];
+      $class_adj=$_POST['class_adj'];
       //to check years
       $date_arr1 = explode("-",$_POST['fdate']);
       $date_arr2 = explode("-",$_POST['tdate']);
@@ -147,8 +148,8 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
         //     header("Location: faculty-view_leaves-eol.php");
         //   }
 
-            $sql="insert into leaveseol(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason)
-            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason')";
+            $sql="insert into leaveseol(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason,class_adjustment)
+            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason','$class_adj')";
             $query=mysqli_query($connect,$sql);
             header("Location: faculty-view_leaves-eol.php");
       }
@@ -337,6 +338,10 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="comment">Class Adjustment</label>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Reason</label>

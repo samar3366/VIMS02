@@ -34,7 +34,7 @@
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "faculty-view_leaves-ml.php");
+        history.replaceState("", "", "faculty-view_leaves-mrl.php");
         }
     </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -202,7 +202,7 @@
                                         <tbody>
                                           <?php
                                           //get faculty dept
-                                          $query=mysqli_query($connect,"select * from leavesml where facJntuId='$facJntuId'");
+                                          $query=mysqli_query($connect,"select * from leavesmrl where facJntuId='$facJntuId'");
                                           if($query){
                                               while($row=mysqli_fetch_array($query)){
                                                   $leave_id=$row['leave_id'];

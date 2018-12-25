@@ -30,14 +30,12 @@ $sql = "SELECT * FROM leavesmrl WHERE (principal_status='APPROVED' OR principal_
 $result = mysqli_query($connect,$sql);
 if ($result->num_rows > 0) {
     $count = 1;
-    while($row = $result->fetch_assoc())
+    while($row = mysqli_fetch_array($result))
           $alreadyClaimedDays=$row['ndays'];
           $flag = 1;
 }else{
    $count = 0;
 };
-
-
 ?>
 <?php
   $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
@@ -108,8 +106,8 @@ if ($result->num_rows > 0) {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
-          insert into leavesmrl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,faDept,file_path)
-          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name')
+          insert into leavesmrl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,class_adjustment)
+          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$class_adj')
           ");
              if($query){
              $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
@@ -269,7 +267,7 @@ if ($result->num_rows > 0) {
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">APPLY EMERGENCY/MEDICAL LEAVES(CL)</h3> </div>
+                    <h3 class="text-primary">APPLY MARRIAGE LEAVE(ML)</h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                       <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -302,13 +300,15 @@ if ($result->num_rows > 0) {
                                             <label>From Date</label>
                                             <input type="date" class="form-control"
                                             name="fdate" placeholder="dd/mm/yyyy">
-
                                         </div>
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
-
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="comment">Class Adjustment</label>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>

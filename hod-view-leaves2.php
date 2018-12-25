@@ -156,7 +156,7 @@ if($sql){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid']?></h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid'];?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -191,7 +191,7 @@ if($sql){
                                       <tbody>
                                         <?php
                                         //get faculty dept
-                                        $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                        $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
                                         for($i=0;$i<7;$i++){
                                           $tableName = $leaves[$i];
                                         $query=mysqli_query($connect,"select * from $tableName WHERE hod_status = 'PENDING' AND facDept='$hdept'");
@@ -227,6 +227,14 @@ if($sql){
                                               }elseif ($tableName == 'leaveseol') {
                                                 // code...
                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                              }
+                                              elseif ($tableName == 'leaveseol') {
+                                                // code...
+                                                $leave_type = 'EXTRA ORDINARY LEAVES';
+                                              }
+                                              elseif ($tableName == 'leavesmrl') {
+                                                // code...
+                                                $leave_type = 'MARRIAGE LEAVE';
                                               }
                                               $facJntuId = $row['facJntuId'];?>
 

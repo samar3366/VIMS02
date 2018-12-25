@@ -35,6 +35,7 @@ if($query){
     $d1=$_POST['fdate'];
     $d2 =$_POST['tdate'];
     $status="PENDING";
+    $class_adj=$_POST['class_adj'];
 
     $year = date("Y");
     $current_date = date("Y-m-d");
@@ -128,13 +129,13 @@ if($query){
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
-          insert into leavesal(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path)
-          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name')
+          insert into leavesal(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,class_adjustment)
+          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$class_adj')
           ");
              if($query){
              $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
              }else{
-             $err6="Something went wrong. please try again later.";
+             $err6="Something went wrong. please try again later.".mysqli_error($connect);
              }
           } else {
           $err5="Sorry, there was an error uploading your file.";
@@ -331,7 +332,10 @@ if($query){
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
-
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="comment">Class Adjustment</label>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>
