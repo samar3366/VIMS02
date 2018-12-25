@@ -1,4 +1,4 @@
-php
+<?php
 
     if(isset($_COOKIE['id']))
     {
@@ -156,7 +156,7 @@ if($sql){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid']?></h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid'];?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -225,6 +225,10 @@ if($sql){
                                                 }
 
                                               }elseif ($tableName == 'leaveseol') {
+                                                // code...
+                                                $leave_type = 'EXTRA ORDINARY LEAVES';
+                                              }
+                                              elseif ($tableName == 'leaveseol') {
                                                 // code...
                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
                                               }
