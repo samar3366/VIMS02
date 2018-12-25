@@ -31,6 +31,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $d1=$_POST['fdate'];
       $d2=$_POST['tdate'];
       $type = $_POST['type'];
+      $class_adj=$_POST['class_adj'];
       $reason=$_POST['reason'];
       $status = "PENDING";
       if($d1 == ''||$d2 == ''||$reason == ''||$type == ''){
@@ -82,8 +83,8 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
             $err2 = "You can apply only $remaining leaves";
           }
           else{
-            $sql="insert into leavesccl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,type,reason)
-            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$type','$reason')";
+            $sql="insert into leavesccl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,type,reason,class_adjustment)
+            values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$type','$reason','$class_adj')";
             $query=mysqli_query($connect,$sql);
             $success = "You have successfully $type";
           }
@@ -281,6 +282,10 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="comment">Class Adjustment</label>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                         </div>
                                         <div class="form-group">
                                         <label for="comment">Reason for Leave/Work done for & to claim CCL</label>

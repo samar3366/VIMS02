@@ -127,8 +127,8 @@ if($query){
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
           $query=mysqli_query($connect,"
-          insert into leavesod(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,type)
-          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$type')
+          insert into leavesod(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,file_path,type,class_adjustment)
+          values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$new_name','$type','$class_adj')
           ");
              if($query){
              $success="The file ". basename( $_FILES["fileToUpload"]["name"]) ." has been uploaded successfully.";
@@ -336,7 +336,10 @@ if($query){
                                             <label>To Date</label>
                                             <input type="date" class="form-control"
                                             name="tdate" placeholder="dd/mm/yyyy">
-
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="comment">Class Adjustment</label>
+                                        <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                         </div>
                                         <div class="form-group">
                                           <label for="exampleInputFile">Upload</label>

@@ -95,12 +95,9 @@ if($query){
         $val = $date1->diff($cd);
         $cdays = $val->days;
         $cdays+=1;
-        echo $cdays;
-
-
+        $cdays;
 
         $x=$d1;
-
         $y=$d2;
         $t1=strtotime($x);
         $t2=strtotime($y);
@@ -348,7 +345,7 @@ if($query){
                                             </div>
                                             <div class="form-group">
                                             <label for="comment">Class Adjustment</label>
-                                            <textarea class="form-control" rows="8" id="class_adj" name="class_adj"></textarea>
+                                            <textarea class="form-control" rows="10" columns="20" id="class_adj" name="class_adj"></textarea>
                                             </div>
                                             <button type="submit" class="btn btn-info" name="apply">Submit</button>
                                         </form>
