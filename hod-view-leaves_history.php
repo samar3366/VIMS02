@@ -253,10 +253,13 @@ if($sql){
 
 
                                                if($hod_status == 'REJECTED'){
-                                                 $msg = "REJECTED";
-                                               }elseif ($principal_status == 'APPROVED') {
+                                                 $msg = "REJECTED at HOD";
+                                               }elseif ($dean_status == 'REJECTED') {
                                                  // code...
-                                                 $msg = "APPROVED";
+                                                 $msg = "REJECTED at DEAN";
+                                               }elseif ($principal_status == 'REJECTED') {
+                                                 // code...
+                                                 $msg = "REJECTED at PRINCIPAL";
                                                }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
                                                  // code...
                                                  $msg = "Request at Principal";

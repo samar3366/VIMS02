@@ -24,12 +24,17 @@ if($sql){
     }
 }
 ?>
-
 <?php
 $input = $_GET['id'];
 $arr = explode(" ",$input);
 $leave_id = $arr[0];
 $tableName = $arr[1];
+
+
+
+?>
+<?php
+
 $sql=mysqli_query($connect,"select * from $tableName where leave_id='$leave_id'");
 if($sql){
     while($row=mysqli_fetch_array($sql)){
@@ -47,6 +52,8 @@ if($sql){
 
         $principal_status = $row['principal_status'];
         $principal_remarks = $row['principal_remarks'];
+
+        $class_adjustment = $row['class_adjustment'];
 
         if($tableName == 'leavescl'){
           $reason = $row['reason'];
@@ -70,7 +77,13 @@ if($sql){
 }
 
 if($hod_status == 'REJECTED'){
-  $msg = "rejected due the reason of ".$hod_remarks;
+  $msg = "rejected at hod due the reason of ".$hod_remarks;
+}elseif ($dean_status == 'REJECTED') {
+  // code...
+  $msg = "rejected at dean due the reason of ".$dean_remarks;
+}elseif ($principal_status == 'REJECTED') {
+  // code...
+  $msg = "rejected at principal due the reason of ".$principal_remarks;
 }elseif ($principal_status == 'APPROVED') {
   // code...
   $msg = "This leave is approved by everyone";
@@ -97,7 +110,7 @@ if($tableName == 'leavescl'){
   $leave_type = 'EMERGENCY LEAVES';
 }elseif ($tableName == 'leavesccl') {
   // code...
-  if($row['type'] == 'Requestccl'){
+  if($type == 'Requestccl'){
     $leave_type = 'REQUEST CCL LEAVES';
   }else{
     $leave_type = 'APPLY CCL LEAVES';
@@ -106,6 +119,14 @@ if($tableName == 'leavescl'){
 }elseif ($tableName == 'leaveseol') {
   // code...
   $leave_type = 'EXTRA ORDINARY LEAVES';
+}
+
+$count = 0;
+$sql=mysqli_query($connect,"select * from $tableName where facJntuId = '$facJntuId' and principal_status = 'APPROVED' ");
+if($sql){
+    while($row=mysqli_fetch_array($sql)){
+        $count++;
+    }
 }
 
 ?>
@@ -296,6 +317,14 @@ if($tableName == 'leavescl'){
                                               <th>Total no of days</th>
                                               <td><?php echo $ndays;?></td>
                                           </tr>
+                                          <tr>
+                                              <th>Class Adjustment</th>
+                                              <td><?php echo $class_adjustment;?></td>
+                                          </tr>
+                                          <tr>
+                                              <th>Total no leaves available</th>
+                                              <td><?php echo $remaining;?></td>
+                                          </tr>
                                           <?php
                                           if($tableName == 'leavescl'){?>
                                             <tr>
@@ -359,6 +388,7 @@ if($tableName == 'leavescl'){
                           <div class="card">
                               <div class="card-title">
                                   <h4><?php echo $msg;?></h4><br>
+                                  <h4><?php echo $msg;?></h4><br>
                               </div>
                           </div>
                       </div>
@@ -379,7 +409,7 @@ if($tableName == 'leavescl'){
                                       </div>
                                       <input type='hidden' name='tableName' value='<?php echo $tableName;?>' />
                                       <input type='hidden' name='leave_id' value='<?php echo $leave_id;?>' />
-                                      <button type="submit" class="btn btn-info" name="forward">Forword</button>
+                                      <button type="submit" class="btn btn-info" name="forward">Forward</button>
                                       <button type="submit" class="btn btn-danger" name="reject">Reject</button>
                                   </form>
                               </div>

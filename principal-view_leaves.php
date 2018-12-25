@@ -157,85 +157,135 @@
                 <!-- Start Page Content -->
                 <div class="row">
 
-                  <div class="col-lg-12">
-                      <div class="card">
-                          <div class="card-title">
-                              <h4>Table Basic </h4>
-                          </div>
-                          <div class="card-body">
-                              <div class="table-responsive">
-                                  <table class="table">
-                                      <thead>
-                                          <tr>
-                                              <th>LEAVE ID</th>
-                                              <th>NAME</th>
-                                              <th>FROM</th>
-                                              <th>TO</th>
-                                              <th>LEAVE TYPE</th>
-                                              <th>VIEW DETAILS</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                        <?php
-                                        //get faculty dept
-                                        $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
-                                        for($i=0;$i<7;$i++){
-                                          $tableName = $leaves[$i];
-                                        $query=mysqli_query($connect,"select * from $tableName WHERE principal_status = 'PENDING' AND dean_status = 'APPROVED'");
-                                        if($query){
-                                            while($row=mysqli_fetch_array($query)){
+                  <div class="col-12">
+                       <div class="card">
+                           <div class="card-body">
+                               <h4 class="card-title">History of leaves</h4>
+                               <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                               <div class="table-responsive m-t-40">
+                                   <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                       <thead>
+                                           <tr>
+                                               <th>Leave ID</th>
+                                               <th>Faculty Name</th>
+                                               <th>Department</th>
+                                               <th>From</th>
+                                               <th>To</th>
+                                               <th>Leave Type</th>
+                                               <th>Leave Status</th>
+                                               <th>View Details</th>
+                                           </tr>
+                                       </thead>
+                                       <tfoot>
+                                           <tr>
+                                             <th>Leave ID</th>
+                                             <th>Faculty Name</th>
+                                             <th>Department</th>
+                                             <th>From</th>
+                                             <th>To</th>
+                                             <th>Leave Type</th>
+                                             <th>Leave Status</th>
+                                             <th>View Details</th>
+                                           </tr>
+                                       </tfoot>
+                                       <tbody>
 
-                                              $leave_id=$row['leave_id'];
-                                              $facName = $row['facName'];
-                                              $fdate = $row['fdate'];
-                                              $tdate = $row['tdate'];
-                                              if($tableName == 'leavescl'){
-                                                $leave_type = 'CASUAL LEAVES';
-                                              }elseif ($tableName == 'leavesmtl') {
-                                                // code...
-                                                $leave_type = 'MATERNITY LEAVES';
-                                              }elseif ($tableName == 'leavesal') {
-                                                // code...
-                                                $leave_type = 'ACADEMIC LEAVES';
-                                              }elseif ($tableName == 'leavesod') {
-                                                // code...
-                                                $leave_type = 'ON-DUTY LEAVES';
-                                              }elseif ($tableName == 'leavesml') {
-                                                // code...
-                                                $leave_type = 'EMERGENCY LEAVES';
-                                              }elseif ($tableName == 'leavesccl') {
-                                                // code...
-                                                if($row['type'] == 'Requestccl'){
-                                                  $leave_type = 'REQUEST CCL LEAVES';
-                                                }else{
-                                                  $leave_type = 'APPLY CCL LEAVES';
-                                                }
+                                         <?php
+                                         //get faculty dept
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         for($i=0;$i<7;$i++){
+                                           $tableName = $leaves[$i];
+                                         $query=mysqli_query($connect,"select * from $tableName WHERE principal_status <> 'PENDING'");
+                                         if($query){
+                                             while($row=mysqli_fetch_array($query)){
 
-                                              }elseif ($tableName == 'leaveseol') {
-                                                // code...
-                                                $leave_type = 'EXTRA ORDINARY LEAVES';
-                                              }
-                                              $facJntuId = $row['facJntuId'];?>
+                                               $leave_id=$row['leave_id'];
+                                               $facName = $row['facName'];
+                                               $facJntuId = $row['facJntuId'];
+                                               $fdate = $row['fdate'];
+                                               $tdate = $row['tdate'];
+                                               $facDept = $row['facDept'];
+                                               // $q=mysqli_query($connect,"select * from faculty WHERE facJntuId = '$facjntuId'");
+                                               // if($query){
+                                               //     while($row=mysqli_fetch_array($query)){
+                                               //       $facDept = $row['facDept'];
+                                               //     }
+                                               //  }
+                                               if($tableName == 'leavescl'){
+                                                 $leave_type = 'CASUAL LEAVES';
+                                               }elseif ($tableName == 'leavesmtl') {
+                                                 // code...
+                                                 $leave_type = 'MATERNITY LEAVES';
+                                               }elseif ($tableName == 'leavesal') {
+                                                 // code...
+                                                 $leave_type = 'ACADEMIC LEAVES';
+                                               }elseif ($tableName == 'leavesod') {
+                                                 // code...
+                                                 $leave_type = 'ON-DUTY LEAVES';
+                                               }elseif ($tableName == 'leavesml') {
+                                                 // code...
+                                                 $leave_type = 'EMERGENCY LEAVES';
+                                               }elseif ($tableName == 'leavesccl') {
+                                                 // code...
+                                                 if($row['type'] == 'Requestccl'){
+                                                   $leave_type = 'REQUEST CCL LEAVES';
+                                                 }else{
+                                                   $leave_type = 'APPLY CCL LEAVES';
+                                                 }
 
-                                              <tr>
-                                                  <th scope="row"><?php echo $leave_id;?></th>
-                                                  <td><?php echo $facName;?></td>
-                                                  <td><?php echo $fdate;?></td>
-                                                  <td><?php echo $tdate;?></td>
-                                                  <td><?php echo $leave_type;?></td>
-                                                  <td><a href="principal-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
-                                              </tr><?php
-                                            }
-                                        }
-                                      }
-                                        ?>
-                                      </tbody>
-                                  </table>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                                               }elseif ($tableName == 'leaveseol') {
+                                                 // code...
+                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }
+                                               $facJntuId = $row['facJntuId'];
 
+                                               $hod_status = $row['hod_status'];
+                                               $hod_remarks = $row['hod_remarks'];
+
+                                               $dean_status = $row['dean_status'];
+                                               $dean_remarks = $row['dean_remarks'];
+
+                                               $principal_status = $row['principal_status'];
+                                               $principal_remarks = $row['principal_remarks'];
+
+
+                                               if($hod_status == 'REJECTED'){
+                                                 $msg = "REJECTED";
+                                               }elseif ($principal_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "APPROVED";
+                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
+                                                 // code...
+                                                 $msg = "Request at Principal";
+                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
+                                                 // code...
+                                                 $msg = "Request at Dean";
+                                               }
+                                               ?>
+
+                                               <tr>
+                                                   <th scope="row"><?php echo $leave_id;?></th>
+                                                   <td><?php echo $facName;?></td>
+                                                   <td><?php echo $facDept;?></td>
+                                                   <td><?php echo $fdate;?></td>
+                                                   <td><?php echo $tdate;?></td>
+                                                   <td><?php echo $leave_type;?></td>
+                                                   <td><a href="principal-view-leaves-details.php?id=<?php echo $leave_id." ".$tableName;?>"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW DETAILS</button></a></td>
+                                               </tr><?php
+                                             }
+                                         }
+                                       }
+                                         ?>
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
+
+
+               <!-- row ends -->
+               <!-- End PAge Content -->
+               </div>
+             </div>
                 <!-- End PAge Content -->
             </div>
             <!-- End Container fluid  -->

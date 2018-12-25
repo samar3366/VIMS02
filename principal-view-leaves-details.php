@@ -38,6 +38,8 @@ if($sql){
         $principal_status = $row['principal_status'];
         $principal_remarks = $row['principal_remarks'];
 
+        $class_adjustment = $row['class_adjustment'];
+
         if($tableName == 'leavescl'){
           $reason = $row['reason'];
           $class_adjustment = $row['class_adjustment'];
@@ -279,6 +281,10 @@ if($tableName == 'leavescl'){
                                               <th>Total no of days</th>
                                               <td><?php echo $ndays;?></td>
                                           </tr>
+                                          <tr>
+                                              <th>Class Adjustment</th>
+                                              <td><?php echo $class_adjustment;?></td>
+                                          </tr>
                                           <?php
                                           if($tableName == 'leavescl'){?>
                                             <tr>
@@ -362,7 +368,7 @@ if($tableName == 'leavescl'){
                                       </div>
                                       <input type='hidden' name='tableName' value='<?php echo $tableName;?>' />
                                       <input type='hidden' name='leave_id' value='<?php echo $leave_id;?>' />
-                                      <button type="submit" class="btn btn-info" name="forward">Forword</button>
+                                      <button type="submit" class="btn btn-info" name="forward">Approve</button>
                                       <button type="submit" class="btn btn-danger" name="reject">Reject</button>
                                   </form>
                               </div>
