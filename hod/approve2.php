@@ -4,8 +4,9 @@ include('../connection.php');
     echo $table_name = $_POST['tableName'];
     echo $leave_id = $_POST['leave_id'];
     echo $remarks = $_POST['remark'];
-    if($leave_id == 'leavescl'){
-      $q=mysqli_query($connect,"update $table_name set hod_status='APPROVED', dean_status = 'APPROVED', principal_status = 'APPROVED', hod_remark = '$remarks' where leave_id='$leave_id'");
+    if($table_name == 'leavescl'){
+      $q=mysqli_query($connect,"update $table_name set hod_status='APPROVED', dean_status='APPROVED', principal_status='APPROVED', hod_remarks='$remarks' where leave_id='$leave_id'");
+      echo "$table_name";
       header("Location:../hod-view-leaves2.php");
     }else{
       $q=mysqli_query($connect,"update $table_name set hod_status='APPROVED' where leave_id='$leave_id'");

@@ -172,7 +172,6 @@
                                                <th>From</th>
                                                <th>To</th>
                                                <th>Leave Type</th>
-                                               <th>Leave Status</th>
                                                <th>View Details</th>
                                            </tr>
                                        </thead>
@@ -184,7 +183,6 @@
                                              <th>From</th>
                                              <th>To</th>
                                              <th>Leave Type</th>
-                                             <th>Leave Status</th>
                                              <th>View Details</th>
                                            </tr>
                                        </tfoot>
@@ -192,10 +190,10 @@
 
                                          <?php
                                          //get faculty dept
-                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
                                          for($i=0;$i<7;$i++){
                                            $tableName = $leaves[$i];
-                                         $query=mysqli_query($connect,"select * from $tableName WHERE principal_status <> 'PENDING'");
+                                         $query=mysqli_query($connect,"select * from $tableName WHERE principal_status = 'PENDING' AND dean_status = 'APPROVED'");
                                          if($query){
                                              while($row=mysqli_fetch_array($query)){
 
@@ -249,18 +247,7 @@
                                                $principal_remarks = $row['principal_remarks'];
 
 
-                                               if($hod_status == 'REJECTED'){
-                                                 $msg = "REJECTED";
-                                               }elseif ($principal_status == 'APPROVED') {
-                                                 // code...
-                                                 $msg = "APPROVED";
-                                               }elseif ($principal_status == 'PENDING' && $dean_status == 'APPROVED') {
-                                                 // code...
-                                                 $msg = "Request at Principal";
-                                               }elseif ($hod_status == 'APPROVED' && $dean_status == 'PENDING') {
-                                                 // code...
-                                                 $msg = "Request at Dean";
-                                               }
+                                              
                                                ?>
 
                                                <tr>

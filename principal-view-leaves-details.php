@@ -62,12 +62,20 @@ if($sql){
     }
 }
 
-if($principal_status == 'REJECTED'){
-  $msg = "rejected due the reason of ".$principal_remarks;
-}elseif($principal_status == 'APPROVED') {
+if($hod_status == 'REJECTED'){
+  $msg = "REJECTED by HOD";
+}elseif ($dean_status == 'REJECTED') {
   // code...
-  $msg = "This leave is approved by everyone";
+  $msg = "REJECTED by DEAN";
+}elseif ($principal_status == 'REJECTED') {
+  // code...
+  $msg = "REJECTED by PRINCIPAL";
+}elseif ($principal_status == 'APPROVED') {
+  // code...
+  $msg = "APPROVED";
 }
+
+
 if($tableName == 'leavescl'){
   $leave_type = 'CASUAL LEAVES';
 }elseif ($tableName == 'leavesmtl') {
@@ -348,6 +356,19 @@ if($tableName == 'leavescl'){
                           <div class="card">
                               <div class="card-title">
                                   <h4><?php echo $msg;?></h4><br>
+                                  <h4 class="text-primary">REMARKS:</h4><br>
+                                  <?php if($hod_remarks != ''){
+                                    echo "<h4>HOD : </h4>";
+                                    echo "<h4>".$hod_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($dean_remarks != ''){
+                                    echo "<h4>DEAN : </h4>";
+                                    echo "<h4>".$dean_remarks."</h4><br>";
+                                  }?>
+                                  <?php if($principal_remarks != ''){
+                                    echo "<h4>PRINCIPAL : </h4>";
+                                    echo "<h4>".$principal_remarks."</h4><br>";
+                                  }?>
                               </div>
                           </div>
                       </div>
