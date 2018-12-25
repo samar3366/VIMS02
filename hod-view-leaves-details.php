@@ -71,6 +71,8 @@ if($sql){
           $reason = $row['reason'];
         }elseif ($tableName == 'leaveseol') {
           $reason = $row['reason'];
+        }elseif ($tableName == 'leavesmrl') {
+          $reason = $row['reason'];
         }
     }
 }
@@ -119,6 +121,10 @@ if($tableName == 'leavescl'){
 }elseif ($tableName == 'leaveseol') {
   // code...
   $leave_type = 'EXTRA ORDINARY LEAVES';
+}
+elseif ($tableName == 'leavesmrl') {
+  // code...
+  $leave_type = 'MARRIAGE LEAVE';
 }
 
 $count = 0;
