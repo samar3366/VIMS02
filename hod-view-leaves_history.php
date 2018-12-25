@@ -203,7 +203,7 @@ if($sql){
 
                                          <?php
                                          //get faculty dept
-                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol");
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
                                          for($i=0;$i<7;$i++){
                                            $tableName = $leaves[$i];
                                          $query=mysqli_query($connect,"select * from $tableName WHERE hod_status <> 'PENDING' AND facDept='$hdept'");
