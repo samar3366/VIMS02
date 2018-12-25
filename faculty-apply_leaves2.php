@@ -264,6 +264,15 @@ if($query){
                                                <td><a href="faculty-apply_leaves-eol.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
                                                <td><a href="faculty-view_leaves-eol.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
                                            </tr>
+                                           <tr>
+                                               <th scope="row">8</th>
+                                               <td>Marriage Leaves</td>
+                                               <td>2</td>
+                                               <td>1</td>
+                                               <td>1</td>
+                                               <td><a href="faculty-apply_leaves-mrl.php"><button type="button" class="btn btn-success btn-sm m-b-10 m-l-5">APPLY</button></a></td>
+                                               <td><a href="faculty-view_leaves-mrl.php"><button type="button" class="btn btn-info btn-sm m-b-10 m-l-5">VIEW</button></a></td>
+                                           </tr>
                                        </tbody>
                                    </table>
                                </div>
