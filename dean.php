@@ -10,6 +10,7 @@
         header("Location:dean-login.php");
     }
 $dean=$_SESSION['did'];
+//checking
 ?>
 <?php
 $query="select ";

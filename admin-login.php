@@ -24,6 +24,7 @@
     {
         header("Location:faculty.php");
     }
+    //checking
 ?>
 <!DOCTYPE html>
 <html lang="en">
