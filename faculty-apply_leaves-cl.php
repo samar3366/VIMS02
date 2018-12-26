@@ -34,6 +34,7 @@ if($query){
 
 ?>
 <?php
+$err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
     if(isset($_POST['apply'])){
       $d1=$_POST['fdate'];
       $d2=$_POST['tdate'];
@@ -112,7 +113,7 @@ if($query){
             header("Location: faculty-apply_leaves-cl.php?ack=2");
           }elseif (strtotime($d1) > strtotime($d2)) {
             // code...
-            $error = "Invalid selection of date";
+            $err6 = "Invalid selection of date";
           }elseif($year1 != $year2){
             $err7 = "Invalid selection of year";
           }

@@ -37,23 +37,23 @@ if($query){
 }
 ?>
 <?php
-$flag=0;
-$datesArray=array();
-$i=0;
-$sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
-$result = mysqli_query($connect,$sql);
-$rowcount=mysqli_num_rows($result);
-if($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
-            $datesArray[$i]=$row['fdate'];
-            $count = 1;
-            $flag = 1;
-    }
-}else{
-   $count = 0;
-};
-$countDates=count($datesArray);
-$lastDate=$datesArray[$countDates-1];
+// $flag=0;
+// $datesArray=array();
+// $i=0;
+// $sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+// $result = mysqli_query($connect,$sql);
+// $rowcount=mysqli_num_rows($result);
+// if($result->num_rows > 0) {
+//     while($row = mysqli_fetch_array($result)){
+//             $datesArray[$i]=$row['fdate'];
+//             $count = 1;
+//             $flag = 1;
+//     }
+// }else{
+//    $count = 0;
+// };
+// $countDates=count($datesArray);
+// $lastDate=$datesArray[$countDates];
 
 
 ?>
@@ -64,6 +64,7 @@ $lastDate=$datesArray[$countDates-1];
     $d1=$_POST['fdate'];
     $d2 =  date('Y-m-d', strtotime($d1. ' + 90 days'));
     $ndays=90;
+    $class_adj=$_POST['class_adj'];
     $status="PENDING";
     $date1 = new DateTime($_POST['fdate']);
     $date2 = new DateTime($facDoj);
@@ -75,9 +76,9 @@ $lastDate=$datesArray[$countDates-1];
      $filename = str_replace(" ", "_", $_FILES['fileToUpload']['name']);
 
      //min gap of 1 year
-     $interval1 = $date1->diff($lastDate);
-     $cdays1=$interval1->days;
-     $cdays1+=1;
+     // $interval1 = $date1->diff($lastDate);
+     // $cdays1=$interval1->days;
+     // $cdays1+=1;
 
      $target_dir = "uploads/";
      $time = time();
@@ -111,10 +112,11 @@ $lastDate=$datesArray[$countDates-1];
       }elseif ($facGen == '' || $facDoj == '') {
       // code...
       $err7 = "Sorry, trouble retrieving profile details please Update your profile";
-    }elseif ($rowcount > 2 ) {
-      // code...
-      $err9 = "You Have Alreay Utilized 2 Times. Cannot Apply Further";
-    }
+      }
+    //elseif ($rowcount > 2 ) {
+    //   // code...
+    //   $err9 = "You Have Alreay Utilized 2 Times. Cannot Apply Further";
+    // }
     elseif ($facGen == 'Male') {
       // code...
       $err8 = "You are not supposed to apply this leave";
@@ -122,10 +124,10 @@ $lastDate=$datesArray[$countDates-1];
       // code...
       $err9 = "Minimum of 1 year experience is required to apply this leave";
     }
-    elseif ($cdays1 < 365) {
-      // code...
-      $err9 = "A Min of 1 Year Gap should be mainted Before applying 2nd leave";
-    }
+    // elseif ($cdays1 < 365) {
+    //   // code...
+    //   $err9 = "A Min of 1 Year Gap should be mainted Before applying 2nd leave";
+    // }
        else {
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
           //update dtabase
@@ -431,7 +433,7 @@ $lastDate=$datesArray[$countDates-1];
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 </body>
 

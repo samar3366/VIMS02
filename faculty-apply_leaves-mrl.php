@@ -21,22 +21,7 @@ if($query){
     }
 }
 ?>
-<?php
-$count=0;
-$utilized='';
-$days='';
-$flag=0;
-$principal_status='';
-$sql = "SELECT * FROM leavesmrl WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
-$result = mysqli_query($connect,$sql);
-if ($result->num_rows > 0) {
-    $count = 1;
-    while($row = mysqli_fetch_array($result))
-          $flag = 1;
-}else{
-   $count = 0;
-};
-?>
+
 <?php
   $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
   if(isset($_POST['apply'])){
@@ -66,6 +51,24 @@ if ($result->num_rows > 0) {
      $target_file = $target_dir.$new_name;
      $uploadOk = 1;
      $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+     //checking
+     $count=0;
+     $utilized='';
+     $days='';
+     $flag=0;
+     $principal_status='';
+     $sql = "SELECT * FROM leavesmrl WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+     $result = mysqli_query($connect,$sql);
+     if ($result->num_rows > 0) {
+         $count = 1;
+         while($row = mysqli_fetch_array($result))
+               $flag = 1;
+     }else{
+        $count = 0;
+     };
+
+     //checking
 
       // Check if file already exists
       if (file_exists($target_file)) {
@@ -118,7 +121,7 @@ if ($result->num_rows > 0) {
           } else {
           $err5="Sorry, there was an error uploading your file.".mysqli_error($connect);
           }
-      }
+       }
 
 
     }
