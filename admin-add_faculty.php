@@ -1,3 +1,5 @@
+<!-- Tell the browser to be responsive to screen width -->
+<!-- Tell the browser to be responsive to screen width -->
 <?php
     if(isset($_COOKIE['id']))
     {
