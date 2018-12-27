@@ -77,6 +77,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
 
       if($month <= 6){
         $utilized = $utilized1;
+        $cdays;
       }
       else{
         $utilized = $utilized2;
@@ -84,7 +85,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       $remaining = 6 - $utilized;
 
       if($d1 == ''||$d2 == ''||$reason == ''||$class_adj == ''){
-          header("Location: faculty-apply_leaves-cl.php?ack=1");
+          $err4 = "Enter Valid Details";
       }
       else{
         $date1 = new DateTime($_POST['fdate']);
@@ -96,7 +97,6 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
         $val = $date1->diff($cd);
         $cdays = $val->days;
         $cdays+=1;
-        $cdays;
 
         $x=$d1;
         $y=$d2;
@@ -107,10 +107,10 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
         $cal = $utilized + $ndays;
         $rem = 6 - $utilized;
           if($cal > 6){
-              header("Location: faculty-apply_leaves-cl.php?ack=0&rem=$rem");
+              $remaining = $rem;
           }elseif ($cdays > 7) {
             // code...
-            header("Location: faculty-apply_leaves-cl.php?ack=2");
+            $err1 = "Sorry you must apply on or before 7 days of the leave date.";
           }elseif (strtotime($d1) > strtotime($d2)) {
             // code...
             $err6 = "Invalid selection of date";
@@ -128,7 +128,6 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -284,61 +283,31 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
             <div class="container-fluid">
                 <!-- Start Page Content -->
                  <div class="row">
-                    <?php
-                      if((6 - $utilized) > 0){
-                        ?>
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
                                     <h4>You have <?php echo $remaining;?> more to apply</h4><br>
-                                    <?php if(isset($_GET['ack'])){ echo "<br>";?>
                                     <div class="card-content">
-                                        <?php if($_GET['ack'] == 0){ ?>
-                                        <div class="alert alert-danger alert-dismissible fade show">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <strong>Error Applying try to apply less than or equal to <?php echo $_GET['rem'];?></strong>
+                                        <div class="text-info">
+                                          <?php echo $success;?>
                                         </div>
-                                        <?php
-                                            }else if($_GET['ack'] == 1){
-                                        ?>
-                                        <div class="alert alert-success alert-dismissible fade show">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <strong>Enter Valid Details;</strong>
+                                        <div class="text-danger">
+                                          <?php echo $err1.$err2.$err3.$err4.$err5.$err6.$err7.$err8.$err9;?>
                                         </div>
-                                      <?php }else if($_GET['ack'] == 2){
-                                  ?>
-                                  <div class="alert alert-danger alert-dismissible fade show">
-                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                      <strong>Sorry you must apply on or before 7 days of the leave date.</strong>
-                                  </div>
-                                <?php }else if($_GET['ack'] == 3){
-                            ?>
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <strong>Invalid Selection of Dates.</strong>
-                            </div>
-                                <?php }}
-                                        ?>
-
-
-
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
                                         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
                                         ?>" method="post">
-
                                             <div class="form-group">
                                                 <label>From Date</label>
                                                 <input type="date" class="form-control"
                                                 name="fdate" placeholder="dd/mm/yyyy" required>
-
                                             </div>
                                             <div class="form-group">
                                                 <label>To Date</label>
                                                 <input type="date" class="form-control"
                                                 name="tdate" placeholder="dd/mm/yyyy" required>
-
                                             </div>
                                             <div class="form-group">
                                             <label for="comment">Reason</label>
@@ -358,10 +327,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                         <!-- /# column -->
 
 
-                    </div><?php
-                      }
-                      else{
-                        ?>
+                    </div>
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
@@ -372,11 +338,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                             </div>
                         </div>
                         <!-- /# column -->
-
-
-                    </div><?php
-                      }
-                    ?>
+                    </div>
                 <!-- row ends -->
                 <!-- End PAge Content -->
             </div>

@@ -83,10 +83,10 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       //check if applied previously
       $utilized=0;
       // $res = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
-      $result = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
+      $result = mysqli_query($connect,"SELECT ndays FROM leaveseol WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'");
       if ($result->num_rows > 0) {
           while($row = $result->fetch_assoc()) {
-            $utilized=$row['ndays'];
+            $utilized+=$row['ndays'];
           }
       }
       $leavesLeft = 2 - $utilized;
@@ -98,10 +98,10 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       }elseif ($leavesLeft == 0) {
         // code...
         $err4 = "You have applied this leave already";
-      }elseif ($remaining != 0) { // as he/she can apply only after the exhausting of all their casual leaves.
-        // cannot apply if casual leaves are not completed
-        $err2 = "You can This Leave Only after completion of your Casual Leaves";
-      }elseif (strtotime($d1) > strtotime($d2)) {
+        }elseif ($remaining != 0) { // as he/she can apply only after the exhausting of all their casual leaves.
+      //   // cannot apply if casual leaves are not completed
+      //   $err2 = "You can This Leave Only after completion of your Casual Leaves";
+      // }elseif (strtotime($d1) > strtotime($d2)) {
         // code...
         $err8 = "Invalid selection of dates";
       }elseif ($ndays != 2) {
@@ -110,6 +110,9 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       }elseif ($flagEOL == 1) {
         // code...
         $err6 = "You Have Alreay Applied This Leave";
+      }elseif (strtotime($d1) > strtotime($d2)) {
+        // code...
+        $err6 = "Invalid selection of date";
       }elseif($year1 != $year2){
         $err9 = "Invalid selection of year";
       }else{

@@ -34,6 +34,7 @@ if($query){
     $d2 =$_POST['tdate'];
     $type = $_POST['type'];
     $status="PENDING";
+    $class_adj = $_POST['class_adj'];
     $date1 = new DateTime($_POST['fdate']);
     $date2 = new DateTime($_POST['tdate']);
     $interval = $date1->diff($date2);
