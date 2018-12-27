@@ -98,13 +98,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       }elseif ($leavesLeft == 0) {
         // code...
         $err4 = "You have applied this leave already";
-        }elseif ($remaining != 0) { // as he/she can apply only after the exhausting of all their casual leaves.
-      //   // cannot apply if casual leaves are not completed
-      //   $err2 = "You can This Leave Only after completion of your Casual Leaves";
-      // }elseif (strtotime($d1) > strtotime($d2)) {
-        // code...
-        $err8 = "Invalid selection of dates";
-      }elseif ($ndays != 2) {
+        }elseif ($ndays != 2) {
         // code...
         $err6 = "Max of 2 days can be permitted";
       }elseif ($flagEOL == 1) {

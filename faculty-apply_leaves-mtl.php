@@ -37,23 +37,21 @@ if($query){
 }
 ?>
 <?php
-// $flag=0;
-// $datesArray=array();
-// $i=0;
-// $sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
-// $result = mysqli_query($connect,$sql);
-// $rowcount=mysqli_num_rows($result);
-// if($result->num_rows > 0) {
-//     while($row = mysqli_fetch_array($result)){
-//             $datesArray[$i]=$row['fdate'];
-//             $count = 1;
-//             $flag = 1;
-//     }
-// }else{
-//    $count = 0;
-// };
-// $countDates=count($datesArray);
-// $lastDate=$datesArray[$countDates];
+$flag=0;
+$count = 0;
+$i=0;
+$sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+$result = mysqli_query($connect,$sql);
+$rowcount=mysqli_num_rows($result);
+if($result->num_rows > 0) {
+    while($row = mysqli_fetch_array($result)){
+            $count += 1;
+            $flag = 1;
+    }
+}
+
+
+
 
 
 ?>
@@ -79,6 +77,29 @@ if($query){
      // $interval1 = $date1->diff($lastDate);
      // $cdays1=$interval1->days;
      // $cdays1+=1;
+     $year = date('Y');
+
+     $date_arr1 = explode("-",$_POST['fdate']);
+
+     $year1 = $date_arr1[0];
+     $flag=0;
+     $sql = "SELECT * FROM leavesmtl WHERE YEAR(fdate)=$year1 AND (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+     $result = mysqli_query($connect,$sql);
+     $rowcount=mysqli_num_rows($result);
+     if($result->num_rows > 0) {
+         while($row = mysqli_fetch_array($result)){
+                 $flag = 1;
+         }
+     };
+     $count = 0;
+     $sql = "SELECT * FROM leavesmtl WHERE (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+     $result = mysqli_query($connect,$sql);
+     $rowcount=mysqli_num_rows($result);
+     if($result->num_rows > 0) {
+         while($row = mysqli_fetch_array($result)){
+                 $count += 1;
+         }
+     }
 
      $target_dir = "uploads/";
      $time = time();
@@ -109,10 +130,15 @@ if($query){
       $err4="Sorry, your file was not uploaded.";
       // if everything is ok, try to upload file
       //
-      }elseif ($facGen == '' || $facDoj == '') {
+    }elseif ($facGen == '' || $facDoj == '0000-00-00' || $facDoj == '') {
       // code...
       $err7 = "Sorry, trouble retrieving profile details please Update your profile";
-      }
+    }elseif ($flag == 1) {
+        // code...
+        $err7 = "You have already applied once in this year";
+      }elseif($rowcount >= 2){
+          $err5 = "Can apply a max of 2 times in life time";
+        }
     //elseif ($rowcount > 2 ) {
     //   // code...
     //   $err9 = "You Have Alreay Utilized 2 Times. Cannot Apply Further";
@@ -310,7 +336,7 @@ if($query){
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-title">
-                                <h4>You have 3 more to apply</h4><br>
+                                <h4>Apply leave</h4><br>
                                 <div class="text-info">
                                   <?php echo $success;?>
                                 </div>

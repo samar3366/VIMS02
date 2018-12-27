@@ -56,7 +56,7 @@ if($query){
     $utilizede = 0;
     $count = 0;
 
-    $sql = "SELECT * FROM leavesod WHERE YEAR(fdate)=$year1 AND NOT hod_status='Rejected' AND facJntuId='$facJntuId'";
+    $sql = "SELECT * FROM leavesod WHERE YEAR(fdate)=$year1 AND NOT hod_status='REJECTED' AND facJntuId='$facJntuId'";
 
     $result = mysqli_query($connect,$sql);
 

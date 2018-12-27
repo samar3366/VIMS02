@@ -30,8 +30,37 @@ if($query){
 ?>
 <?php
 //get faculty dept
+$year = date("Y");
+$month = date("m");
+$util1 = 0;
+$util2 = 0;
+$sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
 
+$result = mysqli_query($connect,$sql);
 
+if ($result->num_rows > 0) {
+
+    while($row = $result->fetch_assoc()) {
+
+          if($row["month"] <= 6){
+              $util1+=$row["ndays"];
+          }
+          if($row["month"] > 6){
+              $util2+=$row["ndays"];
+          }
+    }
+}
+$remain = 0;
+$msg = '';
+$monthTxt = '';
+if($month <= 6){
+  $remain = 6 - $util1;
+  $monthTxt = 'JAN - JUNE';
+}elseif($month > 6){
+  $remain = 6 - $util2;
+  $monthTxt = 'JULY - DEC';
+}
+$msg = "You have $remain leaves in $year ($monthTxt)";
 ?>
 <?php
 $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
@@ -74,15 +103,17 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
       }
 
 
-
+      $monthTxt = '';
       if($month <= 6){
         $utilized = $utilized1;
-        $cdays;
+        $monthTxt = 'JAN - JUNE';
       }
       else{
         $utilized = $utilized2;
+        $monthTxt = 'JULY - DEC';
       }
       $remaining = 6 - $utilized;
+      $msg = "You have $remaining leaves in $year1 ($monthTxt)";
 
       if($d1 == ''||$d2 == ''||$reason == ''||$class_adj == ''){
           $err4 = "Enter Valid Details";
@@ -105,9 +136,9 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
         $month2=date("m",$t2);
         $month1=date("m",$t1);
         $cal = $utilized + $ndays;
-        $rem = 6 - $utilized;
+        $remain = 6 - $utilized;
           if($cal > 6){
-              $remaining = $rem;
+              $remaining = $remain;
           }elseif ($cdays > 7) {
             // code...
             $err1 = "Sorry you must apply on or before 7 days of the leave date.";
@@ -120,8 +151,41 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
           else{
             $sql="insert into leavescl(facJntuId,fdate,tdate,ndays,hod_status,dean_status,principal_status,facName,facDept,reason,class_adjustment)
             values('$facJntuId','$d1','$d2','$ndays','$status','$status','$status','$facName','$dept','$reason','$class_adj')";
+            //$remaining leaves calculation
             $query=mysqli_query($connect,$sql);
-            // header("Location: faculty-view_leaves-cl.php");
+            $year = date("Y");
+            $month = date("m");
+            $util1 = 0;
+            $util2 = 0;
+            $sql = "SELECT ndays,EXTRACT(MONTH FROM fdate) as month FROM leavescl WHERE YEAR(fdate)=$year AND  (principal_status='APPROVED' OR principal_status='PENDING') AND facJntuId='$facJntuId'";
+
+            $result = mysqli_query($connect,$sql);
+
+            if ($result->num_rows > 0) {
+
+                while($row = $result->fetch_assoc()) {
+
+                      if($row["month"] <= 6){
+                          $util1+=$row["ndays"];
+                      }
+                      if($row["month"] > 6){
+                          $util2+=$row["ndays"];
+                      }
+                }
+            }
+            $remain = 0;
+            $msg = '';
+            $monthTxt = '';
+            if($month <= 6){
+              $remain = 6 - $util1;
+              $monthTxt = 'JAN - JUNE';
+            }elseif($month > 6){
+              $remain = 6 - $util2;
+              $monthTxt = 'JULY - DEC';
+            }
+            $msg = "You have $remain leaves in $year ($monthTxt)";
+            //calculation ends
+            $success = "Applied leave successfully";
           }
       }
     }
@@ -286,7 +350,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
-                                    <h4>You have <?php echo $remaining;?> more to apply</h4><br>
+                                    <h4><?php echo $msg;?></h4><br>
                                     <div class="card-content">
                                         <div class="text-info">
                                           <?php echo $success;?>
@@ -328,15 +392,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
 
 
                     </div>
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-title">
-                                    <h4>You have exceeded the maximum limit</h4><br>
-                                    <h4>NOTE: if your application is in pending status then it is also considered as approved leaves from your limit.</h4><br>
-                                    <h4>please apply leave after your previous leave is approved or rejected by HOD, DEAN or PRINCIPAL</h4><br>
-                                </div>
-                            </div>
-                        </div>
+
                         <!-- /# column -->
                     </div>
                 <!-- row ends -->

@@ -170,7 +170,51 @@ if($sql){
             <!-- Container fluid  -->
             <div class="container-fluid">
                 <!-- Start Page Content -->
+                <div class="row">
 
+                  <div class="col-12">
+                       <div class="card">
+                           <div class="card-body">
+                               <h4 class="card-title">History of leaves</h4>
+                               <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                               <div class="table-responsive m-t-40">
+                                   <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                       <thead>
+                                           <tr>
+                                               <th>Faculty Name</th>
+                                               <th>Casual Leave<br>( max : 12 )<br>(Utilized/Remaning)</th>
+                                               <th>Medical Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                               <th>Maternity Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                               <th>Marriage Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                               <th>Academic Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                               <th>On Duty Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                               <th>Extra Ordinary Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                       </tbody>
+                                       <tfoot>
+                                         <tr>
+                                           <th>Faculty Name</th>
+                                           <th>Casual Leave<br>( max : 12 )<br>(Utilized/Remaning)</th>
+                                           <th>Medical Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           <th>Maternity Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           <th>Marriage Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           <th>Academic Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           <th>On Duty Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                           <th>Extra Ordinary Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                         </tr>
+                                       </tfoot>
+                                       <tbody>
+
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
+
+
+               <!-- row ends -->
+               <!-- End PAge Content -->
 
                 <!-- End PAge Content -->
             </div>
@@ -248,33 +292,8 @@ if($sql){
             history.replaceState("", "", "hod.php");
         }
     </script>
-    <script type="text/javascript">
-        $(function () {
-          $(document).bind("contextmenu",function(e){
-            e.preventDefault();
-            //alert("Right Click is not allowed");
-          }
-        );
-        /*$('.dvOne').bind("contextmenu",function(e){
-        e.preventDefault();
-        alert("Right Click is not allowed on div");
-        }
-        );
-        */
-        }
-         );
-      </script>
-      <script>
-      $(document).keydown(function (event) {
-          if (event.keyCode == 123) { // Prevent F12
-              return false;
-          }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
-              return false;
-          }else if (event.ctrlKey && event.keyCode == 85) { // Prevent Ctrl+U
-              return false;
-          }
-      });
-      </script>
+
+
 
     <script src="js/lib/datatables/datatables.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
@@ -285,7 +304,7 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <script src="js/block/javascript.js"></script>
+    <!-- <script src="js/block/javascript.js"></script> -->
 
 
 </body>
