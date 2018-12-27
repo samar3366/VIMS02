@@ -138,7 +138,7 @@ $err1=$err2=$err3=$err4=$err5=$err6=$err7=$err8=$err9=$success='';
         $cal = $utilized + $ndays;
         $remain = 6 - $utilized;
           if($cal > 6){
-              $remaining = $remain;
+            $err3 = "Sorry you must apply less than $remain.";
           }elseif ($cdays > 7) {
             // code...
             $err1 = "Sorry you must apply on or before 7 days of the leave date.";
