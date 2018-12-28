@@ -26,6 +26,10 @@
     {
         header("Location:principal.php");
     }
+    if(isset($_SESSION["cid"]))
+    {
+        header("Location:clerk.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

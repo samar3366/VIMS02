@@ -1,4 +1,5 @@
 <?php
+
     if(isset($_COOKIE['id']))
     {
         session_id($_COOKIE['id']);
@@ -6,25 +7,14 @@
 
     session_start();
 
-    if($_SESSION['hid'] == null){
-        header("Location:hod-login.php");
+    if($_SESSION['cid'] == null){
+        header("Location:clerk-login.php");
     }
-$hdept=$_SESSION['hid'];
+
 ?>
 <?php
-$query="select ";
-?>
-<?php
-$hdept=$_SESSION['hid'];
-$count=0;
+$cid=$_SESSION['cid'];
 include("connection.php");
-$output=0;
-$sql=mysqli_query($connect,"select count(leave_id) as count from facleave where status='0' and facDept='$hdept'");
-if($sql){
-    while($row=mysqli_fetch_array($sql)){
-        $count=$row['count'];
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +28,7 @@ if($sql){
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/vgnt.png">
-    <title>Hod Portal</title>
+    <title>Clerk Portal</title>
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -46,10 +36,9 @@ if($sql){
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript">
         window.onload = function() {
-        history.replaceState("", "", "hod.php");
+        history.replaceState("", "", "clerk-view_approved_leaves.php");
         }
     </script>
-    <script type="text/javascript" src="javascript.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -95,8 +84,8 @@ if($sql){
                             <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/Admin_25px.png" alt="user" class="profile-pic" /></a>
                             <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                                 <ul class="dropdown-user">
-                                    <li><a href="hod-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
-                                    <li><a href="hod/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                      <li><a href="clerk-change_password.php"><i class="fa fa-edit"></i> Change Password</a></li>
+                                    <li><a href="clerk/logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -116,35 +105,14 @@ if($sql){
                         <li class="nav-label">Home</li>
                         <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod.php">Profile </a></li>
+                                <li><a href="clerk.php">Profile </a></li>
                             </ul>
                         </li>
                         <li class="nav-devider"></li>
-                        <li class="nav-label">View Details</li>
-                        <li> <a href="hod-student.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Student</span></a>
+                        <li class="nav-label">Leaves</li>
+                        <li> <a href="clerk-view_approved_leaves.php" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu">Approved</span></a>
                         </li>
-                        <li> <a href="hod-faculty.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Faculty</span></a>
-                        </li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Exam Cell</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_results.php">View Results</a></li>
-                                <li><a href="hod-result_analysis.php">Result Analysis</a></li>
-                                <li><a href="hod-subject_analysis.php">Subject Analysis</a></li>
-                            </ul>
-                        </li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Attendance</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_att.php">View Attendance</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-devider"></li>
-                        <li class="nav-label">Manage</li>
-                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">Leaves</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="hod-view_leaves.php">View Leaves</a></li>
-                                <li><a href="hod-view-leaves2.php">View Leaves(updated)</a></li>
-                                <li><a href="hod-view-leaves_history.php">View Leaves History</a></li>
-                            </ul>
+                        <li> <a href="clerk-view_rejected_leaves.php" aria-expanded="false"><i class="fa fa-suitcase"></i><span class="hide-menu">Rejected</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -158,11 +126,11 @@ if($sql){
             <!-- Bread crumb -->
             <div class="row page-titles">
                 <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['hid'];?></h3> </div>
+                    <h3 class="text-primary">WELCOME <?php echo $_SESSION['cid'];?></h3> </div>
                 <div class="col-md-7 align-self-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
+                        <li class="breadcrumb-item active">Leaves</li>
                     </ol>
                 </div>
             </div>
@@ -179,35 +147,90 @@ if($sql){
                                <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
                                <div class="table-responsive m-t-40">
                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                       <thead>
-                                           <tr>
-                                               <th>Faculty Name</th>
-                                               <th>Casual Leave<br>( max : 12 )<br>(Utilized/Remaning)</th>
-                                               <th>Medical Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                               <th>Maternity Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                               <th>Marriage Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                               <th>Academic Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                               <th>On Duty Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                               <th>Extra Ordinary Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           </tr>
-                                       </thead>
-                                       <tbody>
-                                       </tbody>
-                                       <tfoot>
+                                     <thead>
                                          <tr>
-                                           <th>Faculty Name</th>
-                                           <th>Casual Leave<br>( max : 12 )<br>(Utilized/Remaning)</th>
-                                           <th>Medical Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           <th>Maternity Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           <th>Marriage Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           <th>Academic Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           <th>On Duty Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
-                                           <th>Extra Ordinary Leave<br>( max : 7 )<br>(Utilized/Remaning)</th>
+                                             <th>Leave ID</th>
+                                             <th>Faculty Name</th>
+                                             <th>Department</th>
+                                             <th>Leave Type</th>
+                                             <th>From Date</th>
+                                             <th>To Date</th>
+                                             <th>Leave Status</th>
                                          </tr>
-                                       </tfoot>
-                                       <tbody>
-
-                                       </tbody>
+                                     </thead>
+                                     <tbody>
+                                         <?php
+                                         //get faculty dept
+                                         $leaves = array("leavescl","leavesmtl","leavesal","leavesod","leavesml","leavesccl","leaveseol","leavesmrl");
+                                         for($i=0;$i<8;$i++){
+                                          $tableName = $leaves[$i];
+                                         $query=mysqli_query($connect,"SELECT * FROM $tableName WHERE principal_status = 'APPROVED'");
+                                         if($query){
+                                             while($row=mysqli_fetch_array($query)){
+                                               $leave_id=$row['leave_id'];
+                                               $facName = $row['facName'];
+                                               $facDept = $row['facDept'];
+                                               $fdate = $row['fdate'];
+                                               $tdate = $row['tdate'];
+                                               $principal_status = $row['principal_status'];
+                                               if($tableName == 'leavescl'){
+                                                 $leave_type = 'CASUAL LEAVES';
+                                               }elseif ($tableName == 'leavesmtl') {
+                                                 // code...
+                                                 $leave_type = 'MATERNITY LEAVES';
+                                               }elseif ($tableName == 'leavesal') {
+                                                 // code...
+                                                 $leave_type = 'ACADEMIC LEAVES';
+                                               }elseif ($tableName == 'leavesod') {
+                                                 // code...
+                                                 $leave_type = 'ON-DUTY LEAVES';
+                                               }elseif ($tableName == 'leavesml') {
+                                                 // code...
+                                                 $leave_type = 'EMERGENCY LEAVES';
+                                               }elseif ($tableName == 'leavesccl') {
+                                                 // code...
+                                                 if($row['type'] == 'Requestccl'){
+                                                   $leave_type = 'REQUEST CCL LEAVES';
+                                                 }else{
+                                                   $leave_type = 'APPLY CCL LEAVES';
+                                                 }
+                                               }elseif ($tableName == 'leaveseol') {
+                                                 // code...
+                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }
+                                               elseif ($tableName == 'leaveseol') {
+                                                 // code...
+                                                 $leave_type = 'EXTRA ORDINARY LEAVES';
+                                               }
+                                               elseif ($tableName == 'leavesmrl') {
+                                                 // code...
+                                                 $leave_type = 'MARRIAGE LEAVE';
+                                               }
+                                               $facName = $row['facName'];?>
+                                               <tr>
+                                                   <th scope="row"><?php echo $leave_id;?></th>
+                                                   <td><?php echo $facName;?></td>
+                                                   <td><?php echo $facDept;?></td>
+                                                   <td><?php echo $fdate;?></td>
+                                                   <td><?php echo $tdate;?></td>
+                                                   <td><?php echo $leave_type;?></td>
+                                                   <td><?php echo $principal_status;?></td>
+                                               </tr><?php
+                                             }
+                                           }
+                                         }
+                                         ?>
+                                     </tbody>
+                                     <tfoot>
+                                       <tr><th>Leave ID</th>
+                                       <th>Faculty Name</th>
+                                       <th>Department</th>
+                                       <th>Leave Type</th>
+                                       <th>From Date</th>
+                                       <th>To Date</th>
+                                       <th>Leave Status</th>
+                                       </tr>
+                                     </tfoot>
                                    </table>
                                </div>
                            </div>
@@ -215,6 +238,8 @@ if($sql){
 
                <!-- row ends -->
                <!-- End PAge Content -->
+               </div>
+             </div>
 
                 <!-- End PAge Content -->
             </div>
@@ -274,6 +299,7 @@ if($sql){
           </div>
         </div>
       </div>
+
     <!-- All Jquery -->
     <script src="js/lib/jquery/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -287,12 +313,6 @@ if($sql){
     <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
     <!--Custom JavaScript -->
     <script src="js/custom.min.js"></script>
-    <script>
-        window.onload = function() {
-            history.replaceState("", "", "hod.php");
-        }
-    </script>
-
 
 
     <script src="js/lib/datatables/datatables.min.js"></script>
@@ -304,8 +324,7 @@ if($sql){
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
     <script src="js/lib/datatables/datatables-init.js"></script>
-    <!-- <script src="js/block/javascript.js"></script> -->
-
+    <script src="js/block/javascript.js"></script>
 
 </body>
 
